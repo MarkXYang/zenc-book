@@ -1,0 +1,54 @@
+def MAX_ITEMS = 5;
+
+fn add(a: i32, b: i32) -> i32 {
+    return a + b;
+}
+
+fn calculate_factorial(n: i32) -> i32 {
+    let result = 1;
+    let current = n;
+    while current > 1 {
+        result *= current;
+        current--;
+    }
+    return result;
+}
+
+fn main() {
+    println "=== Common Programming Concepts in Zen C ===";
+
+    // 1. Variables and Manifest Constants
+    def PI = 3.14159;
+    let mut_val = 10;
+    mut_val = 20; // Mutable assignment
+    let readonly_val: const int = 100;
+
+    println "Manifest PI: {PI}, Mutable: {mut_val}, Const: {readonly_val}";
+
+    // 2. Data Types
+    let integer_val: i32 = 42;
+    let float_val: f64 = 2.71828;
+    let is_active: bool = true;
+    let message: string = "Hello, Zen C!";
+
+    println "Types -> int: {integer_val}, float: {float_val}, bool: {is_active}, string: {message}";
+
+    // Fixed-size Array
+    let numbers: i32[5] = [10, 20, 30, 40, 50];
+    let sum = 0;
+    for (let i = 0; i < MAX_ITEMS; i++) {
+        sum = add(sum, numbers[i]);
+    }
+    println "Sum of array using for loop and add function: {sum}";
+
+    // 3. Control Flow & Functions
+    let num = 5;
+    let fact = calculate_factorial(num);
+    println "Factorial of {num} is: {fact}";
+
+    if fact > 100 {
+        println "Factorial is large!";
+    } else {
+        println "Factorial is small!";
+    }
+}
