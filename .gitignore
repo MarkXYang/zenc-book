@@ -1,0 +1,13 @@
+# Build artifacts & binaries
+hello
+*.out
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+
+# Temporary files
+.DS_Store
+*.tmp
