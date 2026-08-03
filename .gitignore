@@ -3,6 +3,7 @@
 /book_html/
 
 # Build artifacts & binaries
+guessing_game
 hello
 *.out
 *.o
