@@ -1,0 +1,28 @@
+fn main() {
+    println "=== Guess the Number! ===";
+
+    // Seed the random number generator
+    srand(time(0));
+    let secret_number = (rand() % 100) + 1;
+
+    loop {
+        print "Please input your guess: ";
+
+        let guess: int = 0;
+        if scanf("%d", &guess) != 1 {
+            println "Please enter a valid integer!";
+            break;
+        }
+
+        println "You guessed: {guess}";
+
+        if guess < secret_number {
+            println "Too small!";
+        } else if guess > secret_number {
+            println "Too big!";
+        } else {
+            println "You win! You guessed the secret number!";
+            break;
+        }
+    }
+}
