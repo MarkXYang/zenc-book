@@ -1,3 +1,7 @@
+# mdBook generated HTML output
+/book/
+/book_html/
+
 # Build artifacts & binaries
 hello
 *.out

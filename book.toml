@@ -1,0 +1,10 @@
+[book]
+authors = ["Mark Yang"]
+language = "en"
+src = "."
+title = "The Zen C Programming Language"
+
+[output.html]
+git-repository-url = "https://github.com/zenc-lang/zenc"
+default-theme = "navy"
+preferred-dark-theme = "navy"
