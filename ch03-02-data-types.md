@@ -1,83 +1,109 @@
 # Data Types
 
-Every value in Zen C is of a specific **data type**, which determines how much memory is allocated and how the binary bits are interpreted.
+Every value in Zen C is of a specific **data type**, which determines how much memory is allocated, how binary bits are interpreted, and how the values transpile into C11 code.
 
-Zen C is a strongly typed language with two categories of data types: **Scalar Types** (single values) and **Compound Types** (groupings of multiple values).
+Zen C provides a rich set of **primitive scalar types** (integers, floats, booleans, characters, runes, strings), **C interop types**, and **compound types** (fixed-size arrays).
 
 ---
 
-## Scalar Types
+## Primitive Types Overview
 
-A scalar type represents a single value. Zen C provides four primary scalar types: integers, floating-point numbers, booleans, and characters.
+The following table summarizes all primitive scalar types in Zen C and their underlying C11 mapping:
 
-### 1. Integer Types
+| Type | C Equivalent | Description |
+| :--- | :--- | :--- |
+| `int`, `uint` | `int32_t`, `uint32_t` | 32-bit signed/unsigned integer (Standard default) |
+| `i8` .. `i128` (or `I8` .. `I128`) | `int8_t` .. `__int128_t` | Fixed-width signed integers |
+| `u8` .. `u128` (or `U8` .. `U128`) | `uint8_t` .. `__uint128_t` | Fixed-width unsigned integers |
+| `byte` | `uint8_t` | Alias for `u8` / `U8` |
+| `isize`, `usize` | `ptrdiff_t`, `size_t` | Pointer-sized signed/unsigned integers |
+| `iN` / `uN` (e.g. `i256`, `u42`) | `_BitInt(N)` / `unsigned _BitInt(N)` | Arbitrary bit-width integer (C23 standard) |
+| **C Interop Types** | | |
+| `c_char`, `c_uchar` | `char`, `unsigned char` | Platform-dependent C char |
+| `c_short`, `c_ushort` | `short`, `unsigned short` | Platform-dependent C short |
+| `c_int`, `c_uint` | `int`, `unsigned int` | Platform-dependent C int |
+| `c_long`, `c_ulong` | `long`, `unsigned long` | Platform-dependent C long |
+| `c_longlong`, `c_ulonglong` | `long long`, `unsigned long long` | Platform-dependent C long long |
+| **Floating-Point** | | |
+| `f32` / `F32` | `float` | 32-bit single-precision float (IEEE 754) |
+| `f64` / `F64` | `double` | 64-bit double-precision float (IEEE 754) |
+| **Text & Special** | | |
+| `bool` | `bool` | Boolean (`true` or `false`) |
+| `char` | `char` | Single 8-bit ASCII character |
+| `rune` | `uint32_t` | Unicode scalar value (UTF-32 code point) |
+| `string` | `char*` | Null-terminated C string |
+| `void`, `u0`, `U0` | `void` | Empty / return void type |
 
-An integer is a number without a fractional component. Zen C provides explicitly-sized integer types as well as architecture-dependent integer types:
+---
 
-| Type | Bits | Signed Range | Unsigned Range |
-| :--- | :--- | :--- | :--- |
-| `i8` / `u8` | 8-bit | -128 to 127 | 0 to 255 |
-| `i16` / `u16` | 16-bit | -32,768 to 32,767 | 0 to 65,535 |
-| `i32` / `int` / `u32` | 32-bit | -2,147,483,648 to 2,147,483,647 | 0 to 4,294,967,295 |
-| `i64` / `u64` | 64-bit | -9.22 × 10¹⁸ to 9.22 × 10¹⁸ | 0 to 1.84 × 10¹⁹ |
-| `usize` / `isize` | Pointer size | 32-bit or 64-bit depending on architecture |
+## Literals & Formatting Rules
+
+Zen C provides modern syntax rules for writing numeric and text literals in source code.
+
+### 1. Integer Literals & Number Bases
+
+Integer literals can be written in several number bases:
+
+- **Decimal**: `123`
+- **Hexadecimal**: `0xFF`
+- **Octal**: `0o755` (prefixed with `0o`)
+- **Binary**: `0b1011` (prefixed with `0b`)
+
+> [!IMPORTANT]
+> **Leading Zeros in Zen C**: Unlike C (where numbers starting with `0` like `0123` are parsed as octal), Zen C treats leading zeros as standard **decimal** numbers. `0123` in Zen C evaluates to decimal `123`.
+
+### 2. Readable Numeric Underscores
+
+To enhance readability in large numbers or binary flags, you can insert visual underscores (`_`) anywhere inside numeric literals:
 
 ```zenc
-let small_num: u8 = 255;
-let id: i32 = -100;
-let size: usize = 1024;
+let million = 1_000_000;
+let bytes = 0b_1111_0000_1010_0101;
+let pi_approx = 3_14.15_92_65;
 ```
 
-### 2. Floating-Point Types
+---
 
-Zen C has two primitive floating-point types representing numbers with decimal points:
+## Unicode and Runes (`rune`)
 
-- `f32`: Single-precision float (32-bit IEEE 754).
-- `f64` / `double`: Double-precision float (64-bit IEEE 754).
+Zen C provides first-class support for Unicode scalar values via the `rune` type. A `rune` represents a single UTF-32 Unicode code point stored as a 32-bit unsigned integer (`uint32_t`).
+
+### Character vs. Rune Literals
+
+| Literal | Type | Description |
+| :--- | :--- | :--- |
+| `'a'` | `char` / `rune` | Standard ASCII character |
+| `'🚀'` | `rune` | Multi-byte Unicode emoji / character |
+| `'\u{2764}'` | `rune` | Hexadecimal Unicode escape sequence |
 
 ```zenc
-let x: f32 = 3.14;
-let y: f64 = 2.718281828459045;
+let c: char = 'a';
+let emoji: rune = '🚀';
+let heart: rune = '\u{2764}';
+
+println "Emoji rune: {emoji}, Heart: {heart}";
 ```
 
-### 3. Boolean Type
+---
 
-The boolean type in Zen C is `bool`. It has two possible values: `true` and `false`:
+## Best Practices for Portable Code
 
-```zenc
-let is_active: bool = true;
-let is_finished: bool = false;
-```
-
-### 4. Character and String Types
-
-- `char`: Represents a single 8-bit ASCII character or byte.
-- `string`: Represents a UTF-8 null-terminated string.
-
-```zenc
-let letter: char = 'A';
-let greeting: string = "Hello, world!";
-```
+> [!TIP]
+> **Portable Types vs. C Interop Types**
+> 1. **Use Portable Types** (`int`, `uint`, `i64`, `u8`, etc.) for all pure Zen C application logic. `int` is guaranteed to be 32-bit signed on all target platforms and architectures.
+> 2. **Use C Interop Types** (`c_int`, `c_char`, `c_long`, `c_ulong`, etc.) **only** when writing FFI wrapper code or interfacing directly with external C libraries. Their byte sizes vary depending on platform ABI (e.g. `c_long` is 32-bit on 64-bit Windows, but 64-bit on 64-bit Linux).
+> 3. **Use `isize` and `usize`** for array indexing, slice lengths, and pointer arithmetic.
 
 ---
 
 ## Compound Types: Fixed-Size Arrays (`T[N]`)
 
-An **array** is a fixed-length sequence of elements of the same type stored contiguously in memory.
+An **array** is a fixed-length contiguous sequence of elements of the same type:
 
 ```zenc
 let numbers: i32[5] = [10, 20, 30, 40, 50];
-```
-
-### Accessing Array Elements
-
-Array elements are indexed starting at `0`:
-
-```zenc
 let first = numbers[0]; // 10
-let third = numbers[2]; // 30
-
-numbers[0] = 99; // Modify first element
+numbers[0] = 99;        // Mutate first element
 ```
 
-Next, let's look at functions in Zen C!
+Next, let's explore functions and lambdas in Zen C!
