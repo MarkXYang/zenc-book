@@ -7,6 +7,7 @@ In this chapter, you will learn about:
 - **Variables and Constants**: Understanding compile-time manifest constants (`def`), variables (`let`), type inference, and read-only type qualifications (`const`).
 - **Data Types**: Scalar primitive types (integers, floating-point numbers, booleans, characters, strings) and compound aggregate types like fixed-size arrays (`T[N]`).
 - **Functions**: Defining functions (`fn`), parameters, explicit return types (`-> T`), and execution flow.
-- **Control Flow**: Using conditional expressions (`if / else if / else`) and repeating loops (`loop`, `while`, `for`, `break`, `continue`).
+- **Control Flow**: Using conditional expressions (`if / else if / else`), `match` pattern matching, and repeating loops (`loop`, `while`, `for`, `break`, `continue`).
+- **Operators**: Overloading operators on structs, string equality rules, and syntactic sugar (`|>`, `??`, `?.`, auto-dereferencing).
 
 Let's start by looking at variables and constants!

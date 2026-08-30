@@ -14,6 +14,7 @@
     - [Data Types](ch03-02-data-types.md)
     - [Functions and Lambdas](ch03-03-functions-and-lambdas.md)
     - [Control Flow](ch03-04-control-flow.md)
+    - [Operators](ch03-05-operators.md)
 
 - [Understanding Memory Management](ch04-00-understanding-memory-management.md)
     - [Automatic Cleanup and Drop](ch04-01-drop-and-raii.md)
