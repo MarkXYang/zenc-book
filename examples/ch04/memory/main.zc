@@ -1,0 +1,55 @@
+extern fn malloc(size: usize) -> void*;
+extern fn free(ptr: void*);
+
+struct CustomBuffer {
+    data: void*;
+    capacity: usize;
+}
+
+impl Drop for CustomBuffer {
+    fn drop(self) {
+        println "CustomBuffer destructor running for capacity: {self.capacity}";
+        if self.data != 0 {
+            free(self.data);
+        }
+    }
+}
+
+struct Point {
+    x: int;
+    y: int;
+}
+
+impl Copy for Point {}
+
+fn peek_buffer(buf: CustomBuffer*) {
+    println "Peeking buffer at pointer, capacity: {buf.capacity}";
+}
+
+fn main() {
+    println "=== Chapter 4: Memory Management in Zen C ===";
+
+    // 1. Defer statement
+    let f = fopen("file_test.txt", "w");
+    if f != 0 {
+        defer fclose(f);
+        fputs("Zen C Defer Test\n", f);
+        println "Wrote to file using defer fclose(f)";
+    }
+
+    // 2. Autofree variable
+    autofree let temp_mem = malloc(256);
+    println "Allocated memory with autofree";
+
+    // 3. Drop trait & Move semantics
+    let buf = CustomBuffer {
+        data: malloc(1024),
+        capacity: 1024,
+    };
+    peek_buffer(&buf); // Passed by reference (borrowed)
+
+    // 4. Opt-in Copy trait
+    let p1 = Point { x: 5, y: 10 };
+    let p2 = p1; // Copied implicitly because Point implements Copy
+    println "Point 1: ({p1.x}, {p1.y}), Point 2: ({p2.x}, {p2.y})";
+}
