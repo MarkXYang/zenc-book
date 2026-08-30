@@ -1,6 +1,6 @@
 # Operators and Operator Overloading
 
-Zen C provides a comprehensive set of operators. In addition to standard arithmetic and bitwise operations, Zen C supports **operator overloading** for user-defined structs as well as modern **syntactic sugar operators** such as the pipeline operator (`|>`), null coalescing (`??`), and safe navigation (`?.`).
+Zen C provides a comprehensive set of operators. In addition to standard arithmetic and bitwise operations, Zen C supports **operator overloading** for user-defined structs as well as modern **syntactic sugar operators** such as the pipeline operator (`|>`), null coalescing (`??`), null assignment (`??=`), safe navigation (`?.`), and the try operator (`?`).
 
 ---
 
@@ -110,44 +110,132 @@ if s1 == s2 {
 
 ## Syntactic Sugar Operators
 
-Zen C includes modern built-in syntactic sugar operators that streamline code and reduce boilerplate:
+Zen C includes modern built-in syntactic sugar operators that streamline code readability and eliminate boilerplate.
+
+### Syntactic Sugar Summary
 
 | Operator | Name | Description & Desugaring |
 | :--- | :--- | :--- |
 | `\|>` | **Pipeline** | `x \|> f(y)` desugars to `f(x, y)` |
-| `??` | **Null Coalescing** | `val ?? default` returns `default` if `val` is `null` (for pointers) |
-| `??=` | **Null Assignment** | `val ??= init` assigns `init` to `val` only if `val` is currently `null` |
-| `?.` | **Safe Navigation** | `ptr?.field` accesses `field` only if `ptr` is not `null` |
+| `??` | **Null Coalescing** | `val ?? default` returns `default` if `val` is `NULL` (for pointers) |
+| `??=` | **Null Assignment** | `val ??= init` assigns `init` to `val` only if `val` is currently `NULL` |
+| `?.` | **Safe Navigation** | `ptr?.field` accesses `field` only if `ptr` is not `NULL` |
 | `?` | **Try Operator** | `res?` unpacks value or returns early on error (`Result` / `Option`) |
+| `.` | **Auto-Dereference** | `ptr.field` automatically dereferences pointer (equivalent to `(*ptr).field`) |
 
-### Pipeline Operator (`|>`) Example
+---
 
-The pipeline operator passes the left-hand expression as the first argument to the right-hand function call:
+### Detailed Code Examples for Syntactic Sugar Operators
+
+#### 1. Pipeline Operator (`|>`)
+
+The pipeline operator passes the left-hand expression as the first parameter to the right-hand function. You can chain multiple function calls together in a clean, readable left-to-right flow:
 
 ```zenc
-fn add_amount(val: int, amount: int) -> int {
-    return val + amount;
+fn add_bonus(score: int, bonus: int) -> int {
+    return score + bonus;
+}
+
+fn multiply_by(score: int, factor: int) -> int {
+    return score * factor;
 }
 
 fn main() {
-    // 10 |> add_amount(5) desugars to add_amount(10, 5)
-    let result = 10 |> add_amount(5);
-    println "Pipeline result: {result}"; // 15
+    // 50 |> add_bonus(10) desugars to add_bonus(50, 10) -> 60
+    // 60 |> multiply_by(2) desugars to multiply_by(60, 2) -> 120
+    let final_score = 50 |> add_bonus(10) |> multiply_by(2);
+
+    println "Final Score: {final_score}"; // Output: 120
 }
 ```
 
-### Auto-Dereference Feature
+#### 2. Null Coalescing Operator (`??`)
 
-In C, accessing a pointer field requires `ptr->field` or `(*ptr).field`. In Zen C, pointer field access (`ptr.field`) and method invocation (`ptr.method()`) **automatically dereference** the pointer:
+The null coalescing operator checks if a pointer expression is `NULL`. If it is `NULL`, it evaluates and returns the right-hand fallback expression:
+
+```zenc
+struct Profile {
+    username: string;
+}
+
+fn main() {
+    let active_profile: Profile* = 0; // NULL pointer
+    let default_profile = Profile { username: "GuestUser" };
+
+    // Evaluates to &default_profile because active_profile is NULL
+    let user_ptr = active_profile ?? &default_profile;
+
+    println "Username: {user_ptr.username}"; // Output: GuestUser
+}
+```
+
+#### 3. Null Assignment Operator (`??=`)
+
+The null assignment operator assigns a value to a pointer variable only if that pointer is currently `NULL`:
+
+```zenc
+struct Config {
+    port: int;
+}
+
+fn main() {
+    let fallback = Config { port: 8080 };
+    let app_cfg: Config* = 0; // Currently NULL
+
+    app_cfg ??= &fallback; // Assigns fallback because app_cfg was NULL
+
+    println "Server Port: {app_cfg.port}"; // Output: 8080
+}
+```
+
+#### 4. Safe Navigation Operator (`?.`)
+
+The safe navigation operator safely accesses a struct field through a pointer. If the pointer is `NULL`, the expression short-circuits to `NULL` without crashing:
+
+```zenc
+struct Session {
+    id: int;
+}
+
+fn print_session(s: Session*) {
+    // Safely reads id if s is non-null
+    let sess_id = s?.id;
+}
+```
+
+#### 5. Try Operator (`?`)
+
+The `?` operator unwraps successful values from `Result<T, E>` or `Option<T>` types. If an error or `None` is encountered, it returns early from the current function:
+
+```zenc
+fn read_config_file(path: string) -> Result<Config, string> {
+    let file = open_file(path)?; // Returns early if open_file failed
+    let cfg = parse_config(file)?; // Returns early if parse_config failed
+    return Result::Ok(cfg);
+}
+```
+
+#### 6. Auto-Dereference Feature (`ptr.field` & `ptr.method()`)
+
+In standard C, accessing a pointer field requires verbose arrow syntax (`ptr->field`) or dereferencing (`(*ptr).field`). In Zen C, pointer field access (`ptr.field`) and method calls (`ptr.method()`) **automatically dereference** the pointer:
 
 ```zenc
 struct Node {
     value: int;
 }
 
-fn print_node(ptr: Node*) {
-    // Automatically dereferences pointer (no need for -> or (*ptr))
-    println "Node value: {ptr.value}";
+impl Node {
+    fn display(self) {
+        println "Node value: {self.value}";
+    }
+}
+
+fn process_node(ptr: Node*) {
+    // Automatically dereferences pointer (equivalent to (*ptr).value)
+    println "Value: {ptr.value}";
+
+    // Automatically dereferences for method calls
+    ptr.display();
 }
 ```
 
@@ -160,6 +248,6 @@ In Chapter 3, you mastered all the core foundational concepts of Zen C:
 - **Data Types** (scalar types, C interop types, arbitrary bit-width `iN`/`uN`, literals, fixed-size arrays `T[N]`).
 - **Functions & Lambdas** (named arguments, `const` args, defaults, closures `[=]`/`[&]`, raw pointers `fn*`, variadics `...`).
 - **Control Flow** (`if`, `match` pattern matching, `ref` binding, range loops, enumerated iteration, `guard`, `unless`).
-- **Operators** (operator overloading `add`/`sub`/`get`/`set`, string equality rules, pipeline `|>`, null coalescing `??`, safe navigation `?.`, auto-dereference).
+- **Operators** (operator overloading `add`/`sub`/`get`/`set`, string equality rules, pipeline `|>`, null coalescing `??`, null assignment `??=`, safe navigation `?.`, try `?`, auto-dereference).
 
 In **Chapter 4**, we will dive into Zen C's automatic resource management: **Drop and Memory Safety (RAII)**!
