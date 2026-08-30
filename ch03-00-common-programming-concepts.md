@@ -9,5 +9,6 @@ In this chapter, you will learn about:
 - **Functions**: Defining functions (`fn`), parameters, explicit return types (`-> T`), and execution flow.
 - **Control Flow**: Using conditional expressions (`if / else if / else`), `match` pattern matching, and repeating loops (`loop`, `while`, `for`, `break`, `continue`).
 - **Operators**: Overloading operators on structs, string equality rules, and syntactic sugar (`|>`, `??`, `?.`, auto-dereferencing).
+- **Printing and String Interpolation**: Keywords (`println`), string shorthands (`"Hz"`, `!"Err"`), implicit `{}` interpolation, raw strings (`r"..."`), multiline blocks (`"""`), and interactive input prompts (`?`).
 
 Let's start by looking at variables and constants!

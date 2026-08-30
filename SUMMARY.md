@@ -15,6 +15,7 @@
     - [Functions and Lambdas](ch03-03-functions-and-lambdas.md)
     - [Control Flow](ch03-04-control-flow.md)
     - [Operators](ch03-05-operators.md)
+    - [Printing and String Interpolation](ch03-06-printing-and-string-interpolation.md)
 
 - [Understanding Memory Management](ch04-00-understanding-memory-management.md)
     - [Automatic Cleanup and Drop](ch04-01-drop-and-raii.md)
