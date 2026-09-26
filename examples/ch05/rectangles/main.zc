@@ -1,0 +1,144 @@
+// Chapter 5 Capstone: Geometric Shapes and Methods in Zen C
+
+@derive(Copy)
+struct Point {
+    x: int;
+    y: int;
+}
+
+impl Point {
+    // Associated constructor function returning -> Self
+    fn new(x: int, y: int) -> Self {
+        return Point { x: x, y: y };
+    }
+
+    // Read-only (const self) method using .x / .y Self shorthand
+    fn distance_squared(const self, other: Point) -> int {
+        let dx = .x - other.x;
+        let dy = .y - other.y;
+        return dx * dx + dy * dy;
+    }
+
+    // Mutating (self) method using .x / .y Self shorthand
+    fn translate(self, dx: int, dy: int) {
+        .x += dx;
+        .y += dy;
+    }
+
+    // Operator overload: + (add) returning -> Self
+    fn add(self, other: Point) -> Self {
+        return Point {
+            x: .x + other.x,
+            y: .y + other.y,
+        };
+    }
+
+    // Operator overload: == (eq)
+    fn eq(self, other: Point) -> bool {
+        return .x == other.x && .y == other.y;
+    }
+}
+
+struct Rectangle {
+    top_left: Point;
+    width: int;
+    height: int;
+}
+
+impl Rectangle {
+    // Associated constructor function returning -> Self
+    fn new(x: int, y: int, width: int, height: int) -> Self {
+        return Rectangle {
+            top_left: Point::new(x, y),
+            width: width,
+            height: height,
+        };
+    }
+
+    // Associated square constructor returning -> Self
+    fn square(x: int, y: int, size: int) -> Self {
+        return Rectangle::new(x, y, size, size);
+    }
+
+    // Read-only method using .width and .height Self shorthand
+    fn area(const self) -> int {
+        return .width * .height;
+    }
+
+    fn perimeter(const self) -> int {
+        return 2 * (.width + .height);
+    }
+
+    fn contains_point(const self, p: Point) -> bool {
+        return p.x >= .top_left.x &&
+               p.x <= (.top_left.x + .width) &&
+               p.y >= .top_left.y &&
+               p.y <= (.top_left.y + .height);
+    }
+
+    // Mutating method
+    fn scale(self, factor: int) {
+        .width *= factor;
+        .height *= factor;
+    }
+}
+
+// Flattened Mixin: Window embeds Rectangle and inherits its methods!
+struct Window {
+    use Rectangle;
+    title: string;
+}
+
+fn main() {
+    println "=== Chapter 5 Capstone: Rectangles and Shapes ===";
+
+    // 1. Instantiating structs & using associated constructor functions
+    let p1 = Point::new(10, 20);
+    let p2 = Point::new(15, 25);
+    println "Point 1: ({p1.x}, {p1.y})";
+    println "Point 2: ({p2.x}, {p2.y})";
+
+    // 2. Opt-in Copy semantics via @derive(Copy)
+    let p1_copy = p1; // Implicit copy, p1 remains valid!
+    println "Copied p1: ({p1_copy.x}, {p1_copy.y})";
+
+    // 3. Operator Overloading: + and ==
+    let p3 = p1 + p2;
+    println "p1 + p2 = ({p3.x}, {p3.y})";
+    println "p1 == p2: {p1 == p2}";
+    println "p1 == p1_copy: {p1 == p1_copy}";
+
+    // 4. Mutating methods with Self shorthand
+    p1.translate(5, 5);
+    println "p1 after translate(5, 5): ({p1.x}, {p1.y})";
+
+    // 5. Calling methods on Rectangle
+    let rect = Rectangle::new(0, 0, 100, 50);
+    println "Rectangle area: {rect.area()}, perimeter: {rect.perimeter()}";
+
+    let test_pt = Point::new(50, 25);
+    println "Contains (50, 25)? {rect.contains_point(test_pt)}";
+
+    rect.scale(2);
+    println "After scaling by 2: width={rect.width}, height={rect.height}, new area={rect.area()}";
+
+    // 6. Destructuring
+    let Point { x, y } = p3;
+    println "Destructured p3: x = {x}, y = {y}";
+
+    // 7. Flattened Mixin: Window inherits Rectangle's area()!
+    let win = Window {
+        top_left: Point::new(10, 10),
+        width: 800,
+        height: 600,
+        title: "Main Window",
+    };
+    println "Window: '{win.title}', dimensions: {win.width}x{win.height}";
+    println "Window area (inherited mixin method): {win.area()}";
+
+    // 8. Safe navigation with pointers
+    let win_ptr = &win;
+    println "Via pointer safe nav: area = {win_ptr?.area()}";
+
+    println "Chapter 5 Capstone executed successfully!";
+}

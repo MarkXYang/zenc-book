@@ -1,0 +1,186 @@
+// Section 5.2: Method Syntax and impl Blocks in Zen C
+
+struct Rectangle {
+    width: int;
+    height: int;
+}
+
+// 1. Defining methods in an impl block
+impl Rectangle {
+    // Associated constructor functions returning -> Self
+    fn new(width: int, height: int) -> Self {
+        return Rectangle {
+            width: width,
+            height: height,
+        };
+    }
+
+    fn square(size: int) -> Self {
+        return Rectangle::new(size, size);
+    }
+
+    // Read-only method (const self) using Self shorthand (.width, .height)
+    fn area(const self) -> int {
+        return .width * .height;
+    }
+
+    fn perimeter(const self) -> int {
+        return 2 * (.width + .height);
+    }
+
+    fn can_hold(const self, other: Rectangle) -> bool {
+        return .width > other.width && .height > other.height;
+    }
+
+    // Mutating method (self) using Self shorthand
+    fn scale(self, factor: int) {
+        .width *= factor;
+        .height *= factor;
+    }
+
+    fn translate(self, dw: int, dh: int) {
+        .width += dw;
+        .height += dh;
+    }
+}
+
+// 2. Multiple impl blocks & Self shorthand (.field)
+@derive(Copy)
+struct Point {
+    x: int;
+    y: int;
+}
+
+// First impl block for Point: Constructors and read-only geometry
+impl Point {
+    fn new(x: int, y: int) -> Self {
+        return Point { x: x, y: y };
+    }
+
+    fn dist_squared(const self) -> int {
+        return .x * .x + .y * .y;
+    }
+}
+
+// Second impl block for Point: Mutations
+impl Point {
+    fn translate(self, dx: int, dy: int) {
+        .x += dx;
+        .y += dy;
+    }
+}
+
+// 3. Operator Overloading with Vec2 (+, -, ==)
+struct Vec2 {
+    x: int;
+    y: int;
+}
+
+impl Vec2 {
+    fn new(x: int, y: int) -> Self {
+        return Vec2 { x: x, y: y };
+    }
+
+    // Overloads binary '+'
+    fn add(self, other: Vec2) -> Self {
+        return Vec2 {
+            x: .x + other.x,
+            y: .y + other.y,
+        };
+    }
+
+    // Overloads binary '-'
+    fn sub(self, other: Vec2) -> Self {
+        return Vec2 {
+            x: .x - other.x,
+            y: .y - other.y,
+        };
+    }
+
+    // Overloads binary '==' and '!='
+    fn eq(self, other: Vec2) -> bool {
+        return .x == other.x && .y == other.y;
+    }
+}
+
+// 4. Mixin Method Forwarding
+struct Window {
+    use Rectangle; // Mixin: embeds Rectangle and inherits all its methods
+    title: string;
+}
+
+// 5. Primitive scalar methods (impl int)
+impl int {
+    fn abs(self) -> int {
+        return *self < 0 ? -(*self) : *self;
+    }
+
+    fn square(self) -> int {
+        return (*self) * (*self);
+    }
+}
+
+fn main() {
+    println "=== Section 5.2: Method Syntax and impl Blocks ===";
+
+    // 1. Calling methods and constructors
+    let rect = Rectangle::new(30, 50);
+    println "The area of the rectangle is {rect.area()} square pixels.";
+    println "Perimeter: {rect.perimeter()} pixels";
+
+    let sq = Rectangle::square(25);
+    println "Square: {sq.width}x{sq.height}, area = {sq.area()}";
+
+    // 2. Query method: can_hold
+    println "Can rect hold sq? {rect.can_hold(sq)}";
+
+    // 3. Mutating methods
+    rect.scale(2);
+    println "After scale(2): {rect.width}x{rect.height}, new area = {rect.area()}";
+
+    rect.translate(10, -5);
+    println "After translate(10, -5): {rect.width}x{rect.height}";
+
+    // 4. Automatic referencing and dereferencing
+    let r = Rectangle::new(10, 20);
+    let r_ptr = &r;
+    println "Value method call: {r.area()}";
+    println "Pointer method call: {r_ptr.area()}";
+
+    // 5. Multiple impl blocks and Self shorthand (.field)
+    let p = Point::new(3, 4);
+    println "Point: ({p.x}, {p.y}), dist_squared = {p.dist_squared()}";
+    p.translate(1, -1);
+    println "Point after translate: ({p.x}, {p.y})";
+
+    // 6. Operator overloading (+, -, ==)
+    let v1 = Vec2::new(1, 2);
+    let v2 = Vec2::new(3, 4);
+    let v3 = v1 + v2;
+    println "v1 + v2 = ({v3.x}, {v3.y})";
+
+    let v4 = v3 - v1;
+    println "v3 - v1 = ({v4.x}, {v4.y})";
+
+    let a = Vec2::new(10, 20);
+    let b = Vec2::new(10, 20);
+    let c = Vec2::new(5, 5);
+    println "a == b: {a == b} (expected true)";
+    println "a == c: {a == c} (expected false)";
+
+    // 7. Mixin Method Forwarding
+    let win = Window {
+        width: 800,
+        height: 600,
+        title: "Main Application",
+    };
+    println "Window '{win.title}' area (inherited mixin method): {win.area()} px";
+
+    // 8. Methods on primitive scalar types
+    let neg = -10;
+    println "neg.abs() = {neg.abs()}";
+    println "(-5).abs() on literal = {(-5).abs()}";
+    println "(8).square() on literal = {(8).square()}";
+
+    println "Section 5.2 examples executed successfully!";
+}

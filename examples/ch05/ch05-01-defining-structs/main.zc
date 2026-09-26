@@ -1,0 +1,174 @@
+// Section 5.1: Defining and Instantiating Structs in Zen C
+
+struct User {
+    username: string;
+    email: string;
+    sign_in_count: u64;
+    active: bool;
+}
+
+@derive(Copy)
+struct Point {
+    x: int;
+    y: int;
+}
+
+struct Rectangle {
+    top_left: Point;
+    width: int;
+    height: int;
+}
+
+// Composition & Mixins:
+struct Entity {
+    id: int;
+}
+
+struct Player {
+    // 1. Flattened Mixin (Unnamed use): Flattens 'id' directly into Player
+    use Entity;
+    name: string;
+}
+
+struct Match {
+    // 2. Named Composition: Nests components under distinct field names
+    use p1: Player;
+    use p2: Player;
+}
+
+// Low-level control: Bitfields
+struct Flags {
+    is_readable:   uint : 1;
+    is_writable:   uint : 1;
+    is_executable: uint : 1;
+    mode:          uint : 2;
+    reserved:      uint : 3;
+}
+
+// Attributes: @packed and @align
+@packed
+struct EthernetHeader {
+    dest_mac:   [u8; 6];
+    src_mac:    [u8; 6];
+    ether_type: u16;
+}
+
+@align(16)
+struct Vector4 {
+    x: f32;
+    y: f32;
+    z: f32;
+    w: f32;
+}
+
+@packed @align(4)
+struct HardwarePacket {
+    id: u8;
+    payload_len: u16;
+}
+
+// Pointer function taking struct by pointer
+fn print_user(user: User*) {
+    // Unified dot (.) operator automatically dereferences pointers
+    println "User: {user.username} <{user.email}> (active: {user.active})";
+}
+
+fn main() {
+    println "=== Section 5.1: Defining and Instantiating Structs ===";
+
+    // 1. Instantiating a struct with all fields
+    let user1 = User {
+        username: "mark",
+        email: "mark@example.com",
+        sign_in_count: 1,
+        active: true,
+    };
+    println "User 1: {user1.username}, Logins: {user1.sign_in_count}";
+
+    // 2. Accessing and updating fields
+    user1.email = "mark.new@example.com";
+    user1.sign_in_count = user1.sign_in_count + 1;
+    println "Updated user1 email: {user1.email}, logins: {user1.sign_in_count}";
+
+    // 3. Zero-initialization with Struct{}
+    let blank_user = User {};
+    println "Zero-initialized user: active = {blank_user.active}, logins = {blank_user.sign_in_count}";
+
+    // 4. Uninitialized variable declaration followed by assignment
+    let u: User;
+    u.username = "alice";
+    u.email = "alice@example.com";
+    u.sign_in_count = 0;
+    u.active = true;
+    println "Assigned user u: {u.username} <{u.email}>";
+
+    // 5. Nested struct access and updates
+    let rect = Rectangle {
+        top_left: Point { x: 0, y: 10 },
+        width: 100,
+        height: 50,
+    };
+    println "Initial rect top_left: ({rect.top_left.x}, {rect.top_left.y})";
+    rect.top_left.x = 20;
+    println "Updated rect top_left: ({rect.top_left.x}, {rect.top_left.y})";
+
+    // 6. Destructuring: Shorthand
+    let p = Point { x: 10, y: 20 };
+    let Point { x, y } = p;
+    println "Destructured shorthand: x = {x}, y = {y}";
+
+    // 7. Destructuring: Renamed fields
+    let Point { x: pos_x, y: pos_y } = p;
+    println "Destructured renamed: pos_x = {pos_x}, pos_y = {pos_y}";
+
+    // 8. Flattened Mixin: 'id' is flattened into Player
+    let player = Player {
+        id: 1,
+        name: "Hero",
+    };
+    println "Player ID: {player.id}, Name: {player.name}";
+
+    // 9. Named Composition: Match nests p1 and p2
+    let m = Match {
+        p1: Player { id: 1, name: "Alice" },
+        p2: Player { id: 2, name: "Bob" },
+    };
+    println "Match: {m.p1.name} (id {m.p1.id}) vs {m.p2.name} (id {m.p2.id})";
+
+    // 10. Bitfields
+    let perms = Flags {
+        is_readable: 1,
+        is_writable: 1,
+        is_executable: 0,
+        mode: 2,
+        reserved: 0,
+    };
+    let mode_val: int = perms.mode;
+    if perms.is_readable == 1 {
+        println "File permissions: readable = true, mode = {mode_val}";
+    }
+
+    // 11. Low-level attributes: @packed and @align
+    println "sizeof(EthernetHeader) [@packed]: {sizeof(EthernetHeader)} bytes (expected 14)";
+    println "sizeof(Vector4) [@align(16)]: {sizeof(Vector4)} bytes (expected 16)";
+    println "sizeof(HardwarePacket) [@packed @align(4)]: {sizeof(HardwarePacket)} bytes";
+
+    // 12. Opt-in Copy Semantics via @derive(Copy)
+    let p1 = Point { x: 1, y: 2 };
+    let p2 = p1; // Implicit copy, p1 remains valid!
+    println "Point 1: ({p1.x}, {p1.y}), Point 2: ({p2.x}, {p2.y})";
+
+    // 13. Pointers and Unified Dot Operator
+    print_user(&user1);
+
+    // 14. Safe Navigation Operator (?.)
+    let valid_ptr: User* = &user1;
+    let safe_count = valid_ptr?.sign_in_count;
+    println "Safe navigation with valid pointer: {safe_count}";
+
+    let null_ptr: User* = NULL;
+    let zero_count = null_ptr?.sign_in_count;
+    println "Safe navigation with null pointer: {zero_count} (evaluated safely without crash)";
+
+    println "Section 5.1 examples executed successfully!";
+}

@@ -16,3 +16,5 @@ hello
 # Temporary files
 .DS_Store
 *.tmp
+*.swp
+*.swo
