@@ -1,0 +1,123 @@
+// Chapter 6 Capstone Project: Web Events Dispatcher
+// Demonstrates enums, tagged unions, pattern matching, impl methods, and state dispatching.
+
+enum WebEvent {
+    PageLoad,                     // Unit variant
+    PageUnload,                   // Unit variant
+    KeyPress(char),               // Single payload
+    Click(int, int),              // Multi payload: (x, y) coordinates
+    Paste(string),                // Single payload: text content
+    ChangeColor(int, int, int),   // Multi payload: RGB color components
+}
+
+impl WebEvent {
+    // Returns a human-readable name for each event kind
+    fn name(const self) -> string {
+        match *self {
+            WebEvent::PageLoad => { return "PageLoad"; },
+            WebEvent::PageUnload => { return "PageUnload"; },
+            WebEvent::KeyPress(_) => { return "KeyPress"; },
+            WebEvent::Click(_x, _y) => { return "Click"; },
+            WebEvent::Paste(_) => { return "Paste"; },
+            WebEvent::ChangeColor(_r, _g, _b) => { return "ChangeColor"; },
+        }
+    }
+
+    // Identifies whether an event is triggered directly by user input
+    fn is_user_input(const self) -> bool {
+        match *self {
+            WebEvent::KeyPress(_) => { return true; },
+            WebEvent::Click(_x, _y) => { return true; },
+            WebEvent::Paste(_) => { return true; },
+            _ => { return false; },
+        }
+    }
+}
+
+struct AppState {
+    active_page: string,
+    click_count: int,
+    last_key: char,
+    bg_r: int,
+    bg_g: int,
+    bg_b: int,
+}
+
+impl AppState {
+    fn new(page: string) -> AppState {
+        return AppState {
+            active_page: page,
+            click_count: 0,
+            last_key: ' ',
+            bg_r: 255,
+            bg_g: 255,
+            bg_b: 255,
+        };
+    }
+
+    fn dispatch(self, event: WebEvent) {
+        println "Processing event: {event.name()} (User input: {event.is_user_input()})";
+
+        match event {
+            WebEvent::PageLoad => {
+                println "  -> Loaded page: '{self.active_page}'";
+            },
+            WebEvent::PageUnload => {
+                println "  -> Unloading page: '{self.active_page}'";
+            },
+            WebEvent::KeyPress(k) => {
+                self.last_key = k;
+                println "  -> Recorded key press: '{k}'";
+            },
+            WebEvent::Click(x, y) => {
+                self.click_count = self.click_count + 1;
+                println "  -> Click at ({x}, {y}) [total clicks: {self.click_count}]";
+            },
+            WebEvent::Paste(text) => {
+                println "  -> Pasted content: \"{text}\"";
+            },
+            WebEvent::ChangeColor(r, g, b) => {
+                self.bg_r = r;
+                self.bg_g = g;
+                self.bg_b = b;
+                println "  -> Background color updated to RGB({r}, {g}, {b})";
+            },
+        }
+    }
+
+    fn print_summary(const self) {
+        println "--- Current Application State ---";
+        println "Active Page: {self.active_page}";
+        println "Total Clicks: {self.click_count}";
+        println "Last Key Pressed: '{self.last_key}'";
+        println "Background Color: RGB({self.bg_r}, {self.bg_g}, {self.bg_b})";
+        println "---------------------------------";
+    }
+}
+
+fn main() {
+    println "=== Web Events Dispatcher Demo ===";
+
+    let app = AppState::new("https://zenc-lang.org");
+    app.print_summary();
+
+    // 1. Lifecycle events
+    app.dispatch(WebEvent::PageLoad);
+
+    // 2. User interactions
+    app.dispatch(WebEvent::KeyPress('Z'));
+    app.dispatch(WebEvent::Click(120, 340));
+    app.dispatch(WebEvent::Click(450, 600));
+    app.dispatch(WebEvent::Paste("Welcome to Zen C pattern matching!"));
+
+    // 3. Visual style event
+    app.dispatch(WebEvent::ChangeColor(30, 30, 30));
+
+    // 4. Print final application state
+    app.print_summary();
+
+    // 5. Clean teardown
+    app.dispatch(WebEvent::PageUnload);
+
+    println "Web Events Dispatcher completed successfully!";
+}

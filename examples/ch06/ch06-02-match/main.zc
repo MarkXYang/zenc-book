@@ -1,0 +1,179 @@
+// Section 6.2: The match Control Flow Construct in Zen C
+
+enum Shape {
+    Circle(float),
+    Rect(float, float),
+    Point,
+}
+
+enum Status {
+    Idle,
+    Running,
+    Paused,
+    Finished,
+    Error(int),
+}
+
+enum TaskResult {
+    Success(string),
+    Failure(int),
+}
+
+enum Counter {
+    Value(int),
+    Reset,
+}
+
+enum Packet {
+    Ping,
+    Pong,
+    TextMessage(string),
+    DataTransfer(int, int), // offset, length
+    Disconnect(int),        // error code (0 = clean)
+}
+
+// 1. Destructuring enum payloads
+fn print_area(s: Shape) {
+    match s {
+        Shape::Circle(radius) => {
+            println "Circle area: {3.14159 * radius * radius}";
+        },
+        Shape::Rect(w, h) => {
+            println "Rectangle area: {w * h}";
+        },
+        Shape::Point => {
+            println "Point has zero area";
+        },
+    }
+}
+
+// 2. Wildcard matching and multi-pattern OR
+fn describe_status(s: Status) {
+    match s {
+        Status::Idle || Status::Paused => {
+            println "Status: Inactive (Idle or Paused)";
+        },
+        Status::Running => {
+            println "Status: Actively Running";
+        },
+        Status::Error(_) => {
+            println "Status: Error occurred (ignoring error payload)";
+        },
+        _ => {
+            println "Status: Finished or other state";
+        },
+    }
+}
+
+// 3. Reference binding: inspecting without moving
+fn inspect_result(res: TaskResult) {
+    match res {
+        TaskResult::Success(ref msg) => {
+            // 'msg' is string* (borrowed reference)
+            println "Task completed successfully: '{*msg}'";
+        },
+        TaskResult::Failure(code) => {
+            println "Task failed with error code: {code}";
+        },
+    }
+}
+
+// 4. In-place mutation via ref
+fn demonstrate_in_place_mutation() {
+    let c = Counter::Value(10);
+    match c {
+        Counter::Value(ref val) => {
+            // 'val' is int* pointing directly into 'c'
+            *val = *val + 1;
+        },
+        Counter::Reset => {
+            c = Counter::Value(1);
+        },
+    }
+
+    match c {
+        Counter::Value(v) => {
+            println "Counter after in-place increment: {v} (expected 11)";
+        },
+        Counter::Reset => {
+            println "Counter was reset";
+        },
+    }
+}
+
+// 5. Matching literals and ranges
+fn classify_http_code(code: int) -> string {
+    match code {
+        200           => { return "OK"; },
+        201           => { return "Created"; },
+        204           => { return "No Content"; },
+        300 ..< 400   => { return "Redirection"; },  // Exclusive range (300 to 399)
+        400 ..= 499   => { return "Client Error"; }, // Inclusive range (400 to 499)
+        500 ..= 599   => { return "Server Error"; },
+        _             => { return "Unknown Status Code"; },
+    }
+}
+
+// 6. Complete Protocol Dispatcher
+fn dispatch_packet(p: Packet) {
+    match p {
+        Packet::Ping => {
+            println "[NET] Received PING -> sending PONG";
+        },
+        Packet::Pong => {
+            println "[NET] Received PONG (heartbeat alive)";
+        },
+        Packet::TextMessage(msg) => {
+            println "[NET] Text message received: '{msg}'";
+        },
+        Packet::DataTransfer(offset, len) => {
+            println "[NET] Data chunk: {len} bytes starting at offset {offset}";
+        },
+        Packet::Disconnect(code) => {
+            if code == 0 {
+                println "[NET] Connection closed cleanly by remote host";
+            } else {
+                println "[NET] Connection terminated with error code: {code}";
+            }
+        },
+    }
+}
+
+fn main() {
+    println "=== Section 6.2: Pattern Matching with match ===";
+
+    // 1. Destructuring enum shapes
+    print_area(Shape::Circle(4.0));
+    print_area(Shape::Rect(10.0, 5.0));
+    print_area(Shape::Point);
+
+    // 2. Wildcards and multi-pattern matching
+    describe_status(Status::Idle);
+    describe_status(Status::Paused);
+    describe_status(Status::Running);
+    describe_status(Status::Error(404));
+    describe_status(Status::Finished);
+
+    // 3. Reference binding without move
+    let res = TaskResult::Success("Computation completed");
+    inspect_result(res);
+
+    // 4. In-place mutation via ref
+    demonstrate_in_place_mutation();
+
+    // 5. Matching numbers and ranges
+    println "HTTP 200: {classify_http_code(200)}";
+    println "HTTP 301: {classify_http_code(301)}";
+    println "HTTP 404: {classify_http_code(404)}";
+    println "HTTP 500: {classify_http_code(500)}";
+    println "HTTP 999: {classify_http_code(999)}";
+
+    // 6. Complete Protocol Packet Dispatcher
+    dispatch_packet(Packet::Ping);
+    dispatch_packet(Packet::Pong);
+    dispatch_packet(Packet::TextMessage("Hello from Zen C!"));
+    dispatch_packet(Packet::DataTransfer(1024, 4096));
+    dispatch_packet(Packet::Disconnect(0));
+
+    println "Section 6.2 examples executed successfully!";
+}
