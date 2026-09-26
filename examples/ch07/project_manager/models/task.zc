@@ -1,0 +1,52 @@
+// Task model with opaque struct encapsulation
+
+def PRIORITY_LOW = 1;
+def PRIORITY_MEDIUM = 2;
+def PRIORITY_HIGH = 3;
+def PRIORITY_CRITICAL = 4;
+
+fn priority_name(level: int) -> string {
+    match level {
+        1 => { return "Low"; },
+        2 => { return "Medium"; },
+        3 => { return "High"; },
+        4 => { return "Critical"; },
+        _ => { return "Normal"; },
+    }
+}
+
+opaque struct Task {
+    id: int,
+    title: string,
+    priority: int,
+    is_done: bool,
+}
+
+fn task_new(id: int, title: string, priority: int) -> Task {
+    return Task {
+        id: id,
+        title: title,
+        priority: priority,
+        is_done: false,
+    };
+}
+
+fn task_get_id(t: Task) -> int {
+    return t.id;
+}
+
+fn task_get_title(t: Task) -> string {
+    return t.title;
+}
+
+fn task_get_priority(t: Task) -> int {
+    return t.priority;
+}
+
+fn task_is_done(t: Task) -> bool {
+    return t.is_done;
+}
+
+fn task_complete(t: Task*) {
+    t.is_done = true;
+}

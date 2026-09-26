@@ -1,0 +1,12 @@
+// Models directory module entry point: models/mod.zc
+import "./task.zc" as task;
+
+fn print_task_summary(t: task::Task) {
+    let status_str = "PENDING";
+    if task::task_is_done(t) {
+        status_str = "COMPLETED";
+    }
+
+    let p = task::task_get_priority(t);
+    println "  [Task #{task::task_get_id(t)}] {task::task_get_title(t)} (Priority: {task::priority_name(p)}) - {status_str}";
+}

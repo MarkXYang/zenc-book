@@ -1,0 +1,53 @@
+// Section 7.1: Modules and Imports in Zen C
+
+// 1. Namespace aliasing
+import "math_utils.zc" as math;
+
+// 2. Importing module with opaque struct
+import "user.zc" as user;
+
+// 3. Direct import of nominal types
+import "types.zc";
+
+// 4. Directory module import
+import "network/mod.zc" as net;
+
+// 5. C Header trusted import
+//> link: -lm
+import "math.h" as c_math;
+
+fn main() {
+    println "=== Section 7.1: Modules and Imports ===";
+
+    // 1. Module namespace functions and constants
+    let sum = math::add(25, 17);
+    let prod = math::multiply(7, 8);
+    println "math::add(25, 17) = {sum}";
+    println "math::multiply(7, 8) = {prod}";
+    println "math::pi() = {math::pi()}";
+    println "Manifest constant PI = {PI}";
+
+    // 2. Opaque struct encapsulation
+    let u = user::user_new(101, "Alice");
+    println "User created successfully!";
+    println "  ID: {user::user_get_id(u)}";
+    println "  Name: {user::user_get_name(u)}";
+    println "  Active: {user::user_is_active(u)}";
+    // Direct access to u.id or u.username is prevented at compile-time by 'opaque struct'
+
+    // 3. Opaque type alias (nominal typing)
+    let uid: UserID = make_user_id(42);
+    let aid: AccountID = make_account_id(9999);
+    println "Domain types: UserID = {user_id_to_int(uid)}, AccountID = {account_id_to_int(aid)}";
+    // Passing AccountID to a function expecting UserID is prevented by the type system
+
+    // 4. Directory module with mod.zc
+    net::format_endpoint("192.168.1.100", net::get_default_port());
+
+    // 5. C Header trusted module
+    let angle = 3.14159265 / 4.0;
+    println "C math sin(pi/4) = {c_math::sin(angle)}";
+    println "C math cos(pi/4) = {c_math::cos(angle)}";
+
+    println "Section 7.1 examples executed successfully!";
+}

@@ -1,0 +1,10 @@
+// Directory module entry point: network/mod.zc
+def DEFAULT_PORT = 8080;
+
+fn get_default_port() -> int {
+    return DEFAULT_PORT;
+}
+
+fn format_endpoint(host: string, port: int) {
+    println "[NET] Endpoint resolved: {host}:{port}";
+}

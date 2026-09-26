@@ -1,0 +1,40 @@
+// Chapter 7 Capstone Project: Modular Project & Task Manager
+// Demonstrates multi-module architecture, directory packages (mod.zc),
+// opaque struct encapsulation, and standard library integration.
+
+import "models/task.zc" as task;
+import "models/mod.zc" as models;
+import "logger/mod.zc" as logger;
+
+fn main() {
+    println "=== Project Task Manager Demo ===";
+
+    logger::info("Initializing project manager...");
+
+    // 1. Create task items via public module constructors
+    let t1 = task::task_new(1, "Design database schema", PRIORITY_CRITICAL);
+    let t2 = task::task_new(2, "Implement authentication module", PRIORITY_HIGH);
+    let t3 = task::task_new(3, "Write unit tests", PRIORITY_MEDIUM);
+
+    logger::info("Registered 3 project tasks.");
+
+    // 2. Display initial task state
+    println "\n--- Current Task List ---";
+    models::print_task_summary(t1);
+    models::print_task_summary(t2);
+    models::print_task_summary(t3);
+
+    // 3. Complete a task using mutating module function
+    logger::info("Executing Task #1...");
+    task::task_complete(&t1);
+    logger::success("Task #1 completed!");
+
+    // 4. Display updated task state
+    println "\n--- Updated Task List ---";
+    models::print_task_summary(t1);
+    models::print_task_summary(t2);
+    models::print_task_summary(t3);
+
+    logger::success("All tasks processed successfully!");
+    println "Project Task Manager completed successfully!";
+}

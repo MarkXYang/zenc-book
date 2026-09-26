@@ -1,0 +1,19 @@
+// Domain types with opaque type alias nominal typing
+opaque alias UserID = int;
+opaque alias AccountID = int;
+
+fn make_user_id(id: int) -> UserID {
+    return id;
+}
+
+fn user_id_to_int(uid: UserID) -> int {
+    return uid;
+}
+
+fn make_account_id(id: int) -> AccountID {
+    return id;
+}
+
+fn account_id_to_int(aid: AccountID) -> int {
+    return aid;
+}

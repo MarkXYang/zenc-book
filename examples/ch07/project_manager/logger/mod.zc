@@ -1,0 +1,17 @@
+// Logger directory module: logger/mod.zc
+import "std/time.zc";
+
+fn info(msg: string) {
+    let now = Time::now();
+    println "[{now}] [INFO]  {msg}";
+}
+
+fn success(msg: string) {
+    let now = Time::now();
+    println "[{now}] [OK]    {msg}";
+}
+
+fn warn(msg: string) {
+    let now = Time::now();
+    println "[{now}] [WARN]  {msg}";
+}

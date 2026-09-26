@@ -1,0 +1,39 @@
+// Section 7.2: Standard Library Overview in Zen C
+
+import "std/math.zc";
+import "std/time.zc";
+import "std/path.zc";
+import "std/vec.zc";
+
+fn main() {
+    println "=== Section 7.2: Standard Library Overview ===";
+
+    // 1. Math module (std/math.zc)
+    let radius = 5.0;
+    let circle_area = Math::PI() * Math::pow(radius, 2.0);
+    let hypot = Math::sqrt(3.0 * 3.0 + 4.0 * 4.0);
+    println "Math::PI() = {Math::PI()}";
+    println "Circle area (r=5.0) = {circle_area}";
+    println "Hypotenuse (3, 4) = {hypot}";
+
+    // 2. Time module (std/time.zc)
+    let t0 = Time::now();
+    Time::sleep_ms(25);
+    let elapsed = Time::now() - t0;
+    println "Time::sleep_ms(25) measured: {elapsed} ms";
+
+    // 3. Path module (std/path.zc)
+    let base_dir = Path::new("/var/log");
+    let log_file = base_dir.join("application.log");
+    println "Path::join -> {log_file.c_str()}";
+
+    // 4. Dynamic Collection Preview: Vec<T> (std/vec.zc)
+    let numbers = Vec<int>::new();
+    numbers.push(10);
+    numbers.push(20);
+    numbers.push(30);
+    println "Vec<int> length: {numbers.length()} elements";
+    println "Vec<int> elements: [{numbers.get(0)}, {numbers.get(1)}, {numbers.get(2)}]";
+
+    println "Section 7.2 examples executed successfully!";
+}

@@ -1,0 +1,14 @@
+// Math utility module
+def PI = 3.14159265;
+
+fn pi() -> f64 {
+    return PI;
+}
+
+fn add(a: int, b: int) -> int {
+    return a + b;
+}
+
+fn multiply(a: int, b: int) -> int {
+    return a * b;
+}

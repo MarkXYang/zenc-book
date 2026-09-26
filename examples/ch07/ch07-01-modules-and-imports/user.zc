@@ -1,0 +1,26 @@
+// User module with opaque struct encapsulation
+opaque struct User {
+    id: int,
+    username: string,
+    is_active: bool,
+}
+
+fn user_new(id: int, name: string) -> User {
+    return User {
+        id: id,
+        username: name,
+        is_active: true,
+    };
+}
+
+fn user_get_id(u: User) -> int {
+    return u.id;
+}
+
+fn user_get_name(u: User) -> string {
+    return u.username;
+}
+
+fn user_is_active(u: User) -> bool {
+    return u.is_active;
+}
