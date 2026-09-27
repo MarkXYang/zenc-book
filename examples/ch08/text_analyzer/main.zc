@@ -1,0 +1,60 @@
+// Chapter 8 Capstone Project: Text & Vocabulary Frequency Analyzer
+// Demonstrates Vec<T>, String, Map<V>, and Set<T> cooperating in a realistic application.
+
+import "std/vec.zc";
+import "std/string.zc";
+import "std/map.zc";
+import "std/set.zc";
+
+fn main() {
+    println "=== Zen C Text Analyzer ===";
+
+    // 1. Load sample document into a dynamic String
+    let document = String::from("zen-c is fast. zen-c is safe. modern zen-c combines speed with safety.");
+    println "Input document: '{document.c_str()}'";
+    println "Document length: {document.length()} bytes";
+
+    // 2. Normalize text and tokenize into words
+    let sanitized = document.replace(".", "");
+    let tokens = sanitized.split(' ');
+    println "Total words extracted: {tokens.length()}";
+
+    // 3. Collect word frequencies using Map<int> and order unique words in Vec<String>
+    let freq_map = Map<int>::new();
+    let unique_words = Vec<String>::new();
+
+    for token in &tokens {
+        let normalized = (*token).trim().to_lowercase();
+        let word_key = normalized.c_str();
+
+        let count_opt = freq_map.get(word_key);
+        if count_opt.is_some() {
+            freq_map.put(word_key, count_opt.unwrap() + 1);
+        } else {
+            freq_map.put(word_key, 1);
+            unique_words.push(normalized);
+        }
+    }
+
+    // 4. Track distinct word lengths using Set<int>
+    let length_set = Set<int>::new();
+    for entry in freq_map {
+        let word_len: int = (int)strlen(entry.key);
+        length_set.add(word_len);
+    }
+
+    // 5. Report statistics
+    println "\n--- Frequency Distribution ---";
+    println "Distinct vocabulary size: {freq_map.length()} words";
+    for entry in freq_map {
+        println "  - '{entry.key}': {entry.val} occurrence(s)";
+    }
+
+    println "\n--- Vocabulary Length Analysis ---";
+    println "Unique word lengths observed: {length_set.length()}";
+    println "Contains length 2: {length_set.contains(2)}";
+    println "Contains length 5: {length_set.contains(5)}";
+    println "Contains length 10: {length_set.contains(10)}";
+
+    println "\n=== Text Analysis Complete ===";
+}

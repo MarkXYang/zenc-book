@@ -1,0 +1,95 @@
+// Chapter 8: Vectors (Vec<T>)
+// Demonstrates dynamic array creation, element modification,
+// indexing, reference iteration, operators, and functional combinators.
+
+import "std/vec.zc";
+
+struct Task {
+    id: int;
+    priority: int;
+}
+
+fn main() {
+    println "=== 1. Basic Vector Operations ===";
+    let v = Vec<int>::new();
+    v.push(10);
+    v.push(20);
+    v.push(30);
+
+    println "Length: {v.length()}, First: {v.first()}, Last: {v.last()}";
+    println "Element at index 1: {v[1]}";
+
+    println "\n=== 2. Insert, Remove, and Pop ===";
+    v.insert(1, 15); // [10, 15, 20, 30]
+    println "After insert(1, 15), length: {v.length()}";
+
+    let removed = v.remove(2); // removes 20 -> [10, 15, 30]
+    println "Removed element at index 2: {removed}";
+
+    let popped = v.pop(); // removes 30 -> [10, 15]
+    println "Popped last element: {popped}";
+
+    let opt = v.pop_opt(); // returns Some(15) -> [10]
+    if opt.is_some() {
+        println "Safely popped: {opt.unwrap()}";
+    }
+
+    println "\n=== 3. Iteration by Reference and Mutation ===";
+    // In-place mutation using pointer dereference
+    for x in &v {
+        *x = *x * 5;
+    }
+    for x in &v {
+        println "Mutated value: {*x}";
+    }
+
+    println "\n=== 4. Functional Combinators ===";
+    let nums = Vec<int>::new();
+    nums.push(1);
+    nums.push(2);
+    nums.push(3);
+    nums.push(4);
+    nums.push(5);
+
+    let evens = nums.iterator().filter(fn(x: int) -> bool { return x % 2 == 0; });
+    println "Filtered evens count: {evens.length()}";
+    for e in &evens {
+        println "  Even: {*e}";
+    }
+
+    let sum = nums.iterator().fold(0, fn(acc: int, x: int) -> int { return acc + x; });
+    println "Sum of nums: {sum}";
+
+    let first_even = nums.iterator().find(fn(x: int) -> bool { return x % 2 == 0; });
+    if first_even.is_some() {
+        println "First even number found: {first_even.unwrap()}";
+    }
+
+    println "\n=== 5. Operator Overloading ===";
+    let v2 = Vec<int>::new();
+    v2 << 100; // push via <<
+    v2 << 200;
+
+    let combined = v + &v2; // concatenation
+    println "Combined vector length: {combined.length()}";
+    for item in &combined {
+        println "  Combined item: {*item}";
+    }
+
+    let popped_val: int = 0;
+    v2 >> &popped_val; // pop via >>
+    println "Popped from v2 via >>: {popped_val}";
+
+    let repeated = v * 2; // repeat elements
+    println "Repeated vector length: {repeated.length()}";
+
+    println "\n=== 6. Vector of Custom Structs ===";
+    let task_list = Vec<Task>::new();
+    task_list.push(Task { id: 101, priority: 1 });
+    task_list.push(Task { id: 102, priority: 3 });
+    task_list.push(Task { id: 103, priority: 2 });
+
+    for t in &task_list {
+        println "Task #{(*t).id} (Priority: {(*t).priority})";
+    }
+}

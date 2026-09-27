@@ -1,0 +1,58 @@
+// Chapter 8: Strings
+// Demonstrates dynamic String creation, concatenation, querying,
+// UTF-8 code point inspection, transformations, and splitting.
+
+import "std/string.zc";
+
+fn main() {
+    println "=== 1. String Creation & Concatenation ===";
+    let s = String::from("Hello");
+    let world = String::from(" World");
+    s.append(&world);
+    s.append_c("!");
+    println "Greeting: {s.c_str()}";
+    println "Byte length: {s.length()}";
+
+    println "\n=== 2. Operator Concatenation ===";
+    let prefix = String::from("Zen");
+    let suffix = String::from(" C");
+    let lang = prefix + &suffix;
+    println "Concatenated: {lang.c_str()}";
+
+    println "\n=== 3. Querying & Substrings ===";
+    println "Starts with 'Hello': {s.starts_with(\"Hello\")}";
+    println "Ends with '!': {s.ends_with(\"!\")}";
+    println "Contains 'World': {s.contains_str(\"World\")}";
+
+    let pos = s.find_str("World");
+    if pos.is_some() {
+        println "'World' found at byte offset: {pos.unwrap()}";
+    }
+
+    let sub = s.substring(0, 5);
+    println "Extracted prefix substring: '{sub.c_str()}'";
+
+    println "\n=== 4. Transformations ===";
+    let raw = String::from("   systems programming in zen c   ");
+    let trimmed = raw.trim();
+    println "Trimmed: '{trimmed.c_str()}'";
+
+    let upper = trimmed.to_uppercase();
+    println "Uppercase: {upper.c_str()}";
+
+    let replaced = upper.replace("ZEN C", "HIGH PERFORMANCE ZEN C");
+    println "Replaced: {replaced.c_str()}";
+
+    println "\n=== 5. UTF-8 & Unicode Runes ===";
+    let utf = String::from("Zen C 🚀");
+    println "Byte length: {utf.length()}";
+    println "Unicode character (rune) count: {utf.utf8_len()}";
+
+    println "\n=== 6. Splitting & Joining ===";
+    let csv = String::from("red,green,blue,orange");
+    let colors = csv.split(',');
+    println "Parsed {colors.length()} color tokens:";
+    for color in &colors {
+        println "  - {(*color).c_str()}";
+    }
+}
