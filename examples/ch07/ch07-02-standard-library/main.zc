@@ -4,6 +4,11 @@ import "std/math.zc";
 import "std/time.zc";
 import "std/path.zc";
 import "std/vec.zc";
+import "std/json.zc";
+import "std/utf8.zc";
+import "std/encoding/base64.zc";
+import "std/encoding/hex.zc";
+import "std/crypto/sha256.zc";
 
 fn main() {
     println "=== Section 7.2: Standard Library Overview ===";
@@ -34,6 +39,35 @@ fn main() {
     numbers.push(30);
     println "Vec<int> length: {numbers.length()} elements";
     println "Vec<int> elements: [{numbers.get(0)}, {numbers.get(1)}, {numbers.get(2)}]";
+
+    // 5. JSON Parsing & Building (std/json.zc)
+    let obj = JsonValue::object();
+    obj.set("framework", JsonValue::string("Zen C"));
+    obj.set("version", JsonValue::number(1.0));
+    let json_name = obj.get_string("framework").unwrap_or("unknown");
+    let json_ver = obj.get_int("version").unwrap_or(0);
+    println "JSON object: {json_name}, version {json_ver}";
+    let json_str = obj.to_string();
+    println "JSON stringify: {json_str}";
+
+    // 6. Unicode and UTF-8 Utilities (std/utf8.zc)
+    let sample_text = "Zen C 🚀 systems";
+    let is_utf8 = Utf8::is_valid(sample_text, strlen(sample_text));
+    println "Is valid UTF-8: {is_utf8}";
+    let rocket: rune = '🚀';
+    println "Rune '🚀' byte length: {Utf8::rune_len(rocket)} bytes";
+
+    // 7. Data Encoding (std/encoding/base64.zc & hex.zc)
+    let msg = "Hello, Zen C!";
+    let msg_len = strlen(msg);
+    let b64 = Base64::encode((u8*)msg, msg_len);
+    let hex = Hex::encode((u8*)msg, msg_len);
+    println "Base64: {b64.c_str()}";
+    println "Hex:    {hex.c_str()}";
+
+    // 8. Cryptographic Hashing (std/crypto/sha256.zc)
+    let digest = Sha256::hash(msg);
+    println "SHA-256 digest: {digest.c_str()}";
 
     println "Section 7.2 examples executed successfully!";
 }

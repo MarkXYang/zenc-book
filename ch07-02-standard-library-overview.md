@@ -136,10 +136,135 @@ Zen C provides idiomatic collection types that manage their own dynamic heap mem
 
 ### 5. Text, Formats, and Parsing
 
-- **`std/json.zc`**: DOM-style JSON parser and serializer with support for nested objects and arrays.
-- **`std/utf8.zc`**: Unicode code point decoding and validation.
-- **`std/regex.zc`**: Regular expression evaluation based on the TRE engine.
-- **`std/encoding.zc` & `std/crypto/`**: Base64, hex encoding, and cryptographic hashing (SHA-256).
+Zen C provides powerful built-in text manipulation, data format serialization, and cryptographic hashing tools:
+
+#### A. JSON Parsing and Building (`std/json.zc`)
+
+`std/json.zc` implements a complete DOM-style JSON parser and builder supporting objects, arrays, strings, numbers, booleans, and null:
+
+```zenc
+import "std/json.zc";
+
+fn main() {
+    // 1. Building a JSON object dynamically
+    let obj = JsonValue::object();
+    obj.set("name", JsonValue::string("Zen C"));
+    obj.set("version", JsonValue::number(1.0));
+    obj.set("active", JsonValue::bool(true));
+
+    // Access fields safely with Option extractors
+    let name = obj.get_string("name").unwrap_or("unknown");
+    let version = obj.get_int("version").unwrap_or(0);
+    println "JSON object: {name}, version {version}";
+
+    // Serialize directly to a JSON string
+    let serialized = obj.to_string();
+    println "Serialized: {serialized}";
+
+    // 2. Parsing raw JSON
+    let raw = "[\"apple\", \"banana\", \"cherry\"]";
+    let res = JsonValue::parse(raw);
+    if res.is_ok() {
+        let arr = res.unwrap();
+        println "Parsed array with {arr.length()} elements";
+        let first = arr.at(0).unwrap();
+        println "First item: {first.as_string().unwrap_or(\"none\")}";
+        dealloc<JsonValue>(arr);
+    }
+}
+```
+
+#### B. Unicode and UTF-8 Utilities (`std/utf8.zc`)
+
+Zen C handles Unicode code points natively via the `rune` primitive type, and `std/utf8.zc` provides character classification, validation, and encoding utilities:
+
+```zenc
+import "std/utf8.zc";
+
+fn main() {
+    let text = "Hello, 🚀 Zen C!";
+
+    // Validate whether a byte stream is well-formed UTF-8
+    let is_valid = Utf8::is_valid(text, strlen(text));
+    println "Is valid UTF-8: {is_valid}";
+
+    // Calculate byte length of a single Unicode code point
+    let r: rune = '🚀';
+    println "Rune '🚀' byte length: {Utf8::rune_len(r)} bytes";
+
+    // Encode a rune into a raw byte buffer
+    let buf: char[5];
+    let written = Utf8::encode(r, buf);
+    buf[written] = 0;
+    println "Encoded {written} bytes into buffer";
+}
+```
+
+#### C. Regular Expressions (`std/regex.zc`)
+
+Regular expressions in Zen C are backed by the high-performance TRE regex engine, offering POSIX extended regular expressions:
+
+```zenc
+import "std/regex.zc";
+
+fn main() {
+    // Compile a regular expression pattern
+    let re = Regex::compile("[0-9]+");
+    let text = "Order ID: 12345";
+
+    // Fast boolean match check
+    let matches = re.is_match(text);
+    println "Contains digits: {matches}";
+
+    // Extract match coordinates and text
+    let m_opt = re.find(text);
+    if m_opt.is_some() {
+        let m = m_opt.unwrap();
+        println "Matched: '{m.as_string()}' at offset {m.start}";
+    }
+}
+```
+
+> [!NOTE]
+> `std/regex.zc` includes the vendored TRE engine via `@link`. Ensure your include search paths include the compiler root when compiling regex code from arbitrary directories (`zc run -I $ZC_ROOT ...`).
+
+#### D. Data Encoding: Base64 and Hex (`std/encoding/`)
+
+The standard library includes dedicated modules for Base64 and hexadecimal conversions under `std/encoding/`:
+
+```zenc
+import "std/encoding/base64.zc";
+import "std/encoding/hex.zc";
+
+fn main() {
+    let message = "Hello, Zen C!";
+    let len = strlen(message);
+
+    // 1. Base64 encoding
+    let b64 = Base64::encode((u8*)message, len);
+    println "Base64: {b64.c_str()}"; // "SGVsbG8sIFplbiBDIQ=="
+
+    // 2. Hexadecimal encoding
+    let hex = Hex::encode((u8*)message, len);
+    println "Hex:    {hex.c_str()}"; // "48656c6c6f2c205a656e204321"
+}
+```
+
+#### E. Cryptographic Hashing (`std/crypto/`)
+
+`std/crypto/sha256.zc` provides FIPS 180-4 compliant SHA-256 computation:
+
+```zenc
+import "std/crypto/sha256.zc";
+
+fn main() {
+    let payload = "Hello, Zen C!";
+
+    // Generate SHA-256 hex digest
+    let digest = Sha256::hash(payload);
+    println "SHA-256 digest: {digest.c_str()}";
+}
+```
 
 ---
 
