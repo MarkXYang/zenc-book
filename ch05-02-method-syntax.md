@@ -32,6 +32,11 @@ fn main() {
 }
 ```
 
+Output:
+```text
+The area of the rectangle is 1500 square pixels.
+```
+
 To call a method, write the instance name, followed by a dot (`.`), the method name, and parentheses `()` with any arguments.
 
 ---
@@ -84,8 +89,13 @@ fn main() {
     let rect = Rectangle { width: 10, height: 20 };
     rect.scale(2);
 
-    println "Scaled: {rect.width}x{rect.height}"; // Output: 20x40
+    println "Scaled: {rect.width}x{rect.height}";
 }
+```
+
+Output:
+```text
+Scaled: 20x40
 ```
 
 ### Automatic Referencing and Dereferencing
@@ -174,6 +184,12 @@ fn main() {
     println "Rectangle: {r1.width}x{r1.height}";
     println "Square: {sq.width}x{sq.height}";
 }
+```
+
+Output:
+```text
+Rectangle: 30x50
+Square: 25x25
 ```
 
 ### Compiler Protection Against Misuse
@@ -270,11 +286,17 @@ fn main() {
     let v2 = Vec2::new(3, 4);
 
     let v3 = v1 + v2; // Calls v1.add(v2)
-    println "v3 = ({v3.x}, {v3.y})"; // Output: (4, 6)
+    println "v3 = ({v3.x}, {v3.y})";
 
     let v4 = v3 - v1; // Calls v3.sub(v1)
-    println "v4 = ({v4.x}, {v4.y})"; // Output: (3, 4)
+    println "v4 = ({v4.x}, {v4.y})";
 }
+```
+
+Output:
+```text
+v3 = (4, 6)
+v4 = (3, 4)
 ```
 
 ### Equality Operator Overloading
@@ -294,9 +316,15 @@ fn main() {
     let b = Vec2::new(10, 20);
     let c = Vec2::new(5, 5);
 
-    println "a == b: {a == b}"; // true
-    println "a == c: {a == c}"; // false
+    println "a == b: {a == b}";
+    println "a == c: {a == c}";
 }
+```
+
+Output:
+```text
+a == b: true
+a == c: false
 ```
 
 ### Complete Operator Overloading Table
@@ -366,6 +394,11 @@ fn main() {
 }
 ```
 
+Output:
+```text
+Window 'Main Application' area: 480000 px
+```
+
 This mixin pattern provides the code-reuse benefits of object-oriented inheritance while preserving flat, predictable C struct memory layouts.
 
 ---
@@ -397,6 +430,11 @@ fn main() {
 
     println "abs(-10) = {y}, abs(-5) = {z}, 8^2 = {sq}";
 }
+```
+
+Output:
+```text
+abs(-10) = 10, abs(-5) = 5, 8^2 = 64
 ```
 
 ---
@@ -478,7 +516,7 @@ fn main() {
 
     // Operator overloading
     let p3 = p1 + p2;
-    println "p1 + p2 = ({p3.x}, {p3.y})"; // (40, 60)
+    println "p1 + p2 = ({p3.x}, {p3.y})";
 
     let rect = Rectangle::new(0, 0, 100, 50);
     println "Area: {rect.area()}";
@@ -486,6 +524,13 @@ fn main() {
     let test_pt = Point::new(25, 25);
     println "Contains (25, 25)? {rect.contains_point(test_pt)}";
 }
+```
+
+Output:
+```text
+p1 + p2 = (40, 60)
+Area: 5000
+Contains (25, 25)? true
 ```
 
 > [!TIP]

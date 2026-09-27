@@ -18,11 +18,21 @@ Zen C includes built-in keywords for printing formatted text to standard output 
 ```zenc
 fn main() {
     print "Hello ";
-    println "world!"; // Outputs: Hello world!
+    println "world!";
 
     eprint "Warning: ";
-    eprintln "low disk space!"; // Outputs to stderr: Warning: low disk space!
+    eprintln "low disk space!";
 }
+```
+
+Output:
+```text
+Hello world!
+```
+
+Stderr:
+```text
+Warning: low disk space!
 ```
 
 ---
@@ -48,6 +58,16 @@ fn main() {
 }
 ```
 
+Output:
+```text
+Processing item Done!
+```
+
+Stderr:
+```text
+Critical Error! Details follow.
+```
+
 ---
 
 ## String Interpolation
@@ -67,13 +87,24 @@ println "Project: {name}, Items: {count}";
 "Project: {name}, Items: {count}";
 ```
 
+Output:
+```text
+Project: Zen C, Items: 42
+Project: Zen C, Items: 42
+```
+
 ### 1. Escaping Literal Braces
 
 To produce literal `{` or `}` characters inside an interpolated string, double the braces (`{{` and `}}`):
 
 ```zenc
 let json = "JSON payload: {{\"status\": 200}}";
-println "{json}"; // Output: JSON payload: {"status": 200}
+println "{json}";
+```
+
+Output:
+```text
+JSON payload: {"status": 200}
 ```
 
 ### 2. Raw Strings (`r"..."`)
@@ -142,6 +173,12 @@ fn main() {
 
     println "You are {age} years old.";
 }
+```
+
+Output (with input `25`):
+```text
+How old are you? 25
+You are 25 years old.
 ```
 
 ---

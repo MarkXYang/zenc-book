@@ -62,12 +62,17 @@ Unlike C/C++, Zen C never implicitly duplicates resource-owning values.
 Passing a resource variable into a function follows the exact same ownership rules as variable assignment:
 
 ```zenc
+struct CustomBuffer {
+    data: void*;
+    size: usize;
+}
+
 fn consume_buffer(buf: CustomBuffer) {
-    // 'buf' is moved into this function and dropped when consume_buffer exits
+    println "Consumed buffer of size {buf.size}";
 }
 
 fn peek_buffer(buf: CustomBuffer*) {
-    // 'buf' is borrowed via pointer (reference pass) without moving ownership
+    println "Peeked buffer of size {buf.size}";
 }
 
 fn main() {
@@ -79,6 +84,12 @@ fn main() {
 
     // peek_buffer(&my_buf); // Error: my_buf was moved above!
 }
+```
+
+Output:
+```text
+Peeked buffer of size 50
+Consumed buffer of size 50
 ```
 
 ---
@@ -118,6 +129,11 @@ fn main() {
     // Both p1 and p2 remain valid!
     println "p1: ({p1.x}, {p1.y}), p2: ({p2.x}, {p2.y})";
 }
+```
+
+Output:
+```text
+p1: (10, 20), p2: (10, 20)
 ```
 
 ---

@@ -36,6 +36,19 @@ fn print_area(s: Shape) {
         },
     }
 }
+
+fn main() {
+    print_area(Shape::Circle(2.0));
+    print_area(Shape::Rect(3.0, 4.0));
+    print_area(Shape::Point);
+}
+```
+
+Output:
+```text
+Circle area: 12.566360
+Rectangle area: 12.000000
+Point has zero area
 ```
 
 Notice:
@@ -91,6 +104,19 @@ fn describe_status(s: Status) {
         },
     }
 }
+
+fn main() {
+    describe_status(Status::Running);
+    describe_status(Status::Error(500));
+    describe_status(Status::Idle);
+}
+```
+
+Output:
+```text
+System is actively working
+Fatal error code: 500
+System is inactive or complete
 ```
 
 ### Ignoring Payloads with `_`
@@ -133,20 +159,35 @@ match s {
 Multi-pattern matching also works cleanly with literal values:
 
 ```zenc
-match http_code {
-    200 || 201 || 204 => {
-        println "Success";
-    },
-    400 or 401 or 404 => {
-        println "Client Error";
-    },
-    500, 502, 503 => {
-        println "Server Error";
-    },
-    _ => {
-        println "Other code";
-    },
+fn test_code(http_code: int) {
+    match http_code {
+        200 || 201 || 204 => {
+            println "Success";
+        },
+        400 or 401 or 404 => {
+            println "Client Error";
+        },
+        500, 502, 503 => {
+            println "Server Error";
+        },
+        _ => {
+            println "Other code";
+        },
+    }
 }
+
+fn main() {
+    test_code(200);
+    test_code(404);
+    test_code(500);
+}
+```
+
+Output:
+```text
+Success
+Client Error
+Server Error
 ```
 
 > [!NOTE]
@@ -186,6 +227,19 @@ fn inspect_result(res: TaskResult) {
 
     // 'res' is still valid here because we borrowed via 'ref'!
 }
+
+fn main() {
+    let r1 = TaskResult::Success("File uploaded");
+    let r2 = TaskResult::Failure(404);
+    inspect_result(r1);
+    inspect_result(r2);
+}
+```
+
+Output:
+```text
+Task completed: File uploaded
+Failed: 404
 ```
 
 ### 2. In-Place Mutation via `ref`
@@ -221,6 +275,11 @@ fn main() {
 }
 ```
 
+Output:
+```text
+New count: 11
+```
+
 ---
 
 ## Matching Literals and Ranges
@@ -239,6 +298,17 @@ fn classify_http_code(code: int) -> string {
         _             => { return "Unknown Status Code"; },
     }
 }
+
+fn main() {
+    println "{classify_http_code(200)}";
+    println "{classify_http_code(404)}";
+}
+```
+
+Output:
+```text
+OK
+Client Error
 ```
 
 ---
@@ -297,6 +367,15 @@ fn main() {
     dispatch(Packet::DataTransfer(0, 4096));
     dispatch(Packet::Disconnect(0));
 }
+```
+
+Output:
+```text
+=== Network Packet Dispatcher ===
+[NET] Received PING -> sending PONG
+[NET] Text message received: 'Hello from Zen C client!'
+[NET] Data chunk: 4096 bytes starting at offset 0
+[NET] Connection closed cleanly by remote host
 ```
 
 > [!TIP]

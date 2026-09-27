@@ -62,4 +62,27 @@ let y: const int = 10;
 | **Addressable (`&`)** | No | Yes (has a memory address) |
 | **Array sizing** | Can size fixed arrays | Depends on C compiler VLA rules |
 
+---
+
+## Putting It All Together
+
+```zenc
+fn main() {
+    def PI = 3.14159265;
+    let x = 10;
+    x = 20;
+    let count = 42;
+    let price = 19.99;
+    let message = "Hello";
+    let y: const int = 10;
+
+    println "PI: {PI}, x: {x}, count: {count}, price: {price}, message: {message}, y: {y}";
+}
+```
+
+Output:
+```text
+PI: 3.141593, x: 20, count: 42, price: 19.990000, message: Hello, y: 10
+```
+
 Next, let's explore Zen C's primitive and compound data types!

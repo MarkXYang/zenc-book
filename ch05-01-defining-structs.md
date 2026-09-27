@@ -125,6 +125,12 @@ user1.sign_in_count = user1.sign_in_count + 1;
 println "Updated email: {user1.email}";
 ```
 
+Output:
+```text
+User: mark, Logins: 1
+Updated email: mark.new@example.com
+```
+
 For nested structs, chain dot accessors:
 
 ```zenc
@@ -155,7 +161,11 @@ let p = Point { x: 10, y: 20 };
 let Point { x, y } = p;
 
 println "x = {x}, y = {y}";
-// Output: x = 10, y = 20
+```
+
+Output:
+```text
+x = 10, y = 20
 ```
 
 ### Renaming Fields During Destructuring
@@ -166,6 +176,11 @@ If you want to assign fields to variables with different names, specify `field_n
 let Point { x: pos_x, y: pos_y } = p;
 
 println "pos_x = {pos_x}, pos_y = {pos_y}";
+```
+
+Output:
+```text
+pos_x = 10, pos_y = 20
 ```
 
 Destructuring is especially useful when working with function return values, processing configuration options, or unpacking geometric coordinates.
@@ -207,6 +222,11 @@ fn main() {
 }
 ```
 
+Output:
+```text
+Player ID: 1, Name: Hero
+```
+
 > [!NOTE]
 > **Mixin Method Forwarding**: If `Entity` implements methods (such as `id_string()`), `player.id_string()` can be called directly on `Player` instances! We will explore this in detail in [Section 5.2](ch05-02-method-syntax.md).
 
@@ -229,6 +249,11 @@ fn main() {
 
     println "Match: {m.p1.name} (id {m.p1.id}) vs {m.p2.name} (id {m.p2.id})";
 }
+```
+
+Output:
+```text
+Match: Alice (id 1) vs Bob (id 2)
 ```
 
 ---
@@ -265,6 +290,11 @@ let perms = Flags {
 if perms.is_readable == 1 {
     println "File is readable";
 }
+```
+
+Output:
+```text
+File is readable
 ```
 
 ### Packing with `@packed`
@@ -325,6 +355,11 @@ fn main() {
 }
 ```
 
+Output:
+```text
+p1: (1, 2), p2: (1, 2)
+```
+
 > [!CAUTION]
 > **Safety Rule**: Types that implement `Copy` must not define a custom destructor (`Drop`).
 
@@ -350,6 +385,11 @@ fn main() {
 
     print_user(&u); // Pass pointer to u
 }
+```
+
+Output:
+```text
+User: mark <mark@example.com>
 ```
 
 > [!IMPORTANT]

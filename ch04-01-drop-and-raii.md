@@ -34,13 +34,15 @@ fn main() {
 
     println "End";
 }
-/* Output:
-   Start
-   End
-   First (Last deferred)
-   Second (Second deferred)
-   Third (First deferred)
-*/
+```
+
+Output:
+```text
+Start
+End
+First (Last deferred)
+Second (Second deferred)
+Third (First deferred)
 ```
 
 > [!WARNING]
@@ -93,6 +95,15 @@ fn create_and_use() {
 
     // Use buf...
 } // buf goes out of scope here: CustomBuffer.drop(buf) is called automatically
+
+fn main() {
+    create_and_use();
+}
+```
+
+Output:
+```text
+Dropping CustomBuffer (releasing 512 bytes)
 ```
 
 ### Key Benefits of `Drop`

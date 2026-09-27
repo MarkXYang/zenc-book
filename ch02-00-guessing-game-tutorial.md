@@ -143,6 +143,14 @@ fn main() {
 }
 ```
 
+Output:
+```text
+=== Guess the Number! ===
+Please input your guess: 50
+You guessed: 50
+Too small!
+```
+
 ### How Comparisons Work
 
 - `if guess < secret_number`: Checks if the user's guess is less than the secret number. If true, it prints `"Too small!"`.

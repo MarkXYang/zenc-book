@@ -77,11 +77,19 @@ Zen C provides first-class support for Unicode scalar values via the `rune` type
 | `'\u{2764}'` | `rune` | Hexadecimal Unicode escape sequence |
 
 ```zenc
-let c: char = 'a';
-let emoji: rune = '🚀';
-let heart: rune = '\u{2764}';
+import "std/string.zc";
 
-println "Emoji rune: {emoji}, Heart: {heart}";
+fn main() {
+    let c: char = 'a';
+    let emoji: rune = '🚀';
+
+    println "Char: {c}, Emoji: {emoji}";
+}
+```
+
+Output:
+```text
+Char: a, Emoji: 🚀
 ```
 
 ---
@@ -101,9 +109,18 @@ println "Emoji rune: {emoji}, Heart: {heart}";
 An **array** is a fixed-length contiguous sequence of elements of the same type:
 
 ```zenc
-let numbers: i32[5] = [10, 20, 30, 40, 50];
-let first = numbers[0]; // 10
-numbers[0] = 99;        // Mutate first element
+fn main() {
+    let numbers: i32[5] = [10, 20, 30, 40, 50];
+    let first = numbers[0]; // 10
+    numbers[0] = 99;        // Mutate first element
+
+    println "First: {first}, Updated: {numbers[0]}";
+}
+```
+
+Output:
+```text
+First: 10, Updated: 99
 ```
 
 Next, let's explore functions and lambdas in Zen C!

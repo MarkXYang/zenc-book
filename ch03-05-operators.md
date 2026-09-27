@@ -52,8 +52,13 @@ fn main() {
     let p2 = Point { x: 3, y: 4 };
 
     let p3 = p1 + p2; // Automatically desugars to p1.add(p2)
-    println "p3 = ({p3.x}, {p3.y})"; // Prints (4, 6)
+    println "p3 = ({p3.x}, {p3.y})";
 }
+```
+
+Output:
+```text
+p3 = (4, 6)
 ```
 
 ### 2. Multi-Index Overloading (`get`)
@@ -83,6 +88,11 @@ fn main() {
     let val = m[1, 2]; // Automatically desugars to Matrix.get(m, 1, 2)
     println "Value at [1, 2]: {val}";
 }
+```
+
+Output:
+```text
+Value at [1, 2]: 0
 ```
 
 ---
@@ -145,8 +155,13 @@ fn main() {
     // 60 |> multiply_by(2) desugars to multiply_by(60, 2) -> 120
     let final_score = 50 |> add_bonus(10) |> multiply_by(2);
 
-    println "Final Score: {final_score}"; // Output: 120
+    println "Final Score: {final_score}";
 }
+```
+
+Output:
+```text
+Final Score: 120
 ```
 
 #### 2. Null Coalescing Operator (`??`)
@@ -165,8 +180,13 @@ fn main() {
     // Evaluates to &default_profile because active_profile is NULL
     let user_ptr = active_profile ?? &default_profile;
 
-    println "Username: {user_ptr.username}"; // Output: GuestUser
+    println "Username: {user_ptr.username}";
 }
+```
+
+Output:
+```text
+Username: GuestUser
 ```
 
 #### 3. Null Assignment Operator (`??=`)
@@ -184,8 +204,13 @@ fn main() {
 
     app_cfg ??= &fallback; // Assigns fallback because app_cfg was NULL
 
-    println "Server Port: {app_cfg.port}"; // Output: 8080
+    println "Server Port: {app_cfg.port}";
 }
+```
+
+Output:
+```text
+Server Port: 8080
 ```
 
 #### 4. Safe Navigation Operator (`?.`)
@@ -237,6 +262,17 @@ fn process_node(ptr: Node*) {
     // Automatically dereferences for method calls
     ptr.display();
 }
+
+fn main() {
+    let n = Node { value: 42 };
+    process_node(&n);
+}
+```
+
+Output:
+```text
+Value: 42
+Node value: 42
 ```
 
 ---

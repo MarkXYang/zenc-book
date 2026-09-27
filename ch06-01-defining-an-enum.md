@@ -193,10 +193,17 @@ fn main() {
     let s1 = Status::Running;
     let s2 = Status::Error(500);
 
-    println "Is s1 terminal? {s1.is_terminal()}"; // false
-    println "Is s2 terminal? {s2.is_terminal()}"; // true
-    println "s2 error code: {s2.error_or_default(0)}"; // 500
+    println "Is s1 terminal? {s1.is_terminal()}";
+    println "Is s2 terminal? {s2.is_terminal()}";
+    println "s2 error code: {s2.error_or_default(0)}";
 }
+```
+
+Output:
+```text
+Is s1 terminal? false
+Is s2 terminal? true
+s2 error code: 500
 ```
 
 ---

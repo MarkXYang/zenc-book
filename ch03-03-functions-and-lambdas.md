@@ -75,6 +75,13 @@ fn main() {
 }
 ```
 
+Output:
+```text
+11
+25
+Debug Mode Enabled
+```
+
 ---
 
 ## Lambdas (Closures)
@@ -114,21 +121,33 @@ let explicit_cb = [=] x -> original + x;
 To mutate variables in the outer environment, use reference capture (`[&]`):
 
 ```zenc
-let val = 10;
+fn main() {
+    let val = 10;
 
-// Block syntax capture by reference
-let modify = fn[&]() {
-    val += 1;
-};
-modify(); // val is now 11
+    // Block syntax capture by reference
+    let modify = fn[&]() {
+        val += 1;
+    };
+    modify(); // val is now 11
+    println "val after modify: {val}";
 
-// Arrow syntax capture by reference
-let modify_arrow = [&] x -> val += x;
-modify_arrow(5); // val is now 16
+    // Arrow syntax capture by reference
+    let modify_arrow = [&] x -> val += x;
+    modify_arrow(5); // val is now 16
+    println "val after modify_arrow: {val}";
 
-// Arrow syntax with multiple arguments
-let sum_into = [&] (a, b) -> val += (a + b);
-sum_into(2, 2); // val is now 20
+    // Arrow syntax with multiple arguments
+    let sum_into = [&] (a, b) -> val += (a + b);
+    sum_into(2, 2); // val is now 20
+    println "val after sum_into: {val}";
+}
+```
+
+Output:
+```text
+val after modify: 11
+val after modify_arrow: 16
+val after sum_into: 20
 ```
 
 ---
@@ -161,6 +180,11 @@ fn main() {
 }
 ```
 
+Output:
+```text
+Handler received code: 42
+```
+
 ---
 
 ## Variadic Functions (`...` and `va_list`)
@@ -178,6 +202,11 @@ fn custom_log(fmt: char*, ...) {
 fn main() {
     custom_log("Logging %s with status code %d\n", "HTTP Request", 200);
 }
+```
+
+Output:
+```text
+Logging HTTP Request with status code 200
 ```
 
 ---

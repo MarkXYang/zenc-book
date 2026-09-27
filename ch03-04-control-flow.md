@@ -22,6 +22,11 @@ if x > 10 {
 }
 ```
 
+Output:
+```text
+Large
+```
+
 ### 2. Ternary Operator
 
 For concise inline choices, Zen C supports the standard ternary operator:
@@ -63,6 +68,11 @@ match val {
 }
 ```
 
+Output:
+```text
+10 to 14
+```
+
 ### 2. Destructuring Enums
 
 `match` can destructure tagged union enums directly:
@@ -74,13 +84,20 @@ enum Shape {
     Point,
 }
 
-let shape = Shape::Circle(5.0);
+fn main() {
+    let shape = Shape::Circle(5.0);
 
-match shape {
-    Shape::Circle(r)  => { println "Circle radius: {r}"; },
-    Shape::Rect(w, h) => { println "Rectangle area: {w * h}"; },
-    Shape::Point      => { println "Point"; },
+    match shape {
+        Shape::Circle(r)  => { println "Circle radius: {r}"; },
+        Shape::Rect(w, h) => { println "Rectangle area: {w * h}"; },
+        Shape::Point      => { println "Point"; },
+    }
 }
+```
+
+Output:
+```text
+Circle radius: 5.000000
 ```
 
 ---
@@ -90,16 +107,25 @@ match shape {
 When pattern matching move-only types (such as `Option`, `Result`, or non-Copy structs), extracting a field by default moves ownership. Use the `ref` keyword inside patterns to inspect a value by reference without consuming it:
 
 ```zenc
-let opt = Option<String>::Some(String::from("Hello"));
+import "std/option.zc";
 
-match opt {
-    Option::Some(ref s) => {
-        // 's' is a pointer/reference to the string inside 'opt'
-        // 'opt' is NOT moved or destroyed here
-        println "Inspected string: {s}";
-    },
-    Option::None => {},
+fn main() {
+    let opt = Option<int>::Some(42);
+
+    match opt {
+        Option::Some(ref n) => {
+            // 'n' is a pointer/reference to the value inside 'opt'
+            // 'opt' is NOT moved or destroyed here
+            println "Inspected value: {*n}";
+        },
+        Option::None => {},
+    }
 }
+```
+
+Output:
+```text
+Inspected value: 42
 ```
 
 ---
@@ -156,6 +182,15 @@ for val in arr {
 }
 ```
 
+Output:
+```text
+Element: 10
+Element: 20
+Element: 30
+Element: 40
+Element: 50
+```
+
 ### 3. Enumerated Loops (`index, value`)
 
 Access both the current index and element value simultaneously:
@@ -167,11 +202,13 @@ let arr: int[3] = [100, 200, 300];
 for i, val in arr {
     println "arr[{i}] = {val}";
 }
+```
 
-// Enumerated range loop
-for i, val in 0..10 step 2 {
-    println "Index {i} has step value {val}";
-}
+Output:
+```text
+arr[0] = 100
+arr[1] = 200
+arr[2] = 300
 ```
 
 ### 4. `while` and `do-while` Loops
@@ -190,6 +227,14 @@ do {
     println "Executed at least once!";
     x++;
 } while x < 0;
+```
+
+Output:
+```text
+Count: 3
+Count: 2
+Count: 1
+Executed at least once!
 ```
 
 ### 5. Labeled Infinite `loop`
@@ -221,7 +266,7 @@ Zen C introduces `guard` and `unless` statements to simplify early-exit error ha
 
 ```zenc
 fn process_ptr(ptr: void*) {
-    guard ptr != null else {
+    guard ptr != NULL else {
         println "Null pointer provided! Exiting early.";
         return;
     }
@@ -243,6 +288,21 @@ fn validate(is_valid: bool) {
 
     println "State is valid.";
 }
+
+fn main() {
+    process_ptr(NULL);
+    process_ptr((void*)1);
+    validate(false);
+    validate(true);
+}
+```
+
+Output:
+```text
+Null pointer provided! Exiting early.
+Pointer is valid, proceeding with work...
+State is invalid!
+State is valid.
 ```
 
 ---
