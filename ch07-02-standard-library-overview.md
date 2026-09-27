@@ -113,13 +113,20 @@ Zen C provides idiomatic collection types that manage their own dynamic heap mem
       println "Elapsed: {elapsed} ms";
   }
   ```
-- **`std/env.zc`**: Inspecting process environment variables and CLI parameters:
+- **`std/env.zc`**: Inspecting process environment variables and CLI parameters (returns `Option<string>`):
   ```zenc
   import "std/env.zc";
 
   fn main() {
-      let user = env::get("USER");
+      // Env::get returns Option<string>
+      let user = Env::get("USER").unwrap_or("guest");
       println "Logged in as: {user}";
+
+      // Or inspect explicitly using is_some()
+      let user_opt = Env::get("USER");
+      if user_opt.is_some() {
+          println "Found user: {user_opt.unwrap()}";
+      }
   }
   ```
 - **`std/process.zc`**: Spawning child processes, inspecting exit statuses, and signal handling.
