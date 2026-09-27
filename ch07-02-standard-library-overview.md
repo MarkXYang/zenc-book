@@ -45,6 +45,11 @@ The standard library is structured into several focused functional domains:
       println "Area: {area}, Hypotenuse: {hypotenuse}";
   }
   ```
+
+  Output:
+  ```text
+  Area: 78.539816, Hypotenuse: 5.000000
+  ```
 - **`std/complex.zc`**: Complex number arithmetic (`Complex`).
 - **`std/bigint.zc` & `std/bigfloat.zc`**: Arbitrary-precision integer and floating-point computations.
 - **`std/bits.zc`**: Bitwise rotation (`rotl`, `rotr`), population count, and leading zero detection.
@@ -82,6 +87,11 @@ Zen C provides idiomatic collection types that manage their own dynamic heap mem
       println "Path: {full.c_str()}";
   }
   ```
+
+  Output:
+  ```text
+  Path: /var/log/app.log
+  ```
 - **`std/fs.zc`**: High-level file reading and writing utilities:
   ```zenc
   import "std/fs.zc";
@@ -94,6 +104,11 @@ Zen C provides idiomatic collection types that manage their own dynamic heap mem
           println "Config content: {content.c_str()}";
       }
   }
+  ```
+
+  Output (assuming `config.txt` contains `server_port=8080`):
+  ```text
+  Config content: server_port=8080
   ```
 
 ---
@@ -113,6 +128,11 @@ Zen C provides idiomatic collection types that manage their own dynamic heap mem
       println "Elapsed: {elapsed} ms";
   }
   ```
+
+  Output:
+  ```text
+  Elapsed: 50 ms
+  ```
 - **`std/env.zc`**: Inspecting process environment variables and CLI parameters (returns `Option<string>`):
   ```zenc
   import "std/env.zc";
@@ -128,6 +148,12 @@ Zen C provides idiomatic collection types that manage their own dynamic heap mem
           println "Found user: {user_opt.unwrap()}";
       }
   }
+  ```
+
+  Output:
+  ```text
+  Logged in as: mark
+  Found user: mark
   ```
 - **`std/process.zc`**: Spawning child processes, inspecting exit statuses, and signal handling.
 - **`std/thread.zc` & `std/sync.zc`**: Native OS threads, mutexes, and synchronization barriers (covered in [Chapter 16: Concurrency](ch16-00-concurrency.md)).
@@ -174,6 +200,14 @@ fn main() {
 }
 ```
 
+Output:
+```text
+JSON object: Zen C, version 1
+Serialized: {"active":true,"name":"Zen C","version":1}
+Parsed array with 3 elements
+First item: apple
+```
+
 #### B. Unicode and UTF-8 Utilities (`std/utf8.zc`)
 
 Zen C handles Unicode code points natively via the `rune` primitive type, and `std/utf8.zc` provides character classification, validation, and encoding utilities:
@@ -198,6 +232,13 @@ fn main() {
     buf[written] = 0;
     println "Encoded {written} bytes into buffer";
 }
+```
+
+Output:
+```text
+Is valid UTF-8: true
+Rune '🚀' byte length: 4 bytes
+Encoded 4 bytes into buffer
 ```
 
 #### C. Regular Expressions (`std/regex.zc`)
@@ -225,6 +266,12 @@ fn main() {
 }
 ```
 
+Output:
+```text
+Contains digits: true
+Matched: '12345' at offset 10
+```
+
 > [!NOTE]
 > `std/regex.zc` includes the vendored TRE engine via `@link`. Ensure your include search paths include the compiler root when compiling regex code from arbitrary directories (`zc run -I $ZC_ROOT ...`).
 
@@ -250,6 +297,12 @@ fn main() {
 }
 ```
 
+Output:
+```text
+Base64: SGVsbG8sIFplbiBDIQ==
+Hex:    48656c6c6f2c205a656e204321
+```
+
 #### E. Cryptographic Hashing (`std/crypto/`)
 
 `std/crypto/sha256.zc` provides FIPS 180-4 compliant SHA-256 computation:
@@ -264,6 +317,11 @@ fn main() {
     let digest = Sha256::hash(payload);
     println "SHA-256 digest: {digest.c_str()}";
 }
+```
+
+Output:
+```text
+SHA-256 digest: 631bd37eb71f8dbf091bbd1e7203055072f27f042491ad5a796437ffdc5696f8
 ```
 
 ---

@@ -40,6 +40,12 @@ fn main() {
 }
 ```
 
+Output:
+```text
+Sum: 30, Product: 42
+```
+
+
 ### Module Path Resolution
 
 When resolving the path inside `import "path"`, the `zc` compiler searches the filesystem in the following order:
@@ -69,6 +75,11 @@ fn main() {
 }
 ```
 
+Output:
+```text
+Sum: 42, Area: 314.159265
+```
+
 > [!NOTE]
 > **Manifest Constants (`def`) Across Modules**: Constants declared with `def` are evaluated at compile time and folded directly into expressions across modules. Functions and methods are qualified with the module namespace (e.g. `math::add`).
 
@@ -84,6 +95,11 @@ fn main() {
     let sum = add(10, 20);
     println "Sum: {sum}";
 }
+```
+
+Output:
+```text
+Sum: 30
 ```
 
 > [!WARNING]
@@ -105,6 +121,11 @@ fn main() {
 }
 ```
 
+Output:
+```text
+Result: 17, 12
+```
+
 You can also alias individual symbols during selective import:
 
 ```zenc
@@ -114,6 +135,11 @@ fn main() {
     let res = sum_func(100, 200);
     println "Result: {res}";
 }
+```
+
+Output:
+```text
+Result: 300
 ```
 
 ---
@@ -157,6 +183,11 @@ fn main() {
 }
 ```
 
+Output:
+```text
+Connecting to 127.0.0.1:8080...
+```
+
 Or import the directory module with an explicit namespace:
 
 ```zenc
@@ -166,6 +197,11 @@ import "network/mod.zc" as net;
 fn main() {
     net::connect("127.0.0.1", net::DEFAULT_PORT);
 }
+```
+
+Output:
+```text
+Connecting to 127.0.0.1:8080...
 ```
 
 ### Re-Exporting Modules (`export import`)
@@ -235,7 +271,12 @@ fn main() {
 }
 ```
 
-If an external file attempts to access a private field directly, the compiler rejects the code at compile time:
+Output:
+```text
+User ID: 101, Name: Alice
+```
+
+If an external file attempts to access a private field directly (e.g., uncommenting line 10), the compiler rejects the code at compile time:
 
 ```text
 error: Cannot access private field 'password_hash' of opaque struct 'user__User'
@@ -261,8 +302,16 @@ fn make_user_id(val: int) -> UserID {
     return val; // Conversion allowed inside defining module
 }
 
+fn user_id_to_int(uid: UserID) -> int {
+    return uid;
+}
+
 fn make_account_id(val: int) -> AccountID {
     return val; // Conversion allowed inside defining module
+}
+
+fn account_id_to_int(aid: AccountID) -> int {
+    return aid;
 }
 ```
 
@@ -276,12 +325,25 @@ fn main() {
     let uid: UserID = make_user_id(101);
     let aid: AccountID = make_account_id(5001);
 
+    println "Domain types: UserID = {user_id_to_int(uid)}, AccountID = {account_id_to_int(aid)}";
+
     // COMPILE ERROR: Type validation failed. Expected 'int32_t', but got 'UserID'
     // let raw_int: int = uid;
 
     // COMPILE ERROR: Cannot assign AccountID to UserID!
     // let wrong: UserID = aid;
 }
+```
+
+Output:
+```text
+Domain types: UserID = 101, AccountID = 5001
+```
+
+If we uncomment either invalid assignment, the compiler prevents domain type confusion at compile time:
+
+```text
+error: Type validation failed. Expected 'int32_t', but got 'UserID'
 ```
 
 `opaque alias` prevents accidental confusion between identifiers (such as passing a `UserID` where an `AccountID` is expected), catching critical domain logic bugs at compile time with zero runtime cost.
@@ -323,6 +385,11 @@ fn main() {
 }
 ```
 
+Output:
+```text
+sin: 0.707106, cos: 0.707107
+```
+
 The compiler registers the C header as a module and automatically directs calls to the underlying C library.
 
 ### Method 2: Raw Preprocessor Include (`include <header.h>`)
@@ -337,6 +404,11 @@ extern fn puts(str: const char*) -> c_int;
 fn main() {
     puts("Direct C standard I/O call");
 }
+```
+
+Output:
+```text
+Direct C standard I/O call
 ```
 
 - **`import "file.h"`**: Registers the header as a named Zen C module.
