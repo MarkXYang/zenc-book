@@ -143,8 +143,9 @@ p1: (10, 20), p2: (10, 20)
 In Chapter 4, you mastered Zen C's memory management paradigm:
 1. **Automatic Scope Cleanup**: Using `defer` (LIFO execution order) and `autofree` for stack-bound heap pointers.
 2. **RAII & Destructors**: Custom teardown logic using `impl Drop for Struct`.
-3. **Resource Semantics**: Move-by-default assignment to eliminate double-free bugs.
-4. **Reference Borrowing**: Borrowing structs via pointers (`Struct*`) to avoid moving ownership.
-5. **Explicit Cloning & Copy Opt-in**: `.clone()` for explicit deep copies vs `impl Copy` for stack value types.
+3. **Disarming Cleanup (`forget`)**: Detaching underlying resources via `.forget()` to prevent destructors from running during ownership handoffs.
+4. **Resource Semantics**: Move-by-default assignment to eliminate double-free bugs.
+5. **Reference Borrowing**: Borrowing structs via pointers (`Struct*`) to avoid moving ownership.
+6. **Explicit Cloning & Copy Opt-in**: `.clone()` for explicit deep copies vs `impl Copy` for stack value types.
 
 In **Chapter 5**, we will learn how to organize complex data using **Structs and Method Syntax**!

@@ -112,4 +112,80 @@ Dropping CustomBuffer (releasing 512 bytes)
 2. **Exception & Early Exit Safety**: Cleanup is guaranteed regardless of how scope is exited.
 3. **Encapsulation**: Callers using `CustomBuffer` don't need to know its internal teardown steps.
 
+---
+
+## Disarming Destructors: The `forget()` Method
+
+While RAII and `Drop` protect against memory leaks by automatically reclaiming resources, there are situations where you want to **prevent `drop()` from running**:
+1. **Transferring Ownership to External / C APIs**: Passing a raw heap buffer to a C library function that takes responsibility for freeing it. If the Zen C wrapper struct's `drop()` executes, it will cause a double-free crash.
+2. **Moving Resources Across Custom Containers**: In standard collections like `Vec<T>` and `String`, when appending or transferring elements out of a container, the source container's memory buffer is detached using `.forget()` so its destructor does not deallocate the transferred memory.
+
+In Zen C, the standard convention is to implement a `forget(self)` method on the resource type. The `forget()` method zeroes out or nullifies internal pointers and resource handles:
+
+```zenc
+struct CustomBuffer {
+    data: void*;
+    size: usize;
+}
+
+impl CustomBuffer {
+    // Detaches the underlying resource, disarming Drop
+    fn forget(self) {
+        self.data = NULL;
+        self.size = 0;
+    }
+}
+
+impl Drop for CustomBuffer {
+    fn drop(self) {
+        if self.data != NULL {
+            println "Drop: freeing {self.size} bytes";
+            free(self.data);
+        } else {
+            println "Drop: buffer was forgotten, skipping deallocation";
+        }
+    }
+}
+
+fn transfer_to_c_api(raw_ptr: void*, size: usize) {
+    println "C API taking ownership of {size} bytes";
+    // Simulated C API freeing the buffer
+    free(raw_ptr);
+}
+
+fn main() {
+    println "=== Normal Drop ===";
+    {
+        let buf = CustomBuffer { data: malloc(64), size: 64 };
+    } // buf dropped here -> frees 64 bytes
+
+    println "\n=== Disarming Drop with forget() ===";
+    {
+        let buf = CustomBuffer { data: malloc(128), size: 128 };
+        let raw = buf.data;
+        let size = buf.size;
+
+        // Disarm buf's destructor before passing to C API
+        buf.forget();
+
+        transfer_to_c_api(raw, size);
+    } // buf dropped here, but data is NULL so no double free!
+}
+```
+
+Output:
+```text
+=== Normal Drop ===
+Drop: freeing 64 bytes
+
+=== Disarming Drop with forget() ===
+C API taking ownership of 128 bytes
+Drop: buffer was forgotten, skipping deallocation
+```
+
+> [!TIP]
+> Standard library types like `Vec<T>`, `String`, `Option<T>`, and `Result<T, E>` all provide `.forget()` methods to support manual ownership transfers and zero-cost resource handoffs.
+
+---
+
 Next, let's explore **Resource Semantics, Move by Default, and Borrowing**!

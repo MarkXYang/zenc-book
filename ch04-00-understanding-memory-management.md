@@ -10,6 +10,7 @@ In Zen C, you retain complete C-level control and performance with zero runtime 
 - **Automatic Heap Cleanup (`autofree`)**: Automatically calls `free()` on heap allocations when variables go out of scope.
 - **Resource Semantics & Move-by-Default**: Types owning resources cannot be duplicated accidentally, eliminating double-free errors at compile time.
 - **Destructors & RAII (`Drop` Trait)**: Allows custom types to define automatic teardown behavior when dropped.
+- **Disarming Destructors (`forget`)**: Detaches underlying resources and prevents `drop()` from running when transferring ownership out of an RAII wrapper.
 - **Opt-in Value Duplication (`Copy` Trait)**: Small value types can explicitly opt into implicit copying.
 
 Let's begin by examining scope-based automatic cleanup constructs in Zen C!

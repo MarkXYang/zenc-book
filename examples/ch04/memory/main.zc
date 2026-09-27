@@ -6,11 +6,21 @@ struct CustomBuffer {
     capacity: usize;
 }
 
+impl CustomBuffer {
+    // Detaches the underlying memory buffer, disarming the Drop destructor
+    fn forget(self) {
+        self.data = NULL;
+        self.capacity = 0;
+    }
+}
+
 impl Drop for CustomBuffer {
     fn drop(self) {
-        println "CustomBuffer destructor running for capacity: {self.capacity}";
-        if self.data != 0 {
+        if self.data != NULL {
+            println "CustomBuffer destructor running for capacity: {self.capacity}";
             free(self.data);
+        } else {
+            println "CustomBuffer destructor skipped (buffer was forgotten)";
         }
     }
 }
@@ -48,7 +58,16 @@ fn main() {
     };
     peek_buffer(&buf); // Passed by reference (borrowed)
 
-    // 4. Opt-in Copy trait
+    // 4. Disarming Drop with forget()
+    let buf2 = CustomBuffer {
+        data: malloc(512),
+        capacity: 512,
+    };
+    let raw_ptr = buf2.data;
+    buf2.forget(); // Disarms buf2's destructor
+    free(raw_ptr); // Handled manually or passed to external C API
+
+    // 5. Opt-in Copy trait
     let p1 = Point { x: 5, y: 10 };
     let p2 = p1; // Copied implicitly because Point implements Copy
     println "Point 1: ({p1.x}, {p1.y}), Point 2: ({p2.x}, {p2.y})";
