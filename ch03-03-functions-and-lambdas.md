@@ -46,6 +46,8 @@ This guarantees at compile-time that the function will not mutate the passed arg
 
 Functions can define default values for trailing parameters. Default values can be literals, expressions evaluated at the call site, or complex initializers like struct constructors:
 
+**Listing 3-4: `list3-4.zc`**
+
 ```zenc
 // 1. Literal default value
 fn increment(val: int, amount: int = 1) -> int {
@@ -105,7 +107,7 @@ let full_doubler = fn(x: int) -> int { return x * factor; };
 By default, variables are captured by value (creating a read-only copy inside the closure):
 
 ```zenc
-let original = 100;
+let original = 10;
 
 // Implicit capture by value
 let implicit_cb = x -> original + x;
@@ -119,6 +121,8 @@ let explicit_cb = [=] x -> original + x;
 ### 3. Capture by Reference (`[&]`)
 
 To mutate variables in the outer environment, use reference capture (`[&]`):
+
+**Listing 3-5: `list3-5.zc`**
 
 ```zenc
 fn main() {
@@ -156,6 +160,8 @@ val after sum_into: 20
 
 For zero-overhead C interop, Zen C provides raw function pointers using the `fn*` syntax. Unlike closures, raw function pointers do not allocate environment state, making them 100% compatible with native C callbacks.
 
+**Listing 3-6: `list3-6.zc`**
+
 ```zenc
 // Function accepting a raw C function pointer
 fn set_callback(cb: fn*(int)) {
@@ -190,6 +196,8 @@ Handler received code: 42
 ## Variadic Functions (`...` and `va_list`)
 
 Zen C supports variadic functions (functions that take a variable number of arguments) using standard C `...` syntax and `va_list` helpers:
+
+**Listing 3-7: `list3-7.zc`**
 
 ```zenc
 fn custom_log(fmt: char*, ...) {

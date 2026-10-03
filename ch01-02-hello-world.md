@@ -21,6 +21,8 @@ Next, create a new source file named `main.zc`. Zen C source files always use th
 
 Open `main.zc` in your editor and enter the following code:
 
+**Listing 1-1: `list1-1.zc`**
+
 ```zenc
 fn main() {
     println "Hello, world!";

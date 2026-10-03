@@ -24,6 +24,8 @@ fn process_file() {
 
 Multiple `defer` statements inside the same scope are executed in **LIFO (Last-In, First-Out)** order:
 
+**Listing 4-1: `list4-1.zc`**
+
 ```zenc
 fn main() {
     println "Start";
@@ -71,6 +73,8 @@ Under the hood, `autofree` binds the pointer to the scope using compiler-level c
 Resource Acquisition Is Initialization (RAII) is a pattern where resources (heap memory, socket connections, thread handles) are tied to object lifetimes.
 
 In Zen C, custom structs implement the `Drop` trait to define automatic destruction logic:
+
+**Listing 4-2: `list4-2.zc`**
 
 ```zenc
 struct CustomBuffer {
@@ -121,6 +125,8 @@ While RAII and `Drop` protect against memory leaks by automatically reclaiming r
 2. **Moving Resources Across Custom Containers**: In standard collections like `Vec<T>` and `String`, when appending or transferring elements out of a container, the source container's memory buffer is detached using `.forget()` so its destructor does not deallocate the transferred memory.
 
 In Zen C, the standard convention is to implement a `forget(self)` method on the resource type. The `forget()` method zeroes out or nullifies internal pointers and resource handles:
+
+**Listing 4-3: `list4-3.zc`**
 
 ```zenc
 struct CustomBuffer {

@@ -15,6 +15,8 @@ Zen C includes built-in keywords for printing formatted text to standard output 
 | `eprint "..."` | `stderr` | No | Prints error output to `stderr` without adding a newline. |
 | `eprintln "..."` | `stderr` | **Yes** | Prints error output to `stderr` **with** an automatic trailing newline. |
 
+**Listing 3-22: `list3-22.zc`**
+
 ```zenc
 fn main() {
     print "Hello ";
@@ -48,6 +50,8 @@ Zen C allows string literals to be used directly as statements for rapid, concis
 | `!"Err"` | `eprintln "Err"` | Prints to `stderr` **with** newline |
 | `!"Err"..` | `eprint "Err"` | Prints to `stderr` **without** newline |
 
+**Listing 3-23: `list3-23.zc`**
+
 ```zenc
 fn main() {
     "Processing item"..; // Equivalent to print
@@ -76,6 +80,8 @@ You can embed variables and expressions directly into string literals using `{}`
 
 In Zen C, string interpolation is **implicit**: any string literal containing `{...}` automatically transpiles into an interpolated string. You can also explicitly prefix a string with `f` (e.g., `f"..."`) to force format interpolation semantics.
 
+**Listing 3-24: `list3-24.zc`**
+
 ```zenc
 let count = 42;
 let name = "Zen C";
@@ -96,6 +102,8 @@ Project: Zen C, Items: 42
 ### 1. Escaping Literal Braces
 
 To produce literal `{` or `}` characters inside an interpolated string, double the braces (`{{` and `}}`):
+
+**Listing 3-25: `list3-25.zc`**
 
 ```zenc
 let json = "JSON payload: {{\"status\": 200}}";
@@ -163,6 +171,8 @@ Zen C provides a shorthand syntax for asking user input using the `?` prefix ope
 ### 2. Scanning Variables (`? "Prompt" (var)`)
 
 - `? "Enter age: " (age)`: Prints the prompt string and automatically scans the user input directly into `age`. Format specifiers are inferred based on the variable's type.
+
+**Listing 3-26: `list3-26.zc`**
 
 ```zenc
 fn main() {

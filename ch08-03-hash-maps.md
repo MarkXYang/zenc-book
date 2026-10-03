@@ -45,6 +45,8 @@ struct Map<V> {
 - **`remove(key)`**: Removes a key and its associated value, freeing the stored key string.
 - **`length()`**: Returns the number of active entries currently stored in the map.
 
+**Listing 8-17: `list8-17.zc`**
+
 ```zenc
 import "std/map.zc";
 
@@ -95,6 +97,8 @@ struct MapEntry<V> {
 }
 ```
 
+**Listing 8-18: `list8-18.zc`**
+
 ```zenc
 import "std/map.zc";
 
@@ -136,6 +140,8 @@ The `Set<T>` type, provided by `std/set.zc`, stores unique elements of any value
 - **`remove(val) -> bool`**: Removes the element from the set. Returns `true` if it was present and removed.
 - **`length()`**: Returns the number of unique elements in the set.
 - **`clear()`**: Clears all elements without deallocating internal capacity.
+
+**Listing 8-19: `list8-19.zc`**
 
 ```zenc
 import "std/set.zc";
@@ -199,6 +205,8 @@ impl Drop for Set {
 ## A Complete Example: Map and Set Operations
 
 Here is a complete program demonstrating dictionary lookups, entry iteration, and unique ID tracking:
+
+**Listing 8-20: `list8-20.zc`**
 
 ```zenc
 import "std/map.zc";
@@ -286,6 +294,8 @@ Contains ID 202: false
 Let's bring all the collections covered in this chapter—`Vec<T>`, `String`, `Map<V>`, and `Set<T>`—together into a complete real-world application.
 
 The following program parses a text document, cleans and tokenizes words, counts word frequencies using `Map<int>`, maintains token ordering with `Vec<String>`, and tracks unique word lengths using `Set<int>`:
+
+**Listing 8-21: `list8-21.zc`**
 
 ```zenc
 import "std/vec.zc";

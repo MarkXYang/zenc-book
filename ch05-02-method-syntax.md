@@ -11,6 +11,8 @@
 
 Let's start with a `Rectangle` struct and define an `area` method to calculate its surface area:
 
+**Listing 5-9: `list5-9.zc`**
+
 ```zenc
 struct Rectangle {
     width: int;
@@ -72,7 +74,14 @@ The compiler guarantees that code inside a `const self` method cannot accidental
 
 When a method needs to modify struct fields, use `self`:
 
+**Listing 5-10: `list5-10.zc`**
+
 ```zenc
+struct Rectangle {
+    width: int;
+    height: int;
+}
+
 impl Rectangle {
     fn scale(self, factor: int) {
         self.width = self.width * factor;
@@ -176,7 +185,29 @@ impl Rectangle {
 
 To call an associated function that doesn't take `self`, use the double colon (`::`) namespace operator on the struct name:
 
+**Listing 5-11: `list5-11.zc`**
+
 ```zenc
+struct Rectangle {
+    width: int;
+    height: int;
+}
+
+impl Rectangle {
+    // Static method (constructor convention using -> Self)
+    fn new(width: int, height: int) -> Self {
+        return Rectangle {
+            width: width,
+            height: height,
+        };
+    }
+
+    // Specialized constructor: creates a square
+    fn square(size: int) -> Self {
+        return Rectangle::new(size, size);
+    }
+}
+
 fn main() {
     let r1 = Rectangle::new(30, 50);
     let sq = Rectangle::square(25);
@@ -253,6 +284,8 @@ When the compiler encounters an operator expression like `a + b`, it checks whet
 
 To overload `+`, implement `fn add`:
 
+**Listing 5-12: `list5-12.zc`**
+
 ```zenc
 struct Vec2 {
     x: int;
@@ -303,8 +336,19 @@ v4 = (3, 4)
 
 To overload `==` and `!=`, implement `fn eq`:
 
+**Listing 5-13: `list5-13.zc`**
+
 ```zenc
+struct Vec2 {
+    x: int;
+    y: int;
+}
+
 impl Vec2 {
+    fn new(x: int, y: int) -> Vec2 {
+        return Vec2 { x: x, y: y };
+    }
+
     // Overloads binary '=='
     fn eq(self, other: Vec2) -> bool {
         return self.x == other.x && self.y == other.y;
@@ -365,6 +409,8 @@ The following table lists the operator methods supported by Zen C:
 
 In [Section 5.1](ch05-01-defining-structs.md), we learned that structs can embed other structs using the `use` keyword. When a struct embeds another type via a mixin, all methods defined on the embedded type are **automatically available** on instances of the outer struct:
 
+**Listing 5-14: `list5-14.zc`**
+
 ```zenc
 struct Rectangle {
     width: int;
@@ -408,6 +454,8 @@ This mixin pattern provides the code-reuse benefits of object-oriented inheritan
 Zen C allows you to define methods on primitive scalar types (like `int`, `bool`, etc.) using the exact same `impl` syntax.
 
 Because primitive values are passed by pointer to methods (`int* self`), dereferencing `*self` retrieves the underlying scalar value:
+
+**Listing 5-15: `list5-15.zc`**
 
 ```zenc
 impl int {
@@ -453,6 +501,8 @@ Method syntax and `impl` blocks form the foundation of Zen C's **Trait System** 
 ## A Complete Example
 
 Let's bring together everything we've learned about structs, constructors, methods, `.field` shorthand, operator overloading, and mixins into a single complete example:
+
+**Listing 5-16: `list5-16.zc`**
 
 ```zenc
 @derive(Copy)

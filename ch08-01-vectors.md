@@ -39,6 +39,8 @@ Creates an empty vector with `data = NULL`, `len = 0`, and `cap = 0`. No heap al
 ### 2. `Vec<T>::with_capacity(cap)` (Pre-allocation)
 If you know in advance how many elements the vector will hold, pre-allocating capacity avoids repeated `realloc` calls and buffer copies.
 
+**Listing 8-4: `list8-4.zc`**
+
 ```zenc
 import "std/vec.zc";
 
@@ -82,6 +84,8 @@ In addition to `push()`, `Vec<T>` provides fine-grained control over adding and 
 - **`pop() -> T`**: Removes and returns the final element. Panics if the vector is empty.
 - **`pop_opt() -> Option<T>`**: Safe variant of `pop()`. Returns `Some(val)` if an element was popped, or `None()` if the vector was already empty.
 - **`clear()`**: Resets `len = 0` without freeing the allocated heap buffer, allowing you to reuse the allocated capacity.
+
+**Listing 8-5: `list8-5.zc`**
 
 ```zenc
 import "std/vec.zc";
@@ -147,6 +151,8 @@ Consumes copies of each element during iteration.
 ### 2. Iterating by Reference (`for x in &v`)
 Yields pointers (`T*`) to each element in the vector. This allows you to inspect elements without copying, or **mutate elements in place** using pointer dereference (`*x`):
 
+**Listing 8-6: `list8-6.zc`**
+
 ```zenc
 import "std/vec.zc";
 
@@ -196,6 +202,8 @@ Curved score: 82
 - **`fold(initial, accumulator)`**: Reduces the vector elements to a single accumulated value.
 - **`find(predicate)`**: Returns `Option<T>::Some(val)` for the first matching element, or `None()`.
 - **`forEach(callback)`**: Executes a function for each element.
+
+**Listing 8-7: `list8-7.zc`**
 
 ```zenc
 import "std/vec.zc";
@@ -254,6 +262,8 @@ Zen C overloads common operators for `Vec<T>` to make code expressive and concis
 | `!=` | `v1 != &v2` | `neq` | Structural inequality check. |
 | `[]` | `v[i]` | `index` | Direct zero-based element indexing. |
 
+**Listing 8-8: `list8-8.zc`**
+
 ```zenc
 import "std/vec.zc";
 
@@ -298,6 +308,8 @@ a == a_copy: true
 ## Vectors of Custom Structs
 
 Vectors work seamlessly with user-defined structs:
+
+**Listing 8-9: `list8-9.zc`**
 
 ```zenc
 import "std/vec.zc";
@@ -349,6 +361,8 @@ impl Drop for Vec {
 ## A Complete Example
 
 Here is a complete program demonstrating creation, modification, iteration, operators, and custom struct usage:
+
+**Listing 8-10: `list8-10.zc`**
 
 ```zenc
 import "std/vec.zc";

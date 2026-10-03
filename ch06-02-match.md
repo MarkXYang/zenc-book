@@ -16,6 +16,8 @@ Traditional C provides the `switch` statement, but `switch` has severe limitatio
 
 Zen C's `match` solves every one of these problems:
 
+**Listing 6-2: `list6-2.zc`**
+
 ```zenc
 enum Shape {
     Circle(float),
@@ -80,6 +82,8 @@ This strictness prevents insidious bugs where a new enum variant is added to a s
 ## The Catch-All Wildcard (`_`)
 
 When you do not want to list every individual case, or only care about a few specific variants, use the underscore (`_`) as a catch-all pattern:
+
+**Listing 6-3: `list6-3.zc`**
 
 ```zenc
 enum Status {
@@ -158,6 +162,8 @@ match s {
 
 Multi-pattern matching also works cleanly with literal values:
 
+**Listing 6-4: `list6-4.zc`**
+
 ```zenc
 fn test_code(http_code: int) {
     match http_code {
@@ -207,6 +213,8 @@ When you pattern match on an enum carrying a resource-owning type:
 
 Using `ref` binds a pointer to the inner value instead of moving it:
 
+**Listing 6-5: `list6-5.zc`**
+
 ```zenc
 enum TaskResult {
     Success(string),
@@ -245,6 +253,8 @@ Failed: 404
 ### 2. In-Place Mutation via `ref`
 
 You can also use `ref` to modify the value stored directly inside an enum variable in place:
+
+**Listing 6-6: `list6-6.zc`**
 
 ```zenc
 enum Counter {
@@ -286,6 +296,8 @@ New count: 11
 
 While `match` is indispensable for enums, it also works seamlessly on primitive integer, character, and range values:
 
+**Listing 6-7: `list6-7.zc`**
+
 ```zenc
 fn classify_http_code(code: int) -> string {
     match code {
@@ -316,6 +328,8 @@ Client Error
 ## A Complete Example: Protocol Event Dispatcher
 
 Let's bring all these concepts together in a complete event-driven networking dispatcher:
+
+**Listing 6-8: `list6-8.zc`**
 
 ```zenc
 enum Packet {

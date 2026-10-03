@@ -47,6 +47,8 @@ This chapter focuses on the three most versatile and widely used collection type
 ### 1. Vectors (`Vec<T>`)
 A contiguous, growable array stored on the heap. Vectors allow fast random access ($O(1)$) by index and efficient element appending at the back ($O(1)$ amortized).
 
+**Listing 8-1: `list8-1.zc`**
+
 ```zenc
 import "std/vec.zc";
 
@@ -72,6 +74,8 @@ Element at index 1: 20
 ### 2. Growable Strings (`String`)
 A heap-allocated, UTF-8-aware string type wrapping `Vec<char>`. It provides string manipulation methods (concatenation, trimming, case conversion, splitting, substring extraction) while maintaining null-termination for seamless C interoperability.
 
+**Listing 8-2: `list8-2.zc`**
+
 ```zenc
 import "std/string.zc";
 
@@ -95,6 +99,8 @@ Character count: 12
 Associative containers powered by high-performance open-addressing hash tables:
 - **`Map<V>`**: Maps string keys to values of type `V` with average $O(1)$ lookups, insertions, and removals.
 - **`Set<T>`**: Stores unique values of type `T`, automatically discarding duplicate additions.
+
+**Listing 8-3: `list8-3.zc`**
 
 ```zenc
 import "std/map.zc";

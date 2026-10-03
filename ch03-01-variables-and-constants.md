@@ -66,6 +66,8 @@ let y: const int = 10;
 
 ## Putting It All Together
 
+**Listing 3-1: `list3-1.zc`**
+
 ```zenc
 fn main() {
     def PI = 3.14159265;

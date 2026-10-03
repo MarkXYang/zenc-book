@@ -105,6 +105,8 @@ u.active = true;
 
 To access values stored in a struct, use **dot notation** (`.`):
 
+**Listing 5-1: `list5-1.zc`**
+
 ```zenc
 let user1 = User {
     username: "mark",
@@ -114,11 +116,8 @@ let user1 = User {
 };
 
 println "User: {user1.username}, Logins: {user1.sign_in_count}";
-```
 
-To update a field on an instance declared with `let`, assign directly to the field using dot notation:
-
-```zenc
+// Update fields on a mutable instance declared with 'let':
 user1.email = "mark.new@example.com";
 user1.sign_in_count = user1.sign_in_count + 1;
 
@@ -154,6 +153,8 @@ Zen C supports **pattern-based destructuring** on struct variables. This lets yo
 
 When the local variable names match the struct field names:
 
+**Listing 5-2: `list5-2.zc`**
+
 ```zenc
 let p = Point { x: 10, y: 20 };
 
@@ -171,6 +172,8 @@ x = 10, y = 20
 ### Renaming Fields During Destructuring
 
 If you want to assign fields to variables with different names, specify `field_name: new_variable_name`:
+
+**Listing 5-3: `list5-3.zc`**
 
 ```zenc
 let Point { x: pos_x, y: pos_y } = p;
@@ -198,6 +201,8 @@ Zen C supports two forms of struct reuse:
 ### 1. Flattened Mixin (Unnamed `use Type;`)
 
 When you write `use Type;` without a field name, Zen C **flattens** all the fields of the target type into the outer struct. Furthermore, all methods defined on the embedded type are automatically inherited by the outer struct!
+
+**Listing 5-4: `list5-4.zc`**
 
 ```zenc
 struct Entity {
@@ -234,6 +239,8 @@ Player ID: 1, Name: Hero
 
 Named composition embeds the component as a nested field. It is accessed via `outer.field_name`:
 
+**Listing 5-5: `list5-5.zc`**
+
 ```zenc
 struct Match {
     // Composition (Named): Nests fields
@@ -266,6 +273,8 @@ Zen C is designed for systems-level control. When writing drivers, network proto
 
 Zen C natively supports C-style bitfields using `field: Type : N;` where `N` is the number of bits allocated to the field:
 
+**Listing 5-6: `list5-6.zc`**
+
 ```zenc
 struct Flags {
     is_readable:   u8 : 1; // 1 bit
@@ -274,21 +283,19 @@ struct Flags {
     mode:          u8 : 2; // 2 bits (values 0-3)
     reserved:      u8 : 3; // 3 bits padding out the 8-bit byte
 }
-```
 
-Bitfield access works seamlessly with standard dot notation:
+fn main() {
+    let perms = Flags {
+        is_readable: 1,
+        is_writable: 1,
+        is_executable: 0,
+        mode: 2,
+        reserved: 0,
+    };
 
-```zenc
-let perms = Flags {
-    is_readable: 1,
-    is_writable: 1,
-    is_executable: 0,
-    mode: 2,
-    reserved: 0,
-};
-
-if perms.is_readable == 1 {
-    println "File is readable";
+    if perms.is_readable == 1 {
+        println "File is readable";
+    }
 }
 ```
 
@@ -340,6 +347,8 @@ struct HardwarePacket {
 
 As introduced in [Chapter 4](ch04-02-ownership-and-allocation.md), structs in Zen C default to move semantics to prevent accidental double frees. However, plain data structs containing only primitive values can opt into implicit copying using the `@derive(Copy)` attribute:
 
+**Listing 5-7: `list5-7.zc`**
+
 ```zenc
 @derive(Copy)
 struct Point {
@@ -369,7 +378,16 @@ p1: (1, 2), p2: (1, 2)
 
 In systems programming, structs are frequently passed by reference using pointers (`Type*`) to avoid copying large amounts of memory:
 
+**Listing 5-8: `list5-8.zc`**
+
 ```zenc
+struct User {
+    username: string;
+    email: string;
+    sign_in_count: int;
+    active: bool;
+}
+
 fn print_user(user: User*) {
     // In Zen C, dot (.) automatically dereferences pointers!
     println "User: {user.username} <{user.email}>";

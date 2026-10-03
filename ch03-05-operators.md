@@ -32,6 +32,8 @@ In Zen C, you can define custom behavior for operators on custom `struct` types 
 
 By implementing `fn add(self, other: Point) -> Point` on a struct, you can use the standard `+` operator directly on instances:
 
+**Listing 3-16: `list3-16.zc`**
+
 ```zenc
 struct Point {
     x: int;
@@ -64,6 +66,8 @@ p3 = (4, 6)
 ### 2. Multi-Index Overloading (`get`)
 
 Zen C allows overloading multi-dimensional indexing `a[i, j]`, which desugars to `get(a, i, j)`:
+
+**Listing 3-17: `list3-17.zc`**
 
 ```zenc
 struct Matrix {
@@ -141,6 +145,8 @@ Zen C includes modern built-in syntactic sugar operators that streamline code re
 
 The pipeline operator passes the left-hand expression as the first parameter to the right-hand function. You can chain multiple function calls together in a clean, readable left-to-right flow:
 
+**Listing 3-18: `list3-18.zc`**
+
 ```zenc
 fn add_bonus(score: int, bonus: int) -> int {
     return score + bonus;
@@ -168,6 +174,8 @@ Final Score: 120
 
 The null coalescing operator checks if a pointer expression is `NULL`. If it is `NULL`, it evaluates and returns the right-hand fallback expression:
 
+**Listing 3-19: `list3-19.zc`**
+
 ```zenc
 struct Profile {
     username: string;
@@ -192,6 +200,8 @@ Username: GuestUser
 #### 3. Null Assignment Operator (`??=`)
 
 The null assignment operator assigns a value to a pointer variable only if that pointer is currently `NULL`:
+
+**Listing 3-20: `list3-20.zc`**
 
 ```zenc
 struct Config {
@@ -243,6 +253,8 @@ fn read_config_file(path: string) -> Result<Config, string> {
 #### 6. Auto-Dereference Feature (`ptr.field` & `ptr.method()`)
 
 In standard C, accessing a pointer field requires verbose arrow syntax (`ptr->field`) or dereferencing (`(*ptr).field`). In Zen C, pointer field access (`ptr.field`) and method calls (`ptr.method()`) **automatically dereference** the pointer:
+
+**Listing 3-21: `list3-21.zc`**
 
 ```zenc
 struct Node {

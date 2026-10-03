@@ -27,6 +27,8 @@ fn multiply(a: int, b: int) -> int {
 
 To use `math_utils.zc` from our `main.zc`, we use the `import` statement:
 
+**Listing 7-1: `list7-1.zc`**
+
 ```zenc
 // main.zc
 import "math_utils.zc";
@@ -63,6 +65,8 @@ When resolving the path inside `import "path"`, the `zc` compiler searches the f
 
 If a module has a long filename, or if multiple modules share the same base name, you can assign a custom namespace alias using the `as` keyword:
 
+**Listing 7-2: `list7-2.zc`**
+
 ```zenc
 // main.zc
 import "math_utils.zc" as math;
@@ -86,6 +90,8 @@ Sum: 42, Area: 314.159265
 ### Wildcard Import (`as *`)
 
 To import all symbols from a module directly into the current scope without qualifying them with a namespace prefix, use `as *`:
+
+**Listing 7-3: `list7-3.zc`**
 
 ```zenc
 import "math_utils.zc" as *;
@@ -111,6 +117,8 @@ Sum: 30
 
 Zen C allows you to cherry-pick specific symbols from a module using selective import syntax:
 
+**Listing 7-4: `list7-4.zc`**
+
 ```zenc
 import { add, multiply } from "math_utils.zc";
 
@@ -127,6 +135,8 @@ Result: 17, 12
 ```
 
 You can also alias individual symbols during selective import:
+
+**Listing 7-5: `list7-5.zc`**
 
 ```zenc
 import { add as sum_func, multiply as prod_func } from "math_utils.zc";
@@ -174,6 +184,8 @@ fn connect(host: string, port: int) {
 
 From `main.zc`, you can import the entire `network` folder directly:
 
+**Listing 7-6: `list7-6.zc`**
+
 ```zenc
 // main.zc
 import "./network";
@@ -189,6 +201,8 @@ Connecting to 127.0.0.1:8080...
 ```
 
 Or import the directory module with an explicit namespace:
+
+**Listing 7-7: `list7-7.zc`**
 
 ```zenc
 // main.zc
@@ -256,6 +270,8 @@ fn user_get_name(u: User) -> string {
 
 Now, in `main.zc`:
 
+**Listing 7-8: `list7-8.zc`**
+
 ```zenc
 // main.zc
 import "user.zc" as user;
@@ -317,6 +333,8 @@ fn account_id_to_int(aid: AccountID) -> int {
 
 Outside of `types.zc`:
 
+**Listing 7-9: `list7-9.zc`**
+
 ```zenc
 // main.zc
 import "types.zc";
@@ -372,6 +390,8 @@ Zen C bridges modern module semantics with C header interoperability through two
 
 You can import standard C headers directly using `import` with the `.h` extension and an optional namespace:
 
+**Listing 7-10: `list7-10.zc`**
+
 ```zenc
 //> link: -lm
 import "math.h" as c_math;
@@ -395,6 +415,8 @@ The compiler registers the C header as a module and automatically directs calls 
 ### Method 2: Raw Preprocessor Include (`include <header.h>`)
 
 When you need precise control over C signatures or FFI bindings, use `include <...>` paired with `extern fn`:
+
+**Listing 7-11: `list7-11.zc`**
 
 ```zenc
 include <stdio.h>

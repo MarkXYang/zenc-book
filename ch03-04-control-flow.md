@@ -10,6 +10,8 @@ The ability to control execution flow based on conditions, pattern matching, or 
 
 Standard conditional branching tests boolean conditions:
 
+**Listing 3-8: `list3-8.zc`**
+
 ```zenc
 let x = 15;
 
@@ -53,6 +55,8 @@ Zen C features pattern matching via `match`, offering a safe, expression-driven 
 
 `match` arms can match single literals, multiple OR conditions (`||`, `or`, `,`), or numeric ranges:
 
+**Listing 3-9: `list3-9.zc`**
+
 ```zenc
 let val = 12;
 
@@ -76,6 +80,8 @@ Output:
 ### 2. Destructuring Enums
 
 `match` can destructure tagged union enums directly:
+
+**Listing 3-10: `list3-10.zc`**
 
 ```zenc
 enum Shape {
@@ -105,6 +111,8 @@ Circle radius: 5.000000
 ## Reference Binding (`ref`)
 
 When pattern matching move-only types (such as `Option`, `Result`, or non-Copy structs), extracting a field by default moves ownership. Use the `ref` keyword inside patterns to inspect a value by reference without consuming it:
+
+**Listing 3-11: `list3-11.zc`**
 
 ```zenc
 import "std/option.zc";
@@ -174,6 +182,8 @@ for _ in 0..5 {
 
 Iterate directly over elements of fixed-size arrays or standard collections:
 
+**Listing 3-12: `list3-12.zc`**
+
 ```zenc
 let arr: int[5] = [10, 20, 30, 40, 50];
 
@@ -195,6 +205,8 @@ Element: 50
 
 Access both the current index and element value simultaneously:
 
+**Listing 3-13: `list3-13.zc`**
+
 ```zenc
 let arr: int[3] = [100, 200, 300];
 
@@ -212,6 +224,8 @@ arr[2] = 300
 ```
 
 ### 4. `while` and `do-while` Loops
+
+**Listing 3-14: `list3-14.zc`**
 
 ```zenc
 // Standard while loop
@@ -258,11 +272,12 @@ outer: loop {
 
 ## Advanced Control Statements (`guard` and `unless`)
 
-Zen C introduces `guard` and `unless` statements to simplify early-exit error handling and negative condition checks.
+Zen C introduces `guard` and `unless` statements to simplify early-exit error handling and negative condition checks:
 
-### 1. `guard` Statement
+- **`guard`**: Checks a condition. If the condition is `false`, the mandatory `else` block executes and **must** exit the current scope (via `return`, `break`, or `continue`).
+- **`unless`**: An inverted `if` statement. It executes its block when the condition is `false`.
 
-`guard` checks a condition. If the condition is `false`, the mandatory `else` block executes and **must** exit the current scope (via `return`, `break`, or `continue`).
+**Listing 3-15: `list3-15.zc`**
 
 ```zenc
 fn process_ptr(ptr: void*) {
@@ -273,13 +288,7 @@ fn process_ptr(ptr: void*) {
 
     println "Pointer is valid, proceeding with work...";
 }
-```
 
-### 2. `unless` Statement
-
-`unless` is an inverted `if` statement. It executes its block when the condition is `false`:
-
-```zenc
 fn validate(is_valid: bool) {
     unless is_valid {
         println "State is invalid!";

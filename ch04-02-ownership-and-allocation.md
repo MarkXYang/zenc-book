@@ -61,6 +61,8 @@ Unlike C/C++, Zen C never implicitly duplicates resource-owning values.
 
 Passing a resource variable into a function follows the exact same ownership rules as variable assignment:
 
+**Listing 4-4: `list4-4.zc`**
+
 ```zenc
 struct CustomBuffer {
     data: void*;
@@ -112,6 +114,8 @@ let b = a.clone(); // Explicit duplicate allocation via Clone trait
 For small value types that live entirely on the stack and do not own heap resources (such as plain coordinate points or numeric configurations), moving ownership on assignment can be inconvenient.
 
 You can explicitly opt into implicit duplication by implementing `impl Copy for StructName`:
+
+**Listing 4-5: `list4-5.zc`**
 
 ```zenc
 struct Point {

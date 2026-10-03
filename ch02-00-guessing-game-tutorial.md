@@ -31,6 +31,8 @@ touch main.zc
 
 Let's start by prompting the user for input and echoing the input back to the screen. Open `main.zc` and add the following code:
 
+**Listing 2-1: `list2-1.zc`**
+
 ```zenc
 fn main() {
     println "=== Guess the Number! ===";
@@ -81,6 +83,8 @@ Next, we need to generate a random secret number between 1 and 100 so that the g
 
 Update `main.zc` to seed the random number generator and produce a secret integer:
 
+**Listing 2-2: `list2-2.zc`**
+
 ```zenc
 fn main() {
     println "=== Guess the Number! ===";
@@ -118,6 +122,8 @@ In Zen C, you don't always have to write explicit type annotations like `: int`.
 Now that we have both a user guess and a secret number, we can compare them using `if`, `else if`, and `else` conditional statements.
 
 Update `main.zc`:
+
+**Listing 2-3: `list2-3.zc`**
 
 ```zenc
 fn main() {
@@ -165,6 +171,8 @@ Currently, the game exits after taking only a single guess. To allow the player 
 
 Update `main.zc` to include a `loop` block and `break` statements:
 
+**Listing 2-4: `list2-4.zc`**
+
 ```zenc
 fn main() {
     println "=== Guess the Number! ===";
@@ -207,6 +215,8 @@ fn main() {
 ## Complete Executable Code
 
 Here is the complete, working code for your Zen C Guessing Game:
+
+**Listing 2-5: `list2-5.zc`**
 
 ```zenc
 fn main() {

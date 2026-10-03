@@ -33,6 +33,8 @@ To use `String`, import `std/string.zc`. You can construct a new string from a s
 > [!NOTE]
 > To prevent unnecessary copies and heap allocations, Zen C's `append(&other)` and the `+` / `+=` operators take a pointer (`String*`) to the right-hand string. The right-hand operand must therefore be an addressable variable (`&suffix`), rather than a temporary rvalue.
 
+**Listing 8-11: `list8-11.zc`**
+
 ```zenc
 import "std/string.zc";
 
@@ -82,6 +84,8 @@ Language: Zen C
 | `find_str(str)` | `Option<usize>` | Returns `Some(offset)` of the first match, or `None()`. |
 | `substring(start, len)` | `String` | Returns a new `String` slice of length `len` starting at `start`. |
 
+**Listing 8-12: `list8-12.zc`**
+
 ```zenc
 import "std/string.zc";
 
@@ -128,6 +132,8 @@ To handle Unicode accurately, Zen C provides:
 - **`rune`**: A 32-bit scalar value representing a single Unicode code point.
 - **`push_rune(r)`**: Appends a Unicode `rune` to the string.
 - **`for c in s`**: Iterates through each Unicode `rune` in the string.
+
+**Listing 8-13: `list8-13.zc`**
 
 ```zenc
 import "std/string.zc";
@@ -180,6 +186,8 @@ After push_rune: Hello, 🌍!🚀
 - **`replace(target, replacement)`**: Replaces occurrences of `target` with `replacement`.
 - **`split(delim)`**: Splits the string by a delimiter character and returns a `Vec<String>`.
 
+**Listing 8-14: `list8-14.zc`**
+
 ```zenc
 import "std/string.zc";
 
@@ -226,6 +234,8 @@ Parsed 4 color tokens:
 
 You can compare strings using standard comparison operators or specialized methods:
 
+**Listing 8-15: `list8-15.zc`**
+
 ```zenc
 import "std/string.zc";
 
@@ -266,6 +276,8 @@ Because `String` maintains null-termination:
 ## A Complete Example
 
 Here is a comprehensive example demonstrating string creation, concatenation, searching, Unicode runes, transformations, and token splitting:
+
+**Listing 8-16: `list8-16.zc`**
 
 ```zenc
 import "std/string.zc";

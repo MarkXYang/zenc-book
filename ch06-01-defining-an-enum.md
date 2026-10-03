@@ -162,6 +162,8 @@ Inside an enum method:
 - The receiver is `self` (or `const self`).
 - Because `self` is a pointer to the enum instance (`Status* self`), you can dereference `*self` to pattern match on the active variant:
 
+**Listing 6-1: `list6-1.zc`**
+
 ```zenc
 enum Status {
     Idle,

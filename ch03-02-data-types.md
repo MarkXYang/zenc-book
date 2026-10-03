@@ -76,6 +76,8 @@ Zen C provides first-class support for Unicode scalar values via the `rune` type
 | `'🚀'` | `rune` | Multi-byte Unicode emoji / character |
 | `'\u{2764}'` | `rune` | Hexadecimal Unicode escape sequence |
 
+**Listing 3-2: `list3-2.zc`**
+
 ```zenc
 import "std/string.zc";
 
@@ -107,6 +109,8 @@ Char: a, Emoji: 🚀
 ## Compound Types: Fixed-Size Arrays (`T[N]`)
 
 An **array** is a fixed-length contiguous sequence of elements of the same type:
+
+**Listing 3-3: `list3-3.zc`**
 
 ```zenc
 fn main() {

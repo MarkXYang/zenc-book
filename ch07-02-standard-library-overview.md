@@ -34,6 +34,9 @@ The standard library is structured into several focused functional domains:
 ### 1. Mathematics & Numerics
 
 - **`std/math.zc`**: Mathematical constants and standard trigonometric, exponential, and rounding functions. Functions are organized under the `Math` namespace struct:
+
+  **Listing 7-12: `list7-12.zc`**
+
   ```zenc
   import "std/math.zc";
 
@@ -77,6 +80,9 @@ Zen C provides idiomatic collection types that manage their own dynamic heap mem
 ### 3. Filesystem and Paths
 
 - **`std/path.zc`**: Cross-platform file path manipulation:
+
+  **Listing 7-13: `list7-13.zc`**
+
   ```zenc
   import "std/path.zc";
 
@@ -93,6 +99,9 @@ Zen C provides idiomatic collection types that manage their own dynamic heap mem
   Path: /var/log/app.log
   ```
 - **`std/fs.zc`**: High-level file reading and writing utilities:
+
+  **Listing 7-14: `list7-14.zc`**
+
   ```zenc
   import "std/fs.zc";
 
@@ -116,6 +125,9 @@ Zen C provides idiomatic collection types that manage their own dynamic heap mem
 ### 4. Time and System
 
 - **`std/time.zc`**: High-resolution timestamps, elapsed intervals, and thread sleep:
+
+  **Listing 7-15: `list7-15.zc`**
+
   ```zenc
   import "std/time.zc";
 
@@ -134,6 +146,9 @@ Zen C provides idiomatic collection types that manage their own dynamic heap mem
   Elapsed: 50 ms
   ```
 - **`std/env.zc`**: Inspecting process environment variables and CLI parameters (returns `Option<string>`):
+
+  **Listing 7-16: `list7-16.zc`**
+
   ```zenc
   import "std/env.zc";
 
@@ -167,6 +182,8 @@ Zen C provides powerful built-in text manipulation, data format serialization, a
 #### A. JSON Parsing and Building (`std/json.zc`)
 
 `std/json.zc` implements a complete DOM-style JSON parser and builder supporting objects, arrays, strings, numbers, booleans, and null:
+
+**Listing 7-17: `list7-17.zc`**
 
 ```zenc
 import "std/json.zc";
@@ -212,6 +229,8 @@ First item: apple
 
 Zen C handles Unicode code points natively via the `rune` primitive type, and `std/utf8.zc` provides character classification, validation, and encoding utilities:
 
+**Listing 7-18: `list7-18.zc`**
+
 ```zenc
 import "std/utf8.zc";
 
@@ -244,6 +263,8 @@ Encoded 4 bytes into buffer
 #### C. Regular Expressions (`std/regex.zc`)
 
 Regular expressions in Zen C are backed by the high-performance TRE regex engine, offering POSIX extended regular expressions:
+
+**Listing 7-19: `list7-19.zc`**
 
 ```zenc
 import "std/regex.zc";
@@ -279,6 +300,8 @@ Matched: '12345' at offset 10
 
 The standard library includes dedicated modules for Base64 and hexadecimal conversions under `std/encoding/`:
 
+**Listing 7-20: `list7-20.zc`**
+
 ```zenc
 import "std/encoding/base64.zc";
 import "std/encoding/hex.zc";
@@ -306,6 +329,8 @@ Hex:    48656c6c6f2c205a656e204321
 #### E. Cryptographic Hashing (`std/crypto/`)
 
 `std/crypto/sha256.zc` provides FIPS 180-4 compliant SHA-256 computation:
+
+**Listing 7-21: `list7-21.zc`**
 
 ```zenc
 import "std/crypto/sha256.zc";
