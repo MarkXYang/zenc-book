@@ -18,13 +18,13 @@ Zen C includes built-in keywords for printing formatted text to standard output 
 **Listing 3-22: `list3-22.zc`**
 
 ```zenc
-fn main() {
-    print "Hello ";
-    println "world!";
-
-    eprint "Warning: ";
-    eprintln "low disk space!";
-}
+ 1 | fn main() {
+ 2 |     print "Hello ";
+ 3 |     println "world!";
+ 4 |
+ 5 |     eprint "Warning: ";
+ 6 |     eprintln "low disk space!";
+ 7 | }
 ```
 
 Output:
@@ -53,13 +53,13 @@ Zen C allows string literals to be used directly as statements for rapid, concis
 **Listing 3-23: `list3-23.zc`**
 
 ```zenc
-fn main() {
-    "Processing item"..; // Equivalent to print
-    " Done!";            // Equivalent to println
-
-    !"Critical Error!"..; // Equivalent to eprint
-    !" Details follow.";  // Equivalent to eprintln
-}
+ 1 | fn main() {
+ 2 |     "Processing item"..; // Equivalent to print
+ 3 |     " Done!";            // Equivalent to println
+ 4 |
+ 5 |     !"Critical Error!"..; // Equivalent to eprint
+ 6 |     !" Details follow.";  // Equivalent to eprintln
+ 7 | }
 ```
 
 Output:
@@ -83,14 +83,14 @@ In Zen C, string interpolation is **implicit**: any string literal containing `{
 **Listing 3-24: `list3-24.zc`**
 
 ```zenc
-let count = 42;
-let name = "Zen C";
-
-// Implicit interpolation
-println "Project: {name}, Items: {count}";
-
-// Shorthand printing with interpolation
-"Project: {name}, Items: {count}";
+ 1 | let count = 42;
+ 2 | let name = "Zen C";
+ 3 |
+ 4 | // Implicit interpolation
+ 5 | println "Project: {name}, Items: {count}";
+ 6 |
+ 7 | // Shorthand printing with interpolation
+ 8 | "Project: {name}, Items: {count}";
 ```
 
 Output:
@@ -106,8 +106,8 @@ To produce literal `{` or `}` characters inside an interpolated string, double t
 **Listing 3-25: `list3-25.zc`**
 
 ```zenc
-let json = "JSON payload: {{\"status\": 200}}";
-println "{json}";
+ 1 | let json = "JSON payload: {{\"status\": 200}}";
+ 2 | println "{json}";
 ```
 
 Output:
@@ -175,14 +175,14 @@ Zen C provides a shorthand syntax for asking user input using the `?` prefix ope
 **Listing 3-26: `list3-26.zc`**
 
 ```zenc
-fn main() {
-    let age: int;
-
-    // Prompts "How old are you? " and scans user input into `age`
-    ? "How old are you? " (age);
-
-    println "You are {age} years old.";
-}
+ 1 | fn main() {
+ 2 |     let age: int;
+ 3 |
+ 4 |     // Prompts "How old are you? " and scans user input into `age`
+ 5 |     ? "How old are you? " (age);
+ 6 |
+ 7 |     println "You are {age} years old.";
+ 8 | }
 ```
 
 Output (with input `25`):

@@ -50,18 +50,18 @@ A contiguous, growable array stored on the heap. Vectors allow fast random acces
 **Listing 8-1: `list8-1.zc`**
 
 ```zenc
-import "std/vec.zc";
-
-fn main() {
-    let numbers = Vec<int>::new();
-    numbers.push(10);
-    numbers.push(20);
-    numbers.push(30);
-
-    println "Vector length: {numbers.length()}";
-    println "First element: {numbers.first()}";
-    println "Element at index 1: {numbers[1]}";
-}
+ 1 | import "std/vec.zc";
+ 2 |
+ 3 | fn main() {
+ 4 |     let numbers = Vec<int>::new();
+ 5 |     numbers.push(10);
+ 6 |     numbers.push(20);
+ 7 |     numbers.push(30);
+ 8 |
+ 9 |     println "Vector length: {numbers.length()}";
+10 |     println "First element: {numbers.first()}";
+11 |     println "Element at index 1: {numbers[1]}";
+12 | }
 ```
 
 Output:
@@ -77,16 +77,16 @@ A heap-allocated, UTF-8-aware string type wrapping `Vec<char>`. It provides stri
 **Listing 8-2: `list8-2.zc`**
 
 ```zenc
-import "std/string.zc";
-
-fn main() {
-    let greeting = String::from("Hello");
-    let target = String::from(" Zen C!");
-    greeting.append(&target);
-
-    println "{greeting.c_str()}";
-    println "Character count: {greeting.utf8_len()}";
-}
+ 1 | import "std/string.zc";
+ 2 |
+ 3 | fn main() {
+ 4 |     let greeting = String::from("Hello");
+ 5 |     let target = String::from(" Zen C!");
+ 6 |     greeting.append(&target);
+ 7 |
+ 8 |     println "{greeting.c_str()}";
+ 9 |     println "Character count: {greeting.utf8_len()}";
+10 | }
 ```
 
 Output:
@@ -103,18 +103,18 @@ Associative containers powered by high-performance open-addressing hash tables:
 **Listing 8-3: `list8-3.zc`**
 
 ```zenc
-import "std/map.zc";
-
-fn main() {
-    let inventory = Map<int>::new();
-    inventory.put("apples", 15);
-    inventory.put("oranges", 8);
-
-    let count = inventory.get("apples");
-    if count.is_some() {
-        println "Apples in stock: {count.unwrap()}";
-    }
-}
+ 1 | import "std/map.zc";
+ 2 |
+ 3 | fn main() {
+ 4 |     let inventory = Map<int>::new();
+ 5 |     inventory.put("apples", 15);
+ 6 |     inventory.put("oranges", 8);
+ 7 |
+ 8 |     let count = inventory.get("apples");
+ 9 |     if count.is_some() {
+10 |         println "Apples in stock: {count.unwrap()}";
+11 |     }
+12 | }
 ```
 
 Output:

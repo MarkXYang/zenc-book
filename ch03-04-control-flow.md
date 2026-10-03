@@ -13,15 +13,15 @@ Standard conditional branching tests boolean conditions:
 **Listing 3-8: `list3-8.zc`**
 
 ```zenc
-let x = 15;
-
-if x > 10 {
-    println "Large";
-} else if x > 5 {
-    println "Medium";
-} else {
-    println "Small";
-}
+ 1 | let x = 15;
+ 2 |
+ 3 | if x > 10 {
+ 4 |     println "Large";
+ 5 | } else if x > 5 {
+ 6 |     println "Medium";
+ 7 | } else {
+ 8 |     println "Small";
+ 9 | }
 ```
 
 Output:
@@ -58,18 +58,18 @@ Zen C features pattern matching via `match`, offering a safe, expression-driven 
 **Listing 3-9: `list3-9.zc`**
 
 ```zenc
-let val = 12;
-
-match val {
-    1         => { println "One"; },
-    2 || 3    => { println "Two or Three"; },    // OR with ||
-    4 or 5    => { println "Four or Five"; },    // OR with 'or'
-    6, 7, 8   => { println "Six to Eight"; },    // OR with comma
-    10 .. 15  => { println "10 to 14"; },        // Exclusive range
-    10 ..< 15 => { println "10 to 14 (Explicit)"; }, // Exclusive range
-    20 ..= 25 => { println "20 to 25 (Inclusive)"; }, // Inclusive range
-    _         => { println "Other"; },           // Wildcard fallback
-}
+ 1 | let val = 12;
+ 2 |
+ 3 | match val {
+ 4 |     1         => { println "One"; },
+ 5 |     2 || 3    => { println "Two or Three"; },    // OR with ||
+ 6 |     4 or 5    => { println "Four or Five"; },    // OR with 'or'
+ 7 |     6, 7, 8   => { println "Six to Eight"; },    // OR with comma
+ 8 |     10 .. 15  => { println "10 to 14"; },        // Exclusive range
+ 9 |     10 ..< 15 => { println "10 to 14 (Explicit)"; }, // Exclusive range
+10 |     20 ..= 25 => { println "20 to 25 (Inclusive)"; }, // Inclusive range
+11 |     _         => { println "Other"; },           // Wildcard fallback
+12 | }
 ```
 
 Output:
@@ -84,21 +84,21 @@ Output:
 **Listing 3-10: `list3-10.zc`**
 
 ```zenc
-enum Shape {
-    Circle(f64),
-    Rect(f64, f64),
-    Point,
-}
-
-fn main() {
-    let shape = Shape::Circle(5.0);
-
-    match shape {
-        Shape::Circle(r)  => { println "Circle radius: {r}"; },
-        Shape::Rect(w, h) => { println "Rectangle area: {w * h}"; },
-        Shape::Point      => { println "Point"; },
-    }
-}
+ 1 | enum Shape {
+ 2 |     Circle(f64),
+ 3 |     Rect(f64, f64),
+ 4 |     Point,
+ 5 | }
+ 6 |
+ 7 | fn main() {
+ 8 |     let shape = Shape::Circle(5.0);
+ 9 |
+10 |     match shape {
+11 |         Shape::Circle(r)  => { println "Circle radius: {r}"; },
+12 |         Shape::Rect(w, h) => { println "Rectangle area: {w * h}"; },
+13 |         Shape::Point      => { println "Point"; },
+14 |     }
+15 | }
 ```
 
 Output:
@@ -115,20 +115,20 @@ When pattern matching move-only types (such as `Option`, `Result`, or non-Copy s
 **Listing 3-11: `list3-11.zc`**
 
 ```zenc
-import "std/option.zc";
-
-fn main() {
-    let opt = Option<int>::Some(42);
-
-    match opt {
-        Option::Some(ref n) => {
-            // 'n' is a pointer/reference to the value inside 'opt'
-            // 'opt' is NOT moved or destroyed here
-            println "Inspected value: {*n}";
-        },
-        Option::None => {},
-    }
-}
+ 1 | import "std/option.zc";
+ 2 |
+ 3 | fn main() {
+ 4 |     let opt = Option<int>::Some(42);
+ 5 |
+ 6 |     match opt {
+ 7 |         Option::Some(ref n) => {
+ 8 |             // 'n' is a pointer/reference to the value inside 'opt'
+ 9 |             // 'opt' is NOT moved or destroyed here
+10 |             println "Inspected value: {*n}";
+11 |         },
+12 |         Option::None => {},
+13 |     }
+14 | }
 ```
 
 Output:
@@ -185,11 +185,11 @@ Iterate directly over elements of fixed-size arrays or standard collections:
 **Listing 3-12: `list3-12.zc`**
 
 ```zenc
-let arr: int[5] = [10, 20, 30, 40, 50];
-
-for val in arr {
-    println "Element: {val}";
-}
+ 1 | let arr: int[5] = [10, 20, 30, 40, 50];
+ 2 |
+ 3 | for val in arr {
+ 4 |     println "Element: {val}";
+ 5 | }
 ```
 
 Output:
@@ -208,12 +208,12 @@ Access both the current index and element value simultaneously:
 **Listing 3-13: `list3-13.zc`**
 
 ```zenc
-let arr: int[3] = [100, 200, 300];
-
-// i = 0, 1, 2; val = 100, 200, 300
-for i, val in arr {
-    println "arr[{i}] = {val}";
-}
+ 1 | let arr: int[3] = [100, 200, 300];
+ 2 |
+ 3 | // i = 0, 1, 2; val = 100, 200, 300
+ 4 | for i, val in arr {
+ 5 |     println "arr[{i}] = {val}";
+ 6 | }
 ```
 
 Output:
@@ -228,19 +228,19 @@ arr[2] = 300
 **Listing 3-14: `list3-14.zc`**
 
 ```zenc
-// Standard while loop
-let count = 3;
-while count > 0 {
-    println "Count: {count}";
-    count--;
-}
-
-// do-while loop (guaranteed to execute at least once)
-let x = 0;
-do {
-    println "Executed at least once!";
-    x++;
-} while x < 0;
+ 1 | // Standard while loop
+ 2 | let count = 3;
+ 3 | while count > 0 {
+ 4 |     println "Count: {count}";
+ 5 |     count--;
+ 6 | }
+ 7 |
+ 8 | // do-while loop (guaranteed to execute at least once)
+ 9 | let x = 0;
+10 | do {
+11 |     println "Executed at least once!";
+12 |     x++;
+13 | } while x < 0;
 ```
 
 Output:
@@ -280,30 +280,30 @@ Zen C introduces `guard` and `unless` statements to simplify early-exit error ha
 **Listing 3-15: `list3-15.zc`**
 
 ```zenc
-fn process_ptr(ptr: void*) {
-    guard ptr != NULL else {
-        println "Null pointer provided! Exiting early.";
-        return;
-    }
-
-    println "Pointer is valid, proceeding with work...";
-}
-
-fn validate(is_valid: bool) {
-    unless is_valid {
-        println "State is invalid!";
-        return;
-    }
-
-    println "State is valid.";
-}
-
-fn main() {
-    process_ptr(NULL);
-    process_ptr((void*)1);
-    validate(false);
-    validate(true);
-}
+ 1 | fn process_ptr(ptr: void*) {
+ 2 |     guard ptr != NULL else {
+ 3 |         println "Null pointer provided! Exiting early.";
+ 4 |         return;
+ 5 |     }
+ 6 |
+ 7 |     println "Pointer is valid, proceeding with work...";
+ 8 | }
+ 9 |
+10 | fn validate(is_valid: bool) {
+11 |     unless is_valid {
+12 |         println "State is invalid!";
+13 |         return;
+14 |     }
+15 |
+16 |     println "State is valid.";
+17 | }
+18 |
+19 | fn main() {
+20 |     process_ptr(NULL);
+21 |     process_ptr((void*)1);
+22 |     validate(false);
+23 |     validate(true);
+24 | }
 ```
 
 Output:

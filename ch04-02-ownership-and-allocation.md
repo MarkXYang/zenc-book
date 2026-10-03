@@ -64,28 +64,28 @@ Passing a resource variable into a function follows the exact same ownership rul
 **Listing 4-4: `list4-4.zc`**
 
 ```zenc
-struct CustomBuffer {
-    data: void*;
-    size: usize;
-}
-
-fn consume_buffer(buf: CustomBuffer) {
-    println "Consumed buffer of size {buf.size}";
-}
-
-fn peek_buffer(buf: CustomBuffer*) {
-    println "Peeked buffer of size {buf.size}";
-}
-
-fn main() {
-    let my_buf = CustomBuffer { data: malloc(50), size: 50 };
-
-    peek_buffer(&my_buf); // OK: borrowed reference, my_buf remains valid
-
-    consume_buffer(my_buf); // OK: moved into function
-
-    // peek_buffer(&my_buf); // Error: my_buf was moved above!
-}
+ 1 | struct CustomBuffer {
+ 2 |     data: void*;
+ 3 |     size: usize;
+ 4 | }
+ 5 |
+ 6 | fn consume_buffer(buf: CustomBuffer) {
+ 7 |     println "Consumed buffer of size {buf.size}";
+ 8 | }
+ 9 |
+10 | fn peek_buffer(buf: CustomBuffer*) {
+11 |     println "Peeked buffer of size {buf.size}";
+12 | }
+13 |
+14 | fn main() {
+15 |     let my_buf = CustomBuffer { data: malloc(50), size: 50 };
+16 |
+17 |     peek_buffer(&my_buf); // OK: borrowed reference, my_buf remains valid
+18 |
+19 |     consume_buffer(my_buf); // OK: moved into function
+20 |
+21 |     // peek_buffer(&my_buf); // Error: my_buf was moved above!
+22 | }
 ```
 
 Output:
@@ -118,21 +118,21 @@ You can explicitly opt into implicit duplication by implementing `impl Copy for 
 **Listing 4-5: `list4-5.zc`**
 
 ```zenc
-struct Point {
-    x: int;
-    y: int;
-}
-
-// Opt-in to implicit value duplication (Copy behavior)
-impl Copy for Point {}
-
-fn main() {
-    let p1 = Point { x: 10, y: 20 };
-    let p2 = p1; // Copied implicitly because Point implements Copy
-
-    // Both p1 and p2 remain valid!
-    println "p1: ({p1.x}, {p1.y}), p2: ({p2.x}, {p2.y})";
-}
+ 1 | struct Point {
+ 2 |     x: int;
+ 3 |     y: int;
+ 4 | }
+ 5 |
+ 6 | // Opt-in to implicit value duplication (Copy behavior)
+ 7 | impl Copy for Point {}
+ 8 |
+ 9 | fn main() {
+10 |     let p1 = Point { x: 10, y: 20 };
+11 |     let p2 = p1; // Copied implicitly because Point implements Copy
+12 |
+13 |     // Both p1 and p2 remain valid!
+14 |     println "p1: ({p1.x}, {p1.y}), p2: ({p2.x}, {p2.y})";
+15 | }
 ```
 
 Output:

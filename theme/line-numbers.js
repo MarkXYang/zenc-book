@@ -1,65 +1,45 @@
-/* Dynamic line numbers for mdBook code blocks */
+/* Automatically strip line numbers (e.g. " 1 | ") when copying code in mdBook */
 (function() {
     'use strict';
 
-    function addLineNumbers() {
-        const codeBlocks = document.querySelectorAll('pre > code');
+    function initClipboardFilter() {
+        // 1. Hook mdBook's built-in copy button handler
+        if (typeof window.playground_text === 'function') {
+            const originalPlaygroundText = window.playground_text;
+            window.playground_text = function(playground, hidden) {
+                const raw = originalPlaygroundText(playground, hidden);
+                if (!raw) return raw;
+                return raw.replace(/^\s*\d+\s*\|\s?/gm, '');
+            };
+        }
 
-        codeBlocks.forEach(function(code) {
-            const pre = code.parentElement;
-            if (!pre || pre.tagName !== 'PRE') return;
+        // 2. Hook manual selection copy (Ctrl+C / Cmd+C / Right-click Copy)
+        document.addEventListener('copy', function(e) {
+            const selection = window.getSelection();
+            if (!selection || selection.rangeCount === 0) return;
 
-            // Avoid double-processing
-            if (pre.classList.contains('has-line-numbers')) return;
+            const anchorNode = selection.anchorNode;
+            if (!anchorNode) return;
+            const element = anchorNode.nodeType === Node.ELEMENT_NODE ? anchorNode : anchorNode.parentElement;
+            if (!element) return;
 
-            // Skip terminal output blocks
-            if (code.classList.contains('language-text') || code.classList.contains('language-console')) {
-                return;
+            const pre = element.closest('pre');
+            if (!pre) return;
+
+            const selectedText = selection.toString();
+            if (/^\s*\d+\s*\|/m.test(selectedText)) {
+                const cleaned = selectedText.replace(/^\s*\d+\s*\|\s?/gm, '');
+                if (e.clipboardData) {
+                    e.clipboardData.setData('text/plain', cleaned);
+                    e.preventDefault();
+                }
             }
-
-            // Get code text
-            const text = code.textContent || '';
-            if (!text.trim()) return;
-
-            // Count lines
-            let lines = text.split('\n');
-            // Remove single trailing newline if present (standard pre behavior)
-            if (lines.length > 0 && lines[lines.length - 1] === '') {
-                lines.pop();
-            }
-
-            if (lines.length === 0) return;
-
-            // Add class to pre container
-            pre.classList.add('has-line-numbers');
-
-            // Build gutter container
-            const gutter = document.createElement('div');
-            gutter.className = 'line-numbers-gutter';
-            gutter.setAttribute('aria-hidden', 'true');
-
-            // Dynamically scale gutter width for 3+ digit code lengths
-            if (lines.length >= 1000) {
-                gutter.style.minWidth = '4.2rem';
-            } else if (lines.length >= 100) {
-                gutter.style.minWidth = '3.4rem';
-            }
-
-            for (let i = 1; i <= lines.length; i++) {
-                const span = document.createElement('span');
-                span.className = 'line-number';
-                span.textContent = i;
-                gutter.appendChild(span);
-            }
-
-            // Insert gutter right before the code block
-            pre.insertBefore(gutter, code);
         });
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', addLineNumbers);
+        document.addEventListener('DOMContentLoaded', initClipboardFilter);
     } else {
-        addLineNumbers();
+        initClipboardFilter();
     }
 })();

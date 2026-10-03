@@ -108,20 +108,20 @@ To access values stored in a struct, use **dot notation** (`.`):
 **Listing 5-1: `list5-1.zc`**
 
 ```zenc
-let user1 = User {
-    username: "mark",
-    email: "mark@example.com",
-    sign_in_count: 1,
-    active: true,
-};
-
-println "User: {user1.username}, Logins: {user1.sign_in_count}";
-
-// Update fields on a mutable instance declared with 'let':
-user1.email = "mark.new@example.com";
-user1.sign_in_count = user1.sign_in_count + 1;
-
-println "Updated email: {user1.email}";
+ 1 | let user1 = User {
+ 2 |     username: "mark",
+ 3 |     email: "mark@example.com",
+ 4 |     sign_in_count: 1,
+ 5 |     active: true,
+ 6 | };
+ 7 |
+ 8 | println "User: {user1.username}, Logins: {user1.sign_in_count}";
+ 9 |
+10 | // Update fields on a mutable instance declared with 'let':
+11 | user1.email = "mark.new@example.com";
+12 | user1.sign_in_count = user1.sign_in_count + 1;
+13 |
+14 | println "Updated email: {user1.email}";
 ```
 
 Output:
@@ -156,12 +156,12 @@ When the local variable names match the struct field names:
 **Listing 5-2: `list5-2.zc`**
 
 ```zenc
-let p = Point { x: 10, y: 20 };
-
-// Unpacks p.x into 'x', and p.y into 'y'
-let Point { x, y } = p;
-
-println "x = {x}, y = {y}";
+ 1 | let p = Point { x: 10, y: 20 };
+ 2 |
+ 3 | // Unpacks p.x into 'x', and p.y into 'y'
+ 4 | let Point { x, y } = p;
+ 5 |
+ 6 | println "x = {x}, y = {y}";
 ```
 
 Output:
@@ -176,9 +176,9 @@ If you want to assign fields to variables with different names, specify `field_n
 **Listing 5-3: `list5-3.zc`**
 
 ```zenc
-let Point { x: pos_x, y: pos_y } = p;
-
-println "pos_x = {pos_x}, pos_y = {pos_y}";
+ 1 | let Point { x: pos_x, y: pos_y } = p;
+ 2 |
+ 3 | println "pos_x = {pos_x}, pos_y = {pos_y}";
 ```
 
 Output:
@@ -205,26 +205,26 @@ When you write `use Type;` without a field name, Zen C **flattens** all the fiel
 **Listing 5-4: `list5-4.zc`**
 
 ```zenc
-struct Entity {
-    id: int;
-}
-
-struct Player {
-    // Mixin (Unnamed): Flattens fields
-    use Entity;  // Adds 'id' to Player directly
-    name: string;
-}
-
-fn main() {
-    // When initializing, provide the flattened fields directly:
-    let player = Player {
-        id: 1,
-        name: "Hero",
-    };
-
-    // Direct access to mixed-in fields:
-    println "Player ID: {player.id}, Name: {player.name}";
-}
+ 1 | struct Entity {
+ 2 |     id: int;
+ 3 | }
+ 4 |
+ 5 | struct Player {
+ 6 |     // Mixin (Unnamed): Flattens fields
+ 7 |     use Entity;  // Adds 'id' to Player directly
+ 8 |     name: string;
+ 9 | }
+10 |
+11 | fn main() {
+12 |     // When initializing, provide the flattened fields directly:
+13 |     let player = Player {
+14 |         id: 1,
+15 |         name: "Hero",
+16 |     };
+17 |
+18 |     // Direct access to mixed-in fields:
+19 |     println "Player ID: {player.id}, Name: {player.name}";
+20 | }
 ```
 
 Output:
@@ -242,20 +242,20 @@ Named composition embeds the component as a nested field. It is accessed via `ou
 **Listing 5-5: `list5-5.zc`**
 
 ```zenc
-struct Match {
-    // Composition (Named): Nests fields
-    use p1: Player; // Accessed via match.p1
-    use p2: Player; // Accessed via match.p2
-}
-
-fn main() {
-    let m = Match {
-        p1: Player { id: 1, name: "Alice" },
-        p2: Player { id: 2, name: "Bob" },
-    };
-
-    println "Match: {m.p1.name} (id {m.p1.id}) vs {m.p2.name} (id {m.p2.id})";
-}
+ 1 | struct Match {
+ 2 |     // Composition (Named): Nests fields
+ 3 |     use p1: Player; // Accessed via match.p1
+ 4 |     use p2: Player; // Accessed via match.p2
+ 5 | }
+ 6 |
+ 7 | fn main() {
+ 8 |     let m = Match {
+ 9 |         p1: Player { id: 1, name: "Alice" },
+10 |         p2: Player { id: 2, name: "Bob" },
+11 |     };
+12 |
+13 |     println "Match: {m.p1.name} (id {m.p1.id}) vs {m.p2.name} (id {m.p2.id})";
+14 | }
 ```
 
 Output:
@@ -276,27 +276,27 @@ Zen C natively supports C-style bitfields using `field: Type : N;` where `N` is 
 **Listing 5-6: `list5-6.zc`**
 
 ```zenc
-struct Flags {
-    is_readable:   u8 : 1; // 1 bit
-    is_writable:   u8 : 1; // 1 bit
-    is_executable: u8 : 1; // 1 bit
-    mode:          u8 : 2; // 2 bits (values 0-3)
-    reserved:      u8 : 3; // 3 bits padding out the 8-bit byte
-}
-
-fn main() {
-    let perms = Flags {
-        is_readable: 1,
-        is_writable: 1,
-        is_executable: 0,
-        mode: 2,
-        reserved: 0,
-    };
-
-    if perms.is_readable == 1 {
-        println "File is readable";
-    }
-}
+ 1 | struct Flags {
+ 2 |     is_readable:   u8 : 1; // 1 bit
+ 3 |     is_writable:   u8 : 1; // 1 bit
+ 4 |     is_executable: u8 : 1; // 1 bit
+ 5 |     mode:          u8 : 2; // 2 bits (values 0-3)
+ 6 |     reserved:      u8 : 3; // 3 bits padding out the 8-bit byte
+ 7 | }
+ 8 |
+ 9 | fn main() {
+10 |     let perms = Flags {
+11 |         is_readable: 1,
+12 |         is_writable: 1,
+13 |         is_executable: 0,
+14 |         mode: 2,
+15 |         reserved: 0,
+16 |     };
+17 |
+18 |     if perms.is_readable == 1 {
+19 |         println "File is readable";
+20 |     }
+21 | }
 ```
 
 Output:
@@ -350,18 +350,18 @@ As introduced in [Chapter 4](ch04-02-ownership-and-allocation.md), structs in Ze
 **Listing 5-7: `list5-7.zc`**
 
 ```zenc
-@derive(Copy)
-struct Point {
-    x: int;
-    y: int;
-}
-
-fn main() {
-    let p1 = Point { x: 1, y: 2 };
-    let p2 = p1; // Copied! p1 remains completely valid.
-
-    println "p1: ({p1.x}, {p1.y}), p2: ({p2.x}, {p2.y})";
-}
+ 1 | @derive(Copy)
+ 2 | struct Point {
+ 3 |     x: int;
+ 4 |     y: int;
+ 5 | }
+ 6 |
+ 7 | fn main() {
+ 8 |     let p1 = Point { x: 1, y: 2 };
+ 9 |     let p2 = p1; // Copied! p1 remains completely valid.
+10 |
+11 |     println "p1: ({p1.x}, {p1.y}), p2: ({p2.x}, {p2.y})";
+12 | }
 ```
 
 Output:
@@ -381,28 +381,28 @@ In systems programming, structs are frequently passed by reference using pointer
 **Listing 5-8: `list5-8.zc`**
 
 ```zenc
-struct User {
-    username: string;
-    email: string;
-    sign_in_count: int;
-    active: bool;
-}
-
-fn print_user(user: User*) {
-    // In Zen C, dot (.) automatically dereferences pointers!
-    println "User: {user.username} <{user.email}>";
-}
-
-fn main() {
-    let u = User {
-        username: "mark",
-        email: "mark@example.com",
-        sign_in_count: 5,
-        active: true,
-    };
-
-    print_user(&u); // Pass pointer to u
-}
+ 1 | struct User {
+ 2 |     username: string;
+ 3 |     email: string;
+ 4 |     sign_in_count: int;
+ 5 |     active: bool;
+ 6 | }
+ 7 |
+ 8 | fn print_user(user: User*) {
+ 9 |     // In Zen C, dot (.) automatically dereferences pointers!
+10 |     println "User: {user.username} <{user.email}>";
+11 | }
+12 |
+13 | fn main() {
+14 |     let u = User {
+15 |         username: "mark",
+16 |         email: "mark@example.com",
+17 |         sign_in_count: 5,
+18 |         active: true,
+19 |     };
+20 |
+21 |     print_user(&u); // Pass pointer to u
+22 | }
 ```
 
 Output:

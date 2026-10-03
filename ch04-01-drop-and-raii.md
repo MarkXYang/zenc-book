@@ -27,15 +27,15 @@ Multiple `defer` statements inside the same scope are executed in **LIFO (Last-I
 **Listing 4-1: `list4-1.zc`**
 
 ```zenc
-fn main() {
-    println "Start";
-
-    defer println "Third (First deferred)";
-    defer println "Second (Second deferred)";
-    defer println "First (Last deferred)";
-
-    println "End";
-}
+ 1 | fn main() {
+ 2 |     println "Start";
+ 3 |
+ 4 |     defer println "Third (First deferred)";
+ 5 |     defer println "Second (Second deferred)";
+ 6 |     defer println "First (Last deferred)";
+ 7 |
+ 8 |     println "End";
+ 9 | }
 ```
 
 Output:
@@ -77,32 +77,32 @@ In Zen C, custom structs implement the `Drop` trait to define automatic destruct
 **Listing 4-2: `list4-2.zc`**
 
 ```zenc
-struct CustomBuffer {
-    data: void*;
-    size: usize;
-}
-
-impl Drop for CustomBuffer {
-    fn drop(self) {
-        println "Dropping CustomBuffer (releasing {self.size} bytes)";
-        if self.data != 0 {
-            free(self.data);
-        }
-    }
-}
-
-fn create_and_use() {
-    let buf = CustomBuffer {
-        data: malloc(512),
-        size: 512,
-    };
-
-    // Use buf...
-} // buf goes out of scope here: CustomBuffer.drop(buf) is called automatically
-
-fn main() {
-    create_and_use();
-}
+ 1 | struct CustomBuffer {
+ 2 |     data: void*;
+ 3 |     size: usize;
+ 4 | }
+ 5 |
+ 6 | impl Drop for CustomBuffer {
+ 7 |     fn drop(self) {
+ 8 |         println "Dropping CustomBuffer (releasing {self.size} bytes)";
+ 9 |         if self.data != 0 {
+10 |             free(self.data);
+11 |         }
+12 |     }
+13 | }
+14 |
+15 | fn create_and_use() {
+16 |     let buf = CustomBuffer {
+17 |         data: malloc(512),
+18 |         size: 512,
+19 |     };
+20 |
+21 |     // Use buf...
+22 | } // buf goes out of scope here: CustomBuffer.drop(buf) is called automatically
+23 |
+24 | fn main() {
+25 |     create_and_use();
+26 | }
 ```
 
 Output:
@@ -129,54 +129,54 @@ In Zen C, the standard convention is to implement a `forget(self)` method on the
 **Listing 4-3: `list4-3.zc`**
 
 ```zenc
-struct CustomBuffer {
-    data: void*;
-    size: usize;
-}
-
-impl CustomBuffer {
-    // Detaches the underlying resource, disarming Drop
-    fn forget(self) {
-        self.data = NULL;
-        self.size = 0;
-    }
-}
-
-impl Drop for CustomBuffer {
-    fn drop(self) {
-        if self.data != NULL {
-            println "Drop: freeing {self.size} bytes";
-            free(self.data);
-        } else {
-            println "Drop: buffer was forgotten, skipping deallocation";
-        }
-    }
-}
-
-fn transfer_to_c_api(raw_ptr: void*, size: usize) {
-    println "C API taking ownership of {size} bytes";
-    // Simulated C API freeing the buffer
-    free(raw_ptr);
-}
-
-fn main() {
-    println "=== Normal Drop ===";
-    {
-        let buf = CustomBuffer { data: malloc(64), size: 64 };
-    } // buf dropped here -> frees 64 bytes
-
-    println "\n=== Disarming Drop with forget() ===";
-    {
-        let buf = CustomBuffer { data: malloc(128), size: 128 };
-        let raw = buf.data;
-        let size = buf.size;
-
-        // Disarm buf's destructor before passing to C API
-        buf.forget();
-
-        transfer_to_c_api(raw, size);
-    } // buf dropped here, but data is NULL so no double free!
-}
+ 1 | struct CustomBuffer {
+ 2 |     data: void*;
+ 3 |     size: usize;
+ 4 | }
+ 5 |
+ 6 | impl CustomBuffer {
+ 7 |     // Detaches the underlying resource, disarming Drop
+ 8 |     fn forget(self) {
+ 9 |         self.data = NULL;
+10 |         self.size = 0;
+11 |     }
+12 | }
+13 |
+14 | impl Drop for CustomBuffer {
+15 |     fn drop(self) {
+16 |         if self.data != NULL {
+17 |             println "Drop: freeing {self.size} bytes";
+18 |             free(self.data);
+19 |         } else {
+20 |             println "Drop: buffer was forgotten, skipping deallocation";
+21 |         }
+22 |     }
+23 | }
+24 |
+25 | fn transfer_to_c_api(raw_ptr: void*, size: usize) {
+26 |     println "C API taking ownership of {size} bytes";
+27 |     // Simulated C API freeing the buffer
+28 |     free(raw_ptr);
+29 | }
+30 |
+31 | fn main() {
+32 |     println "=== Normal Drop ===";
+33 |     {
+34 |         let buf = CustomBuffer { data: malloc(64), size: 64 };
+35 |     } // buf dropped here -> frees 64 bytes
+36 |
+37 |     println "\n=== Disarming Drop with forget() ===";
+38 |     {
+39 |         let buf = CustomBuffer { data: malloc(128), size: 128 };
+40 |         let raw = buf.data;
+41 |         let size = buf.size;
+42 |
+43 |         // Disarm buf's destructor before passing to C API
+44 |         buf.forget();
+45 |
+46 |         transfer_to_c_api(raw, size);
+47 |     } // buf dropped here, but data is NULL so no double free!
+48 | }
 ```
 
 Output:

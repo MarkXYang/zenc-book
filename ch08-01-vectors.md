@@ -42,26 +42,26 @@ If you know in advance how many elements the vector will hold, pre-allocating ca
 **Listing 8-4: `list8-4.zc`**
 
 ```zenc
-import "std/vec.zc";
-
-fn main() {
-    // 1. Lazy allocation: 0 initial capacity
-    let v = Vec<int>::new();
-    println "Initial length: {v.length()}, capacity: {v.cap}";
-
-    // Pushing elements triggers growth
-    v.push(10);
-    v.push(20);
-    v.push(30);
-
-    println "After 3 pushes -> length: {v.length()}, capacity: {v.cap}";
-    println "First: {v.first()}, Last: {v.last()}";
-    println "Element at index 1: {v[1]}";
-
-    // 2. Pre-allocated capacity: avoids resizing overhead
-    let preallocated = Vec<int>::with_capacity(64);
-    println "Preallocated capacity: {preallocated.cap}";
-}
+ 1 | import "std/vec.zc";
+ 2 |
+ 3 | fn main() {
+ 4 |     // 1. Lazy allocation: 0 initial capacity
+ 5 |     let v = Vec<int>::new();
+ 6 |     println "Initial length: {v.length()}, capacity: {v.cap}";
+ 7 |
+ 8 |     // Pushing elements triggers growth
+ 9 |     v.push(10);
+10 |     v.push(20);
+11 |     v.push(30);
+12 |
+13 |     println "After 3 pushes -> length: {v.length()}, capacity: {v.cap}";
+14 |     println "First: {v.first()}, Last: {v.last()}";
+15 |     println "Element at index 1: {v[1]}";
+16 |
+17 |     // 2. Pre-allocated capacity: avoids resizing overhead
+18 |     let preallocated = Vec<int>::with_capacity(64);
+19 |     println "Preallocated capacity: {preallocated.cap}";
+20 | }
 ```
 
 Output:
@@ -88,34 +88,34 @@ In addition to `push()`, `Vec<T>` provides fine-grained control over adding and 
 **Listing 8-5: `list8-5.zc`**
 
 ```zenc
-import "std/vec.zc";
-
-fn main() {
-    let v = Vec<int>::new();
-    v.push(10);
-    v.push(20);
-    v.push(30);
-
-    // Insert 15 at index 1: [10, 15, 20, 30]
-    v.insert(1, 15);
-    println "After insert(1, 15), length: {v.length()}";
-
-    // Remove element at index 2 (which is 20): [10, 15, 30]
-    let removed = v.remove(2);
-    println "Removed element: {removed}";
-
-    // Pop the last element (30): [10, 15]
-    let popped = v.pop();
-    println "Popped element: {popped}";
-
-    // Safe pop using pop_opt():
-    let opt = v.pop_opt();
-    if opt.is_some() {
-        println "Safely popped: {opt.unwrap()}";
-    }
-
-    println "Remaining length: {v.length()}";
-}
+ 1 | import "std/vec.zc";
+ 2 |
+ 3 | fn main() {
+ 4 |     let v = Vec<int>::new();
+ 5 |     v.push(10);
+ 6 |     v.push(20);
+ 7 |     v.push(30);
+ 8 |
+ 9 |     // Insert 15 at index 1: [10, 15, 20, 30]
+10 |     v.insert(1, 15);
+11 |     println "After insert(1, 15), length: {v.length()}";
+12 |
+13 |     // Remove element at index 2 (which is 20): [10, 15, 30]
+14 |     let removed = v.remove(2);
+15 |     println "Removed element: {removed}";
+16 |
+17 |     // Pop the last element (30): [10, 15]
+18 |     let popped = v.pop();
+19 |     println "Popped element: {popped}";
+20 |
+21 |     // Safe pop using pop_opt():
+22 |     let opt = v.pop_opt();
+23 |     if opt.is_some() {
+24 |         println "Safely popped: {opt.unwrap()}";
+25 |     }
+26 |
+27 |     println "Remaining length: {v.length()}";
+28 | }
 ```
 
 Output:
@@ -154,29 +154,29 @@ Yields pointers (`T*`) to each element in the vector. This allows you to inspect
 **Listing 8-6: `list8-6.zc`**
 
 ```zenc
-import "std/vec.zc";
-
-fn main() {
-    let scores = Vec<int>::new();
-    scores.push(45);
-    scores.push(58);
-    scores.push(72);
-
-    println "--- Original Scores ---";
-    for s in &scores {
-        println "Score: {*s}";
-    }
-
-    // In-place mutation: curve every score by +10
-    for s in &scores {
-        *s = *s + 10;
-    }
-
-    println "\n--- Curved Scores ---";
-    for s in &scores {
-        println "Curved score: {*s}";
-    }
-}
+ 1 | import "std/vec.zc";
+ 2 |
+ 3 | fn main() {
+ 4 |     let scores = Vec<int>::new();
+ 5 |     scores.push(45);
+ 6 |     scores.push(58);
+ 7 |     scores.push(72);
+ 8 |
+ 9 |     println "--- Original Scores ---";
+10 |     for s in &scores {
+11 |         println "Score: {*s}";
+12 |     }
+13 |
+14 |     // In-place mutation: curve every score by +10
+15 |     for s in &scores {
+16 |         *s = *s + 10;
+17 |     }
+18 |
+19 |     println "\n--- Curved Scores ---";
+20 |     for s in &scores {
+21 |         println "Curved score: {*s}";
+22 |     }
+23 | }
 ```
 
 Output:
@@ -206,33 +206,33 @@ Curved score: 82
 **Listing 8-7: `list8-7.zc`**
 
 ```zenc
-import "std/vec.zc";
-
-fn main() {
-    let nums = Vec<int>::new();
-    nums.push(1);
-    nums.push(2);
-    nums.push(3);
-    nums.push(4);
-    nums.push(5);
-
-    // 1. Filter: select even numbers
-    let evens = nums.iterator().filter(fn(x: int) -> bool { return x % 2 == 0; });
-    println "Evens count: {evens.length()}";
-    for e in &evens {
-        println "  Even: {*e}";
-    }
-
-    // 2. Fold: sum all numbers
-    let sum = nums.iterator().fold(0, fn(acc: int, x: int) -> int { return acc + x; });
-    println "Sum: {sum}";
-
-    // 3. Find: find first value greater than 3
-    let found = nums.iterator().find(fn(x: int) -> bool { return x > 3; });
-    if found.is_some() {
-        println "First number > 3: {found.unwrap()}";
-    }
-}
+ 1 | import "std/vec.zc";
+ 2 |
+ 3 | fn main() {
+ 4 |     let nums = Vec<int>::new();
+ 5 |     nums.push(1);
+ 6 |     nums.push(2);
+ 7 |     nums.push(3);
+ 8 |     nums.push(4);
+ 9 |     nums.push(5);
+10 |
+11 |     // 1. Filter: select even numbers
+12 |     let evens = nums.iterator().filter(fn(x: int) -> bool { return x % 2 == 0; });
+13 |     println "Evens count: {evens.length()}";
+14 |     for e in &evens {
+15 |         println "  Even: {*e}";
+16 |     }
+17 |
+18 |     // 2. Fold: sum all numbers
+19 |     let sum = nums.iterator().fold(0, fn(acc: int, x: int) -> int { return acc + x; });
+20 |     println "Sum: {sum}";
+21 |
+22 |     // 3. Find: find first value greater than 3
+23 |     let found = nums.iterator().find(fn(x: int) -> bool { return x > 3; });
+24 |     if found.is_some() {
+25 |         println "First number > 3: {found.unwrap()}";
+26 |     }
+27 | }
 ```
 
 Output:
@@ -265,34 +265,34 @@ Zen C overloads common operators for `Vec<T>` to make code expressive and concis
 **Listing 8-8: `list8-8.zc`**
 
 ```zenc
-import "std/vec.zc";
-
-fn main() {
-    let a = Vec<int>::new();
-    a << 10; // Stream push
-    a << 20;
-
-    let b = Vec<int>::new();
-    b << 30;
-    b << 40;
-
-    // Concatenate into a new vector
-    let c = a + &b;
-    println "Concatenated length: {c.length()}";
-
-    // Stream pop
-    let popped: int = 0;
-    c >> &popped;
-    println "Popped via >>: {popped}";
-
-    // Repeat vector elements
-    let repeated = a * 2;
-    println "Repeated length: {repeated.length()}";
-
-    // Structural equality
-    let a_copy = a.clone();
-    println "a == a_copy: {a == &a_copy}";
-}
+ 1 | import "std/vec.zc";
+ 2 |
+ 3 | fn main() {
+ 4 |     let a = Vec<int>::new();
+ 5 |     a << 10; // Stream push
+ 6 |     a << 20;
+ 7 |
+ 8 |     let b = Vec<int>::new();
+ 9 |     b << 30;
+10 |     b << 40;
+11 |
+12 |     // Concatenate into a new vector
+13 |     let c = a + &b;
+14 |     println "Concatenated length: {c.length()}";
+15 |
+16 |     // Stream pop
+17 |     let popped: int = 0;
+18 |     c >> &popped;
+19 |     println "Popped via >>: {popped}";
+20 |
+21 |     // Repeat vector elements
+22 |     let repeated = a * 2;
+23 |     println "Repeated length: {repeated.length()}";
+24 |
+25 |     // Structural equality
+26 |     let a_copy = a.clone();
+27 |     println "a == a_copy: {a == &a_copy}";
+28 | }
 ```
 
 Output:
@@ -312,23 +312,23 @@ Vectors work seamlessly with user-defined structs:
 **Listing 8-9: `list8-9.zc`**
 
 ```zenc
-import "std/vec.zc";
-
-struct Task {
-    id: int;
-    priority: int;
-}
-
-fn main() {
-    let tasks = Vec<Task>::new();
-    tasks.push(Task { id: 101, priority: 1 });
-    tasks.push(Task { id: 102, priority: 3 });
-    tasks.push(Task { id: 103, priority: 2 });
-
-    for t in &tasks {
-        println "Task #{(*t).id} (Priority: {(*t).priority})";
-    }
-}
+ 1 | import "std/vec.zc";
+ 2 |
+ 3 | struct Task {
+ 4 |     id: int;
+ 5 |     priority: int;
+ 6 | }
+ 7 |
+ 8 | fn main() {
+ 9 |     let tasks = Vec<Task>::new();
+10 |     tasks.push(Task { id: 101, priority: 1 });
+11 |     tasks.push(Task { id: 102, priority: 3 });
+12 |     tasks.push(Task { id: 103, priority: 2 });
+13 |
+14 |     for t in &tasks {
+15 |         println "Task #{(*t).id} (Priority: {(*t).priority})";
+16 |     }
+17 | }
 ```
 
 Output:
@@ -365,96 +365,96 @@ Here is a complete program demonstrating creation, modification, iteration, oper
 **Listing 8-10: `list8-10.zc`**
 
 ```zenc
-import "std/vec.zc";
-
-struct Task {
-    id: int;
-    priority: int;
-}
-
-fn main() {
-    println "=== 1. Basic Vector Operations ===";
-    let v = Vec<int>::new();
-    v.push(10);
-    v.push(20);
-    v.push(30);
-
-    println "Length: {v.length()}, First: {v.first()}, Last: {v.last()}";
-    println "Element at index 1: {v[1]}";
-
-    println "\n=== 2. Insert, Remove, and Pop ===";
-    v.insert(1, 15);
-    println "After insert(1, 15), length: {v.length()}";
-
-    let removed = v.remove(2);
-    println "Removed element at index 2: {removed}";
-
-    let popped = v.pop();
-    println "Popped last element: {popped}";
-
-    let opt = v.pop_opt();
-    if opt.is_some() {
-        println "Safely popped: {opt.unwrap()}";
-    }
-
-    println "\n=== 3. Iteration by Reference and Mutation ===";
-    for x in &v {
-        *x = *x * 5;
-    }
-    for x in &v {
-        println "Mutated value: {*x}";
-    }
-
-    println "\n=== 4. Functional Combinators ===";
-    let nums = Vec<int>::new();
-    nums.push(1);
-    nums.push(2);
-    nums.push(3);
-    nums.push(4);
-    nums.push(5);
-
-    let evens = nums.iterator().filter(fn(x: int) -> bool { return x % 2 == 0; });
-    println "Filtered evens count: {evens.length()}";
-    for e in &evens {
-        println "  Even: {*e}";
-    }
-
-    let sum = nums.iterator().fold(0, fn(acc: int, x: int) -> int { return acc + x; });
-    println "Sum of nums: {sum}";
-
-    let first_even = nums.iterator().find(fn(x: int) -> bool { return x % 2 == 0; });
-    if first_even.is_some() {
-        println "First even number found: {first_even.unwrap()}";
-    }
-
-    println "\n=== 5. Operator Overloading ===";
-    let v2 = Vec<int>::new();
-    v2 << 100;
-    v2 << 200;
-
-    let combined = v + &v2;
-    println "Combined vector length: {combined.length()}";
-    for item in &combined {
-        println "  Combined item: {*item}";
-    }
-
-    let popped_val: int = 0;
-    v2 >> &popped_val;
-    println "Popped from v2 via >>: {popped_val}";
-
-    let repeated = v * 2;
-    println "Repeated vector length: {repeated.length()}";
-
-    println "\n=== 6. Vector of Custom Structs ===";
-    let task_list = Vec<Task>::new();
-    task_list.push(Task { id: 101, priority: 1 });
-    task_list.push(Task { id: 102, priority: 3 });
-    task_list.push(Task { id: 103, priority: 2 });
-
-    for t in &task_list {
-        println "Task #{(*t).id} (Priority: {(*t).priority})";
-    }
-}
+ 1 | import "std/vec.zc";
+ 2 |
+ 3 | struct Task {
+ 4 |     id: int;
+ 5 |     priority: int;
+ 6 | }
+ 7 |
+ 8 | fn main() {
+ 9 |     println "=== 1. Basic Vector Operations ===";
+10 |     let v = Vec<int>::new();
+11 |     v.push(10);
+12 |     v.push(20);
+13 |     v.push(30);
+14 |
+15 |     println "Length: {v.length()}, First: {v.first()}, Last: {v.last()}";
+16 |     println "Element at index 1: {v[1]}";
+17 |
+18 |     println "\n=== 2. Insert, Remove, and Pop ===";
+19 |     v.insert(1, 15);
+20 |     println "After insert(1, 15), length: {v.length()}";
+21 |
+22 |     let removed = v.remove(2);
+23 |     println "Removed element at index 2: {removed}";
+24 |
+25 |     let popped = v.pop();
+26 |     println "Popped last element: {popped}";
+27 |
+28 |     let opt = v.pop_opt();
+29 |     if opt.is_some() {
+30 |         println "Safely popped: {opt.unwrap()}";
+31 |     }
+32 |
+33 |     println "\n=== 3. Iteration by Reference and Mutation ===";
+34 |     for x in &v {
+35 |         *x = *x * 5;
+36 |     }
+37 |     for x in &v {
+38 |         println "Mutated value: {*x}";
+39 |     }
+40 |
+41 |     println "\n=== 4. Functional Combinators ===";
+42 |     let nums = Vec<int>::new();
+43 |     nums.push(1);
+44 |     nums.push(2);
+45 |     nums.push(3);
+46 |     nums.push(4);
+47 |     nums.push(5);
+48 |
+49 |     let evens = nums.iterator().filter(fn(x: int) -> bool { return x % 2 == 0; });
+50 |     println "Filtered evens count: {evens.length()}";
+51 |     for e in &evens {
+52 |         println "  Even: {*e}";
+53 |     }
+54 |
+55 |     let sum = nums.iterator().fold(0, fn(acc: int, x: int) -> int { return acc + x; });
+56 |     println "Sum of nums: {sum}";
+57 |
+58 |     let first_even = nums.iterator().find(fn(x: int) -> bool { return x % 2 == 0; });
+59 |     if first_even.is_some() {
+60 |         println "First even number found: {first_even.unwrap()}";
+61 |     }
+62 |
+63 |     println "\n=== 5. Operator Overloading ===";
+64 |     let v2 = Vec<int>::new();
+65 |     v2 << 100;
+66 |     v2 << 200;
+67 |
+68 |     let combined = v + &v2;
+69 |     println "Combined vector length: {combined.length()}";
+70 |     for item in &combined {
+71 |         println "  Combined item: {*item}";
+72 |     }
+73 |
+74 |     let popped_val: int = 0;
+75 |     v2 >> &popped_val;
+76 |     println "Popped from v2 via >>: {popped_val}";
+77 |
+78 |     let repeated = v * 2;
+79 |     println "Repeated vector length: {repeated.length()}";
+80 |
+81 |     println "\n=== 6. Vector of Custom Structs ===";
+82 |     let task_list = Vec<Task>::new();
+83 |     task_list.push(Task { id: 101, priority: 1 });
+84 |     task_list.push(Task { id: 102, priority: 3 });
+85 |     task_list.push(Task { id: 103, priority: 2 });
+86 |
+87 |     for t in &task_list {
+88 |         println "Task #{(*t).id} (Priority: {(*t).priority})";
+89 |     }
+90 | }
 ```
 
 Output:

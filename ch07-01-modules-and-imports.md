@@ -30,16 +30,16 @@ To use `math_utils.zc` from our `main.zc`, we use the `import` statement:
 **Listing 7-1: `list7-1.zc`**
 
 ```zenc
-// main.zc
-import "math_utils.zc";
-
-fn main() {
-    // Access symbols using the file's base name as the namespace
-    let sum = math_utils::add(10, 20);
-    let prod = math_utils::multiply(6, 7);
-
-    println "Sum: {sum}, Product: {prod}";
-}
+ 1 | // main.zc
+ 2 | import "math_utils.zc";
+ 3 |
+ 4 | fn main() {
+ 5 |     // Access symbols using the file's base name as the namespace
+ 6 |     let sum = math_utils::add(10, 20);
+ 7 |     let prod = math_utils::multiply(6, 7);
+ 8 |
+ 9 |     println "Sum: {sum}, Product: {prod}";
+10 | }
 ```
 
 Output:
@@ -68,15 +68,15 @@ If a module has a long filename, or if multiple modules share the same base name
 **Listing 7-2: `list7-2.zc`**
 
 ```zenc
-// main.zc
-import "math_utils.zc" as math;
-
-fn main() {
-    let sum = math::add(15, 27);
-    let area = PI * 10.0 * 10.0; // Manifest constant folded at compile time
-
-    println "Sum: {sum}, Area: {area}";
-}
+ 1 | // main.zc
+ 2 | import "math_utils.zc" as math;
+ 3 |
+ 4 | fn main() {
+ 5 |     let sum = math::add(15, 27);
+ 6 |     let area = PI * 10.0 * 10.0; // Manifest constant folded at compile time
+ 7 |
+ 8 |     println "Sum: {sum}, Area: {area}";
+ 9 | }
 ```
 
 Output:
@@ -94,13 +94,13 @@ To import all symbols from a module directly into the current scope without qual
 **Listing 7-3: `list7-3.zc`**
 
 ```zenc
-import "math_utils.zc" as *;
-
-fn main() {
-    // Directly call functions without math_utils:: prefix
-    let sum = add(10, 20);
-    println "Sum: {sum}";
-}
+ 1 | import "math_utils.zc" as *;
+ 2 |
+ 3 | fn main() {
+ 4 |     // Directly call functions without math_utils:: prefix
+ 5 |     let sum = add(10, 20);
+ 6 |     println "Sum: {sum}";
+ 7 | }
 ```
 
 Output:
@@ -120,13 +120,13 @@ Zen C allows you to cherry-pick specific symbols from a module using selective i
 **Listing 7-4: `list7-4.zc`**
 
 ```zenc
-import { add, multiply } from "math_utils.zc";
-
-fn main() {
-    let sum = add(5, 12);
-    let prod = multiply(4, 3);
-    println "Result: {sum}, {prod}";
-}
+ 1 | import { add, multiply } from "math_utils.zc";
+ 2 |
+ 3 | fn main() {
+ 4 |     let sum = add(5, 12);
+ 5 |     let prod = multiply(4, 3);
+ 6 |     println "Result: {sum}, {prod}";
+ 7 | }
 ```
 
 Output:
@@ -139,12 +139,12 @@ You can also alias individual symbols during selective import:
 **Listing 7-5: `list7-5.zc`**
 
 ```zenc
-import { add as sum_func, multiply as prod_func } from "math_utils.zc";
-
-fn main() {
-    let res = sum_func(100, 200);
-    println "Result: {res}";
-}
+ 1 | import { add as sum_func, multiply as prod_func } from "math_utils.zc";
+ 2 |
+ 3 | fn main() {
+ 4 |     let res = sum_func(100, 200);
+ 5 |     println "Result: {res}";
+ 6 | }
 ```
 
 Output:
@@ -187,12 +187,12 @@ From `main.zc`, you can import the entire `network` folder directly:
 **Listing 7-6: `list7-6.zc`**
 
 ```zenc
-// main.zc
-import "./network";
-
-fn main() {
-    connect("127.0.0.1", DEFAULT_PORT);
-}
+ 1 | // main.zc
+ 2 | import "./network";
+ 3 |
+ 4 | fn main() {
+ 5 |     connect("127.0.0.1", DEFAULT_PORT);
+ 6 | }
 ```
 
 Output:
@@ -205,12 +205,12 @@ Or import the directory module with an explicit namespace:
 **Listing 7-7: `list7-7.zc`**
 
 ```zenc
-// main.zc
-import "network/mod.zc" as net;
-
-fn main() {
-    net::connect("127.0.0.1", net::DEFAULT_PORT);
-}
+ 1 | // main.zc
+ 2 | import "network/mod.zc" as net;
+ 3 |
+ 4 | fn main() {
+ 5 |     net::connect("127.0.0.1", net::DEFAULT_PORT);
+ 6 | }
 ```
 
 Output:
@@ -273,18 +273,18 @@ Now, in `main.zc`:
 **Listing 7-8: `list7-8.zc`**
 
 ```zenc
-// main.zc
-import "user.zc" as user;
-
-fn main() {
-    let u = user::user_new(101, "Alice", "secret_hash_987");
-
-    // OK: Accessing data through public API
-    println "User ID: {user::user_get_id(u)}, Name: {user::user_get_name(u)}";
-
-    // COMPILE ERROR: Cannot access private field 'password_hash' of opaque struct
-    // println "Hash: {u.password_hash}";
-}
+ 1 | // main.zc
+ 2 | import "user.zc" as user;
+ 3 |
+ 4 | fn main() {
+ 5 |     let u = user::user_new(101, "Alice", "secret_hash_987");
+ 6 |
+ 7 |     // OK: Accessing data through public API
+ 8 |     println "User ID: {user::user_get_id(u)}, Name: {user::user_get_name(u)}";
+ 9 |
+10 |     // COMPILE ERROR: Cannot access private field 'password_hash' of opaque struct
+11 |     // println "Hash: {u.password_hash}";
+12 | }
 ```
 
 Output:
@@ -336,21 +336,21 @@ Outside of `types.zc`:
 **Listing 7-9: `list7-9.zc`**
 
 ```zenc
-// main.zc
-import "types.zc";
-
-fn main() {
-    let uid: UserID = make_user_id(101);
-    let aid: AccountID = make_account_id(5001);
-
-    println "Domain types: UserID = {user_id_to_int(uid)}, AccountID = {account_id_to_int(aid)}";
-
-    // COMPILE ERROR: Type validation failed. Expected 'int32_t', but got 'UserID'
-    // let raw_int: int = uid;
-
-    // COMPILE ERROR: Cannot assign AccountID to UserID!
-    // let wrong: UserID = aid;
-}
+ 1 | // main.zc
+ 2 | import "types.zc";
+ 3 |
+ 4 | fn main() {
+ 5 |     let uid: UserID = make_user_id(101);
+ 6 |     let aid: AccountID = make_account_id(5001);
+ 7 |
+ 8 |     println "Domain types: UserID = {user_id_to_int(uid)}, AccountID = {account_id_to_int(aid)}";
+ 9 |
+10 |     // COMPILE ERROR: Type validation failed. Expected 'int32_t', but got 'UserID'
+11 |     // let raw_int: int = uid;
+12 |
+13 |     // COMPILE ERROR: Cannot assign AccountID to UserID!
+14 |     // let wrong: UserID = aid;
+15 | }
 ```
 
 Output:
@@ -393,16 +393,16 @@ You can import standard C headers directly using `import` with the `.h` extensio
 **Listing 7-10: `list7-10.zc`**
 
 ```zenc
-//> link: -lm
-import "math.h" as c_math;
-
-fn main() {
-    // Directly call C standard library functions under the namespace
-    let angle = 3.14159 / 4.0;
-    let s = c_math::sin(angle);
-    let c = c_math::cos(angle);
-    println "sin: {s}, cos: {c}";
-}
+ 1 | //> link: -lm
+ 2 | import "math.h" as c_math;
+ 3 |
+ 4 | fn main() {
+ 5 |     // Directly call C standard library functions under the namespace
+ 6 |     let angle = 3.14159 / 4.0;
+ 7 |     let s = c_math::sin(angle);
+ 8 |     let c = c_math::cos(angle);
+ 9 |     println "sin: {s}, cos: {c}";
+10 | }
 ```
 
 Output:
@@ -419,13 +419,13 @@ When you need precise control over C signatures or FFI bindings, use `include <.
 **Listing 7-11: `list7-11.zc`**
 
 ```zenc
-include <stdio.h>
-
-extern fn puts(str: const char*) -> c_int;
-
-fn main() {
-    puts("Direct C standard I/O call");
-}
+ 1 | include <stdio.h>
+ 2 |
+ 3 | extern fn puts(str: const char*) -> c_int;
+ 4 |
+ 5 | fn main() {
+ 6 |     puts("Direct C standard I/O call");
+ 7 | }
 ```
 
 Output:

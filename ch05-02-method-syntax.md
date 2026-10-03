@@ -14,24 +14,24 @@ Let's start with a `Rectangle` struct and define an `area` method to calculate i
 **Listing 5-9: `list5-9.zc`**
 
 ```zenc
-struct Rectangle {
-    width: int;
-    height: int;
-}
-
-// Attach methods to Rectangle inside an impl block
-impl Rectangle {
-    fn area(const self) -> int {
-        return self.width * self.height;
-    }
-}
-
-fn main() {
-    let rect = Rectangle { width: 30, height: 50 };
-
-    // Call the method using dot notation:
-    println "The area of the rectangle is {rect.area()} square pixels.";
-}
+ 1 | struct Rectangle {
+ 2 |     width: int;
+ 3 |     height: int;
+ 4 | }
+ 5 |
+ 6 | // Attach methods to Rectangle inside an impl block
+ 7 | impl Rectangle {
+ 8 |     fn area(const self) -> int {
+ 9 |         return self.width * self.height;
+10 |     }
+11 | }
+12 |
+13 | fn main() {
+14 |     let rect = Rectangle { width: 30, height: 50 };
+15 |
+16 |     // Call the method using dot notation:
+17 |     println "The area of the rectangle is {rect.area()} square pixels.";
+18 | }
 ```
 
 Output:
@@ -77,29 +77,29 @@ When a method needs to modify struct fields, use `self`:
 **Listing 5-10: `list5-10.zc`**
 
 ```zenc
-struct Rectangle {
-    width: int;
-    height: int;
-}
-
-impl Rectangle {
-    fn scale(self, factor: int) {
-        self.width = self.width * factor;
-        self.height = self.height * factor;
-    }
-
-    fn translate(self, dw: int, dh: int) {
-        self.width = self.width + dw;
-        self.height = self.height + dh;
-    }
-}
-
-fn main() {
-    let rect = Rectangle { width: 10, height: 20 };
-    rect.scale(2);
-
-    println "Scaled: {rect.width}x{rect.height}";
-}
+ 1 | struct Rectangle {
+ 2 |     width: int;
+ 3 |     height: int;
+ 4 | }
+ 5 |
+ 6 | impl Rectangle {
+ 7 |     fn scale(self, factor: int) {
+ 8 |         self.width = self.width * factor;
+ 9 |         self.height = self.height * factor;
+10 |     }
+11 |
+12 |     fn translate(self, dw: int, dh: int) {
+13 |         self.width = self.width + dw;
+14 |         self.height = self.height + dh;
+15 |     }
+16 | }
+17 |
+18 | fn main() {
+19 |     let rect = Rectangle { width: 10, height: 20 };
+20 |     rect.scale(2);
+21 |
+22 |     println "Scaled: {rect.width}x{rect.height}";
+23 | }
 ```
 
 Output:
@@ -188,33 +188,33 @@ To call an associated function that doesn't take `self`, use the double colon (`
 **Listing 5-11: `list5-11.zc`**
 
 ```zenc
-struct Rectangle {
-    width: int;
-    height: int;
-}
-
-impl Rectangle {
-    // Static method (constructor convention using -> Self)
-    fn new(width: int, height: int) -> Self {
-        return Rectangle {
-            width: width,
-            height: height,
-        };
-    }
-
-    // Specialized constructor: creates a square
-    fn square(size: int) -> Self {
-        return Rectangle::new(size, size);
-    }
-}
-
-fn main() {
-    let r1 = Rectangle::new(30, 50);
-    let sq = Rectangle::square(25);
-
-    println "Rectangle: {r1.width}x{r1.height}";
-    println "Square: {sq.width}x{sq.height}";
-}
+ 1 | struct Rectangle {
+ 2 |     width: int;
+ 3 |     height: int;
+ 4 | }
+ 5 |
+ 6 | impl Rectangle {
+ 7 |     // Static method (constructor convention using -> Self)
+ 8 |     fn new(width: int, height: int) -> Self {
+ 9 |         return Rectangle {
+10 |             width: width,
+11 |             height: height,
+12 |         };
+13 |     }
+14 |
+15 |     // Specialized constructor: creates a square
+16 |     fn square(size: int) -> Self {
+17 |         return Rectangle::new(size, size);
+18 |     }
+19 | }
+20 |
+21 | fn main() {
+22 |     let r1 = Rectangle::new(30, 50);
+23 |     let sq = Rectangle::square(25);
+24 |
+25 |     println "Rectangle: {r1.width}x{r1.height}";
+26 |     println "Square: {sq.width}x{sq.height}";
+27 | }
 ```
 
 Output:
@@ -287,43 +287,43 @@ To overload `+`, implement `fn add`:
 **Listing 5-12: `list5-12.zc`**
 
 ```zenc
-struct Vec2 {
-    x: int;
-    y: int;
-}
-
-impl Vec2 {
-    fn new(x: int, y: int) -> Vec2 {
-        return Vec2 { x: x, y: y };
-    }
-
-    // Overloads binary '+'
-    fn add(self, other: Vec2) -> Vec2 {
-        return Vec2 {
-            x: self.x + other.x,
-            y: self.y + other.y,
-        };
-    }
-
-    // Overloads binary '-'
-    fn sub(self, other: Vec2) -> Vec2 {
-        return Vec2 {
-            x: self.x - other.x,
-            y: self.y - other.y,
-        };
-    }
-}
-
-fn main() {
-    let v1 = Vec2::new(1, 2);
-    let v2 = Vec2::new(3, 4);
-
-    let v3 = v1 + v2; // Calls v1.add(v2)
-    println "v3 = ({v3.x}, {v3.y})";
-
-    let v4 = v3 - v1; // Calls v3.sub(v1)
-    println "v4 = ({v4.x}, {v4.y})";
-}
+ 1 | struct Vec2 {
+ 2 |     x: int;
+ 3 |     y: int;
+ 4 | }
+ 5 |
+ 6 | impl Vec2 {
+ 7 |     fn new(x: int, y: int) -> Vec2 {
+ 8 |         return Vec2 { x: x, y: y };
+ 9 |     }
+10 |
+11 |     // Overloads binary '+'
+12 |     fn add(self, other: Vec2) -> Vec2 {
+13 |         return Vec2 {
+14 |             x: self.x + other.x,
+15 |             y: self.y + other.y,
+16 |         };
+17 |     }
+18 |
+19 |     // Overloads binary '-'
+20 |     fn sub(self, other: Vec2) -> Vec2 {
+21 |         return Vec2 {
+22 |             x: self.x - other.x,
+23 |             y: self.y - other.y,
+24 |         };
+25 |     }
+26 | }
+27 |
+28 | fn main() {
+29 |     let v1 = Vec2::new(1, 2);
+30 |     let v2 = Vec2::new(3, 4);
+31 |
+32 |     let v3 = v1 + v2; // Calls v1.add(v2)
+33 |     println "v3 = ({v3.x}, {v3.y})";
+34 |
+35 |     let v4 = v3 - v1; // Calls v3.sub(v1)
+36 |     println "v4 = ({v4.x}, {v4.y})";
+37 | }
 ```
 
 Output:
@@ -339,30 +339,30 @@ To overload `==` and `!=`, implement `fn eq`:
 **Listing 5-13: `list5-13.zc`**
 
 ```zenc
-struct Vec2 {
-    x: int;
-    y: int;
-}
-
-impl Vec2 {
-    fn new(x: int, y: int) -> Vec2 {
-        return Vec2 { x: x, y: y };
-    }
-
-    // Overloads binary '=='
-    fn eq(self, other: Vec2) -> bool {
-        return self.x == other.x && self.y == other.y;
-    }
-}
-
-fn main() {
-    let a = Vec2::new(10, 20);
-    let b = Vec2::new(10, 20);
-    let c = Vec2::new(5, 5);
-
-    println "a == b: {a == b}";
-    println "a == c: {a == c}";
-}
+ 1 | struct Vec2 {
+ 2 |     x: int;
+ 3 |     y: int;
+ 4 | }
+ 5 |
+ 6 | impl Vec2 {
+ 7 |     fn new(x: int, y: int) -> Vec2 {
+ 8 |         return Vec2 { x: x, y: y };
+ 9 |     }
+10 |
+11 |     // Overloads binary '=='
+12 |     fn eq(self, other: Vec2) -> bool {
+13 |         return self.x == other.x && self.y == other.y;
+14 |     }
+15 | }
+16 |
+17 | fn main() {
+18 |     let a = Vec2::new(10, 20);
+19 |     let b = Vec2::new(10, 20);
+20 |     let c = Vec2::new(5, 5);
+21 |
+22 |     println "a == b: {a == b}";
+23 |     println "a == c: {a == c}";
+24 | }
 ```
 
 Output:
@@ -412,32 +412,32 @@ In [Section 5.1](ch05-01-defining-structs.md), we learned that structs can embed
 **Listing 5-14: `list5-14.zc`**
 
 ```zenc
-struct Rectangle {
-    width: int;
-    height: int;
-}
-
-impl Rectangle {
-    fn area(const self) -> int {
-        return self.width * self.height;
-    }
-}
-
-struct Window {
-    use Rectangle; // Mixin: flattens fields and inherits Rectangle methods!
-    title: string;
-}
-
-fn main() {
-    let win = Window {
-        width: 800,
-        height: 600,
-        title: "Main Application",
-    };
-
-    // area() is inherited directly from Rectangle!
-    println "Window '{win.title}' area: {win.area()} px";
-}
+ 1 | struct Rectangle {
+ 2 |     width: int;
+ 3 |     height: int;
+ 4 | }
+ 5 |
+ 6 | impl Rectangle {
+ 7 |     fn area(const self) -> int {
+ 8 |         return self.width * self.height;
+ 9 |     }
+10 | }
+11 |
+12 | struct Window {
+13 |     use Rectangle; // Mixin: flattens fields and inherits Rectangle methods!
+14 |     title: string;
+15 | }
+16 |
+17 | fn main() {
+18 |     let win = Window {
+19 |         width: 800,
+20 |         height: 600,
+21 |         title: "Main Application",
+22 |     };
+23 |
+24 |     // area() is inherited directly from Rectangle!
+25 |     println "Window '{win.title}' area: {win.area()} px";
+26 | }
 ```
 
 Output:
@@ -458,26 +458,26 @@ Because primitive values are passed by pointer to methods (`int* self`), derefer
 **Listing 5-15: `list5-15.zc`**
 
 ```zenc
-impl int {
-    fn abs(self) -> int {
-        return *self < 0 ? -(*self) : *self;
-    }
-
-    fn square(self) -> int {
-        return (*self) * (*self);
-    }
-}
-
-fn main() {
-    let x = -10;
-    let y = x.abs(); // 10
-
-    // Calling methods on numeric literals directly (wrap in parentheses):
-    let z = (-5).abs(); // 5
-    let sq = (8).square(); // 64
-
-    println "abs(-10) = {y}, abs(-5) = {z}, 8^2 = {sq}";
-}
+ 1 | impl int {
+ 2 |     fn abs(self) -> int {
+ 3 |         return *self < 0 ? -(*self) : *self;
+ 4 |     }
+ 5 |
+ 6 |     fn square(self) -> int {
+ 7 |         return (*self) * (*self);
+ 8 |     }
+ 9 | }
+10 |
+11 | fn main() {
+12 |     let x = -10;
+13 |     let y = x.abs(); // 10
+14 |
+15 |     // Calling methods on numeric literals directly (wrap in parentheses):
+16 |     let z = (-5).abs(); // 5
+17 |     let sq = (8).square(); // 64
+18 |
+19 |     println "abs(-10) = {y}, abs(-5) = {z}, 8^2 = {sq}";
+20 | }
 ```
 
 Output:
@@ -505,75 +505,75 @@ Let's bring together everything we've learned about structs, constructors, metho
 **Listing 5-16: `list5-16.zc`**
 
 ```zenc
-@derive(Copy)
-struct Point {
-    x: int;
-    y: int;
-}
-
-impl Point {
-    // Constructor returning -> Self
-    fn new(x: int, y: int) -> Self {
-        return Point { x: x, y: y };
-    }
-
-    // Using .x and .y self shorthand
-    fn translate(self, dx: int, dy: int) {
-        .x += dx;
-        .y += dy;
-    }
-
-    fn add(self, other: Point) -> Self {
-        return Point { x: .x + other.x, y: .y + other.y };
-    }
-
-    fn eq(self, other: Point) -> bool {
-        return .x == other.x && .y == other.y;
-    }
-}
-
-struct Rectangle {
-    top_left: Point;
-    width: int;
-    height: int;
-}
-
-impl Rectangle {
-    fn new(x: int, y: int, width: int, height: int) -> Self {
-        return Rectangle {
-            top_left: Point::new(x, y),
-            width: width,
-            height: height,
-        };
-    }
-
-    // Self shorthand with .width and .height
-    fn area(const self) -> int {
-        return .width * .height;
-    }
-
-    fn contains_point(const self, p: Point) -> bool {
-        return p.x >= .top_left.x &&
-               p.x <= (.top_left.x + .width) &&
-               p.y >= .top_left.y &&
-               p.y <= (.top_left.y + .height);
-    }
-}
-
-fn main() {
-    let p1 = Point::new(10, 20);
-    let p2 = Point::new(30, 40);
-
-    // Operator overloading
-    let p3 = p1 + p2;
-    println "p1 + p2 = ({p3.x}, {p3.y})";
-
-    let rect = Rectangle::new(0, 0, 100, 50);
-    println "Area: {rect.area()}";
-
-    let test_pt = Point::new(25, 25);
-    println "Contains (25, 25)? {rect.contains_point(test_pt)}";
-}
+ 1 | @derive(Copy)
+ 2 | struct Point {
+ 3 |     x: int;
+ 4 |     y: int;
+ 5 | }
+ 6 |
+ 7 | impl Point {
+ 8 |     // Constructor returning -> Self
+ 9 |     fn new(x: int, y: int) -> Self {
+10 |         return Point { x: x, y: y };
+11 |     }
+12 |
+13 |     // Using .x and .y self shorthand
+14 |     fn translate(self, dx: int, dy: int) {
+15 |         .x += dx;
+16 |         .y += dy;
+17 |     }
+18 |
+19 |     fn add(self, other: Point) -> Self {
+20 |         return Point { x: .x + other.x, y: .y + other.y };
+21 |     }
+22 |
+23 |     fn eq(self, other: Point) -> bool {
+24 |         return .x == other.x && .y == other.y;
+25 |     }
+26 | }
+27 |
+28 | struct Rectangle {
+29 |     top_left: Point;
+30 |     width: int;
+31 |     height: int;
+32 | }
+33 |
+34 | impl Rectangle {
+35 |     fn new(x: int, y: int, width: int, height: int) -> Self {
+36 |         return Rectangle {
+37 |             top_left: Point::new(x, y),
+38 |             width: width,
+39 |             height: height,
+40 |         };
+41 |     }
+42 |
+43 |     // Self shorthand with .width and .height
+44 |     fn area(const self) -> int {
+45 |         return .width * .height;
+46 |     }
+47 |
+48 |     fn contains_point(const self, p: Point) -> bool {
+49 |         return p.x >= .top_left.x &&
+50 |                p.x <= (.top_left.x + .width) &&
+51 |                p.y >= .top_left.y &&
+52 |                p.y <= (.top_left.y + .height);
+53 |     }
+54 | }
+55 |
+56 | fn main() {
+57 |     let p1 = Point::new(10, 20);
+58 |     let p2 = Point::new(30, 40);
+59 |
+60 |     // Operator overloading
+61 |     let p3 = p1 + p2;
+62 |     println "p1 + p2 = ({p3.x}, {p3.y})";
+63 |
+64 |     let rect = Rectangle::new(0, 0, 100, 50);
+65 |     println "Area: {rect.area()}";
+66 |
+67 |     let test_pt = Point::new(25, 25);
+68 |     println "Contains (25, 25)? {rect.contains_point(test_pt)}";
+69 | }
 ```
 
 Output:
