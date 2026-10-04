@@ -1,0 +1,3 @@
+# Method Syntax
+
+*Coming soon.*

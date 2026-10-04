@@ -18,3 +18,9 @@ hello
 *.tmp
 *.swp
 *.swo
+
+# Local binaries and swap files
+hello
+*.swp
+*.swo
+sandbox/
