@@ -1,0 +1,10 @@
+fn main() {
+    println "Starting application initialization...";
+
+    let critical_config_loaded = false;
+    if !critical_config_loaded {
+        panic("Configuration file missing or corrupted! Cannot continue.");
+    }
+
+    println "This line will never be reached.";
+}

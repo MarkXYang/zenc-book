@@ -1,0 +1,49 @@
+import "std/option.zc"
+import "std/result.zc"
+
+fn find_port(ports: int[4], target: int) -> Option<int> {
+    for i in 0..4 {
+        if ports[i] == target {
+            return Option<int>::Some(i);
+        }
+    }
+    return Option<int>::None();
+}
+
+fn parse_port(port_str: string) -> Result<int> {
+    if port_str == "8080" {
+        return Result<int>::Ok(8080);
+    }
+    if port_str == "443" {
+        return Result<int>::Ok(443);
+    }
+    return Result<int>::Err("Invalid port number string");
+}
+
+fn start_service(port_str: string) -> Result<int> {
+    let port = parse_port(port_str)?;
+    return Result<int>::Ok(port);
+}
+
+fn main() {
+    // 1. Option Demonstration
+    let ports: int[4] = [80, 443, 8080, 8443];
+    let found = find_port(ports, 8080);
+    if found.is_some() {
+        println "Found port 8080 at index: {found.unwrap()}";
+    }
+
+    let missing = find_port(ports, 9000);
+    println "Port 9000 index (fallback): {missing.unwrap_or(-1)}";
+
+    // 2. Result Demonstration with ?
+    let s1 = start_service("8080");
+    if s1.is_ok() {
+        println "Service started on port: {s1.unwrap()}";
+    }
+
+    let s2 = start_service("invalid");
+    if s2.is_err() {
+        println "Failed to start service: {s2.err}";
+    }
+}

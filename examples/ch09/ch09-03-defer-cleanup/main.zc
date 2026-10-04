@@ -1,0 +1,30 @@
+include <stdio.h>
+import "std/result.zc"
+
+fn process_stream(fail_flag: bool) -> Result<int> {
+    println "[step 1] Allocating buffer / opening stream...";
+    defer println "[cleanup] Stream closed and buffer freed cleanly via defer!";
+
+    if fail_flag {
+        println "[step 2] Encountered unexpected protocol error!";
+        return Result<int>::Err("Protocol communication failure");
+    }
+
+    println "[step 2] Data processed successfully.";
+    return Result<int>::Ok(42);
+}
+
+fn main() {
+    println "=== Scenario A: Error Path ===";
+    let r1 = process_stream(true);
+    if r1.is_err() {
+        println "Received error: {r1.err}";
+    }
+
+    println "
+=== Scenario B: Success Path ===";
+    let r2 = process_stream(false);
+    if r2.is_ok() {
+        println "Received value: {r2.unwrap()}";
+    }
+}

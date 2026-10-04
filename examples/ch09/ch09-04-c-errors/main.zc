@@ -1,0 +1,26 @@
+include <errno.h>
+include <string.h>
+include <stdio.h>
+import "std/result.zc"
+
+fn safe_open_file(path: char*, mode: char*) -> Result<void*> {
+    let f = fopen(path, mode);
+    if f == NULL {
+        // Translate C errno to human-readable string
+        let err_msg = strerror(errno);
+        return Result<void*>::Err(err_msg);
+    }
+    return Result<void*>::Ok(f);
+}
+
+fn main() {
+    println "Attempting to open nonexistent file...";
+    let res = safe_open_file("missing_config_file.json", "r");
+
+    if res.is_err() {
+        println "OS Error caught cleanly: {res.err}";
+    } else {
+        println "File opened successfully!";
+        fclose(res.unwrap());
+    }
+}
