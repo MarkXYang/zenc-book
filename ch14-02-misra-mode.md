@@ -1,1 +1,0 @@
-# MISRA C Compliance Mode

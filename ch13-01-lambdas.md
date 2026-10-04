@@ -1,1 +1,0 @@
-# Lambdas &amp; Closure Capture
