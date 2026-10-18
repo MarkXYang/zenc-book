@@ -1,0 +1,74 @@
+fn max_val<T>(a: T, b: T) -> T {
+    if a > b {
+        return a;
+    }
+    return b;
+}
+
+fn swap_vals<T>(a: T*, b: T*) {
+    let temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+struct Pair<T> {
+    first: T;
+    second: T;
+}
+
+impl Pair<T> {
+    fn new(first: T, second: T) -> Pair<T> {
+        return Pair<T> { first: first, second: second };
+    }
+
+    fn max_element(const self) -> T {
+        if self.first > self.second {
+            return self.first;
+        }
+        return self.second;
+    }
+
+    fn swap(self) {
+        let tmp = self.first;
+        self.first = self.second;
+        self.second = tmp;
+    }
+}
+
+struct KeyValue<K, V> {
+    key: K;
+    val: V;
+}
+
+enum Maybe<T> {
+    Just(T),
+    Nothing,
+}
+
+fn main() {
+    let m1 = max_val(10, 25);
+    let m2 = max_val(3.14, 2.71);
+    println "max int: {m1}, max f64: {m2}";
+
+    let x = 100;
+    let y = 200;
+    swap_vals(&x, &y);
+    println "after swap: x = {x}, y = {y}";
+
+    let p = Pair<int>::new(15, 42);
+    println "Pair initial: ({p.first}, {p.second}), max = {p.max_element()}";
+    p.swap();
+    println "Pair swapped: ({p.first}, {p.second})";
+
+    let setting = KeyValue<string, int> {
+        key: "max_connections",
+        val: 512,
+    };
+    println "Setting: {setting.key} = {setting.val}";
+
+    let a = Maybe<int>::Just(42);
+    match a {
+        Maybe::Just(v) => { println "a contains Just({v})"; },
+        Maybe::Nothing => { println "a is Nothing"; },
+    }
+}

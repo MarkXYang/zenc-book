@@ -1,0 +1,47 @@
+trait Summary {
+    fn summarize(self) -> string;
+}
+
+struct NewsArticle {
+    headline: string;
+    location: string;
+    author: string;
+}
+
+impl Summary for NewsArticle {
+    fn summarize(self) -> string {
+        return "{self.headline}, by {self.author} ({self.location})";
+    }
+}
+
+struct Tweet {
+    username: string;
+    content: string;
+}
+
+impl Summary for Tweet {
+    fn summarize(self) -> string {
+        return "@{self.username}: {self.content}";
+    }
+}
+
+fn notify(item: Summary) {
+    println "Breaking news! {item.summarize()}";
+}
+
+fn main() {
+    let article = NewsArticle {
+        headline: "Zen C 0.4 Released",
+        location: "San Francisco",
+        author: "The Zen C Team",
+    };
+
+    let tweet = Tweet {
+        username: "zenc_lang",
+        content: "Zero-cost abstractions that compile to clean C11!",
+    };
+
+    println "Direct call: {article.summarize()}";
+    notify(&article);
+    notify(&tweet);
+}
