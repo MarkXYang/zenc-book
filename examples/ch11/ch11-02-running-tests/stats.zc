@@ -1,0 +1,53 @@
+// File: examples/ch11/ch11-02-running-tests/stats.zc
+
+struct Summary {
+    count: int,
+    sum: int,
+    min: int,
+    max: int,
+}
+
+impl Summary {
+    fn from_slice(values: int[]) -> Summary {
+        assert(values.len > 0, "Summary::from_slice requires a non-empty slice");
+        let s = Summary {
+            count: values.len,
+            sum: 0,
+            min: values[0],
+            max: values[0],
+        };
+        for i in 0..values.len {
+            let v = values[i];
+            s.sum += v;
+            if v < s.min { s.min = v; }
+            if v > s.max { s.max = v; }
+        }
+        return s;
+    }
+
+    fn mean(self) -> f64 {
+        return (f64)self.sum / (f64)self.count;
+    }
+}
+
+// In-module unit tests right next to the code they verify!
+test "Summary::from_slice computes count, sum, min, and max" {
+    let data: int[5] = [12, 5, 20, 8, 15];
+    let s = Summary::from_slice(data);
+
+    expect_eq(s.count, 5, "count should be 5");
+    expect_eq(s.sum, 60, "sum should be 60");
+    expect_eq(s.min, 5, "min should be 5");
+    expect_eq(s.max, 20, "max should be 20");
+    expect_approx_eq(s.mean(), 12.0, 1e-9, "mean should be 12.0");
+}
+
+test "Summary::from_slice handles negative numbers" {
+    let data: int[3] = [-10, 0, 10];
+    let s = Summary::from_slice(data);
+
+    expect_eq(s.sum, 0, "sum of symmetric range should be 0");
+    expect_eq(s.min, -10, "min should be -10");
+    expect_eq(s.max, 10, "max should be 10");
+}
+

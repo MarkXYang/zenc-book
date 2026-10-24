@@ -61,9 +61,9 @@
     - [Standard Traits and Smart Derives](ch10-03-standard-traits.md)
     - [Operator Overloading](ch10-04-operator-overloading.md)
 
-- [Writing Automated Tests](ch11-00-testing.md)
+- [Writing Automated Tests & Debugging](ch11-00-testing.md)
     - [How to Write Tests](ch11-01-writing-tests.md)
-    - [Running Tests with zc test](ch11-02-running-tests.md)
+    - [Running Tests with zc](ch11-02-running-tests.md)
     - [Debugging with GDB, LLDB, and VS Code](ch11-03-debugging.md)
 
 - [Using C Libraries](ch12-00-using-c-libraries.md)

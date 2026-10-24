@@ -1,0 +1,56 @@
+// File: examples/ch11/ch11-03-debugging/main.zc
+
+enum Discount {
+    None,
+    Percent(int),
+    FlatCents(int),
+}
+
+struct Order {
+    id: int,
+    item_prices: int[],
+    discount: Discount,
+}
+
+impl Order {
+    fn new(id: int, prices: int[], discount: Discount) -> Order {
+        return Order {
+            id: id,
+            item_prices: prices,
+            discount: discount,
+        };
+    }
+
+    fn subtotal(self) -> int {
+        let sum = 0;
+        for i in 0..self.item_prices.len {
+            sum += self.item_prices[i];
+        }
+        return sum;
+    }
+
+    fn total_cents(self) -> int {
+        let sub = self.subtotal();
+        match self.discount {
+            Discount::None => { return sub; },
+            Discount::Percent(pct) => {
+                let cut = (sub * pct) / 100;
+                return sub - cut;
+            },
+            Discount::FlatCents(cents) => {
+                if cents >= sub { return 0; }
+                return sub - cents;
+            },
+        }
+    }
+}
+
+fn main() -> int {
+    let prices: int[3] = [1500, 2500, 1000];
+    let order = Order::new(101, prices, Discount::Percent(20));
+
+    let final_cents = order.total_cents();
+    println "Order #{order.id} total: {final_cents} cents";
+    return 0;
+}
+

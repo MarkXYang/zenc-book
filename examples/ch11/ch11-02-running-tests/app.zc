@@ -1,0 +1,12 @@
+// File: examples/ch11/ch11-02-running-tests/app.zc
+
+import "./stats.zc"
+
+fn main() -> int {
+    let latencies: int[4] = [42, 38, 50, 30];
+    let report = Summary::from_slice(latencies);
+
+    println "Samples: {report.count}, Min: {report.min}ms, Max: {report.max}ms, Mean: {report.mean()}ms";
+    return 0;
+}
+
