@@ -1,0 +1,38 @@
+//> link: -lm
+
+// 1. Namespaced C header imports
+import "math.h" as c_math;
+import "string.h" as c_str;
+
+// 2. Local C header include (auto-scans C constants, typedefs, and functions)
+include "sensor_hal.h"
+
+fn main() {
+    // Calling C math library functions via module namespace
+    let side_a: f64 = 3.0;
+    let side_b: f64 = 4.0;
+    let hyp: f64 = c_math::hypot(side_a, side_b);
+    println "hypot({side_a}, {side_b}) = {hyp}";
+    assert(hyp == 5.0, "3-4-5 right triangle hypotenuse must be 5.0");
+
+    // Calling C string functions via module namespace
+    let label = "Zen C FFI";
+    let len: usize = c_str::strlen(label);
+    println "strlen(\"{label}\") = {len}";
+    assert(len == 9, "Length of 'Zen C FFI' should be 9");
+
+    // Using constants, structs, and functions discovered from "sensor_hal.h"
+    let max_ch: int = HAL_MAX_CHANNELS;
+    println "HAL_MAX_CHANNELS = {max_ch}, status = {HAL_STATUS_OK}";
+    assert(max_ch == 8, "Expected 8 channels from #define");
+
+    let cal = HalCalibration{
+        channel: 1,
+        scale: 0.025,
+        offset: -10.0,
+    };
+    let reading: f64 = hal_apply_calibration(cal, 1200);
+    println "Calibrated Ch#{cal.channel}: {reading} C";
+    assert(reading == 20.0, "1200 * 0.025 - 10.0 should equal 20.0");
+}
+

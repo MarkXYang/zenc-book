@@ -74,3 +74,4 @@ fn main() {
     let json_str = json_val.to_string();
     println "Serialized JSON: {json_str}";
 }
+

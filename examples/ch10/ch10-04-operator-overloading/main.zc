@@ -86,3 +86,4 @@ fn main() {
     mat[1, 2] = 42;
     println "mat[0, 0] = {mat[0, 0]}, mat[1, 2] = {mat[1, 2]}";
 }
+

@@ -1,0 +1,134 @@
+//> link: -lm
+
+// Self-contained Raylib-compatible C ABI types & headless window simulator
+// (Allows running `zc run main.zc` on CI or headless machines without a display)
+raw {
+    typedef struct Vector2 {
+        float x;
+        float y;
+    } Vector2;
+
+    typedef struct Color {
+        unsigned char r;
+        unsigned char g;
+        unsigned char b;
+        unsigned char a;
+    } Color;
+
+    static int g_window_open = 0;
+    static int g_frame_counter = 0;
+    static int g_max_frames = 5;
+
+    void sim_InitWindow(int width, int height, const char* title) {
+        g_window_open = 1;
+        g_frame_counter = 0;
+        printf("[Raylib Sim] InitWindow(%d, %d, \"%s\")\n", width, height, title);
+    }
+
+    void sim_SetTargetFPS(int fps) {
+        printf("[Raylib Sim] SetTargetFPS(%d)\n", fps);
+    }
+
+    bool sim_WindowShouldClose(void) {
+        return g_frame_counter >= g_max_frames;
+    }
+
+    float sim_GetFrameTime(void) {
+        return 1.0f / 60.0f;
+    }
+
+    void sim_BeginDrawing(void) {}
+
+    void sim_ClearBackground(Color color) {
+        (void)color;
+    }
+
+    void sim_DrawCircleV(Vector2 center, float radius, Color color) {
+        printf("  Frame #%d -> DrawCircleV(pos=(%.1f, %.1f), r=%.1f, rgba=(%u,%u,%u,%u))\n",
+               g_frame_counter + 1, center.x, center.y, radius,
+               color.r, color.g, color.b, color.a);
+    }
+
+    void sim_EndDrawing(void) {
+        g_frame_counter += 1;
+    }
+
+    void sim_CloseWindow(void) {
+        g_window_open = 0;
+        printf("[Raylib Sim] CloseWindow() called cleanly via defer\n");
+    }
+}
+
+// 1. Matching C ABI value structs in Zen C
+struct Vector2 {
+    x: f32,
+    y: f32,
+}
+
+struct Color {
+    r: u8,
+    g: u8,
+    b: u8,
+    a: u8,
+}
+
+// 2. FFI bindings mapped to Raylib API names via @link_name
+@link_name("sim_InitWindow")
+extern fn InitWindow(width: c_int, height: c_int, @ctype("const char*") title: string);
+
+@link_name("sim_SetTargetFPS")
+extern fn SetTargetFPS(fps: c_int);
+
+@link_name("sim_WindowShouldClose")
+extern fn WindowShouldClose() -> bool;
+
+@link_name("sim_GetFrameTime")
+extern fn GetFrameTime() -> f32;
+
+@link_name("sim_BeginDrawing")
+extern fn BeginDrawing();
+
+@link_name("sim_ClearBackground")
+extern fn ClearBackground(color: Color);
+
+@link_name("sim_DrawCircleV")
+extern fn DrawCircleV(center: Vector2, radius: f32, color: Color);
+
+@link_name("sim_EndDrawing")
+extern fn EndDrawing();
+
+@link_name("sim_CloseWindow")
+extern fn CloseWindow();
+
+def SCREEN_WIDTH = 800;
+def SCREEN_HEIGHT = 450;
+
+fn main() {
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Zen C + Raylib FFI Demo");
+    defer CloseWindow();
+
+    SetTargetFPS(60);
+
+    let ball_pos = Vector2{ x: 400.0, y: 225.0 };
+    let ball_vel = Vector2{ x: 240.0, y: 180.0 };
+    let ball_radius: f32 = 20.0;
+
+    let bg_color = Color{ r: (u8)24, g: (u8)24, b: (u8)36, a: (u8)255 };
+    let ball_color = Color{ r: (u8)230, g: (u8)41, b: (u8)55, a: (u8)255 };
+
+    while !WindowShouldClose() {
+        let dt: f32 = GetFrameTime();
+
+        // Update ball position
+        ball_pos.x = ball_pos.x + (ball_vel.x * dt);
+        ball_pos.y = ball_pos.y + (ball_vel.y * dt);
+
+        BeginDrawing();
+        ClearBackground(bg_color);
+        DrawCircleV(ball_pos, ball_radius, ball_color);
+        EndDrawing();
+    }
+
+    assert(ball_pos.x == 420.0 && ball_pos.y == 240.0, "After 5 frames at 60 FPS, ball moved +(20, 15)");
+}
+

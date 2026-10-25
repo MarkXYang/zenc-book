@@ -1,0 +1,53 @@
+// 1. Source-embedded build directives
+//> cflags: -O2 -Wall
+//> link: -lm
+//> define: ENABLE_TELEMETRY=1
+
+import "math.h" as c_math;
+
+// 2. Conditional compilation driven by //> define: ENABLE_TELEMETRY=1
+@cfg(ENABLE_TELEMETRY)
+fn telemetry_banner() -> string {
+    return "Telemetry: ACTIVE (enabled via //> define: ENABLE_TELEMETRY=1)";
+}
+
+@cfg(not(ENABLE_TELEMETRY))
+fn telemetry_banner() -> string {
+    return "Telemetry: DISABLED";
+}
+
+// 3. Companion C implementation (or linked via @link("crc16.c"))
+raw {
+    uint16_t compute_crc16_inline(const uint8_t* data, size_t len) {
+        uint16_t crc = 0xFFFF;
+        for (size_t i = 0; i < len; i++) {
+            crc ^= (uint16_t)data[i] << 8;
+            for (int bit = 0; bit < 8; bit++) {
+                if (crc & 0x8000) {
+                    crc = (uint16_t)((crc << 1) ^ 0x1021);
+                } else {
+                    crc = (uint16_t)(crc << 1);
+                }
+            }
+        }
+        return crc;
+    }
+}
+
+extern fn compute_crc16_inline(@ctype("const uint8_t*") data: u8*, len: usize) -> u16;
+
+fn main() {
+    println "{telemetry_banner()}";
+
+    // Linked against libm (-lm) via //> link: -lm
+    let root2: f64 = c_math::sqrt(2.0);
+    println "sqrt(2.0) = {root2}";
+    assert(root2 > 1.414 && root2 < 1.415, "sqrt(2.0) should be ~1.4142");
+
+    // Calling our C CRC-16-CCITT implementation on ASCII "123456789"
+    let payload: u8[9] = [49, 50, 51, 52, 53, 54, 55, 56, 57];
+    let crc: u16 = compute_crc16_inline(&payload[0], 9);
+    println "CRC-16-CCITT(\"123456789\") = 0x{crc:X}";
+    assert(crc == 0x29B1, "Standard CRC-16-CCITT of '123456789' is 0x29B1");
+}
+

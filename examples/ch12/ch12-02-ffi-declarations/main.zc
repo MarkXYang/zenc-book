@@ -1,0 +1,68 @@
+// 1. Verbatim C block providing a mock C library & opaque handle implementation
+raw {
+    typedef struct MockDb {
+        int id;
+        int queries_executed;
+    } MockDb;
+
+    static int g_c_library_version = 104;
+
+    MockDb* mock_db_open(int id) {
+        MockDb* db = (MockDb*)malloc(sizeof(MockDb));
+        db->id = id;
+        db->queries_executed = 0;
+        return db;
+    }
+
+    int mock_db_exec(MockDb* db, const char* sql) {
+        (void)sql;
+        db->queries_executed += 1;
+        return db->queries_executed;
+    }
+
+    void mock_db_close(MockDb* db) {
+        free(db);
+    }
+}
+
+// 2. Opaque C struct declaration (fields hidden from Zen C callers)
+extern struct MockDb;
+
+// 3. Explicit extern function declarations
+extern fn mock_db_open(id: c_int) -> MockDb*;
+extern fn mock_db_close(db: MockDb*);
+
+// 4. Symbol renaming with @link_name + exact C const-pointer type override
+@link_name("mock_db_exec")
+extern fn execute_query(db: MockDb*, @ctype("const char*") sql: string) -> c_int;
+
+@link_name("abs")
+extern fn c_abs(val: c_int) -> c_int;
+
+// 5. External C global variable
+extern let g_c_library_version: c_int;
+
+// 6. Exporting a Zen C function to C callers (no name mangling, public visibility)
+@export
+fn zc_compute_checksum(a: c_int, b: c_int) -> c_int {
+    return (a * 31) + b;
+}
+
+fn main() {
+    println "C library version global: {g_c_library_version}";
+    assert(g_c_library_version == 104, "Expected C global version 104");
+
+    let db: MockDb* = mock_db_open(7);
+    defer mock_db_close(db);
+
+    let q1 = execute_query(db, "SELECT * FROM sensors;");
+    let q2 = execute_query(db, "INSERT INTO logs VALUES (1);");
+    println "Queries executed on opaque MockDb*: {q2}";
+    assert(q1 == 1 && q2 == 2, "Expected 2 queries executed");
+
+    let mag = c_abs(-42);
+    let chk = zc_compute_checksum(10, 5);
+    println "c_abs(-42) = {mag}, zc_compute_checksum(10, 5) = {chk}";
+    assert(mag == 42 && chk == 315, "FFI calls must match expected results");
+}
+

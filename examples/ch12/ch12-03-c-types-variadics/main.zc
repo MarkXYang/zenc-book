@@ -1,0 +1,41 @@
+include <stdarg.h>
+
+// 1. Declaring an external C variadic function
+extern fn snprintf(buf: char*, size: usize, @ctype("const char*") fmt: string, ...) -> c_int;
+
+// 2. Defining a variadic Zen C function using va_list, va_start, va_arg, and va_end
+fn sum_c_ints(count: c_int, ...) -> c_int {
+    let ap: va_list;
+    va_start(ap, count);
+    defer va_end(ap);
+
+    let total: c_int = 0;
+    for i in 0..count {
+        let next_val: c_int = va_arg(ap, c_int);
+        total = total + next_val;
+    }
+    return total;
+}
+
+fn main() {
+    // 1. Portable C ABI primitive sizes
+    let sz_c_int: usize = sizeof(c_int);
+    let sz_c_long: usize = sizeof(c_long);
+    let sz_c_ll: usize = sizeof(c_longlong);
+    let sz_ptr: usize = sizeof(void*);
+    println "ABI sizes (bytes): c_int={sz_c_int}, c_long={sz_c_long}, c_longlong={sz_c_ll}, void*={sz_ptr}";
+    assert(sz_c_int == 4 && sz_c_ll == 8, "Standard C int and long long sizes");
+
+    // 2. Calling a C variadic function (snprintf)
+    let buf: char[64];
+    let written: c_int = snprintf(&buf[0], 64, "Sensor[%d] = %.2f V", 3, 3.30);
+    let formatted: string = &buf[0];
+    println "snprintf ({written} bytes): {formatted}";
+    assert(written == 18, "Expected 18 characters written by snprintf");
+
+    // 3. Calling a Zen C variadic function
+    let sum4: c_int = sum_c_ints(4, 10, 20, 30, 40);
+    println "sum_c_ints(4, 10, 20, 30, 40) = {sum4}";
+    assert(sum4 == 100, "Variadic sum of 10+20+30+40 should be 100");
+}
+
