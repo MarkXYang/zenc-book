@@ -1,0 +1,79 @@
+// File: examples/ch13/ch13-03-refactoring/zgrep.zc
+import "std/fs.zc"
+import "std/string.zc"
+import "std/vec.zc"
+import "std/result.zc"
+
+struct Config {
+    query: string,
+    file_path: string,
+}
+
+impl Config {
+    fn build(argc: int, argv: char**) -> Result<Config> {
+        if argc < 3 {
+            return Result<Config>::Err("not enough arguments (usage: zgrep <query> <file_path>)");
+        }
+
+        let query: string = argv[1];
+        let file_path: string = argv[2];
+
+        return Result<Config>::Ok(Config {
+            query: query,
+            file_path: file_path,
+        });
+    }
+}
+
+fn search(query: string, contents: string) -> Vec<String> {
+    let results = Vec<String>::new();
+    let text = String::from(contents);
+    let lines = text.split('\n');
+
+    for line in &lines {
+        let cleaned = (*line).trim_end();
+        if cleaned.contains_str(query) {
+            results.push(cleaned);
+        }
+    }
+
+    return results;
+}
+
+fn run(config: Config) -> Result<int> {
+    let contents = File::read_all(config.file_path)?;
+    let matches = search(config.query, contents.c_str());
+
+    let count: int = (int)matches.length();
+    for line in &matches {
+        println "{(*line).c_str()}";
+    }
+
+    return Result<int>::Ok(count);
+}
+
+test "search finds one matching line" {
+    let query = "duct";
+    let contents = "Zen C:\nsafe, fast, productive.\nPick three.";
+
+    let results = search(query, contents);
+    expect_eq((int)results.length(), 1, "Expected exactly 1 matching line");
+    assert(results.get_ref(0).eq_str("safe, fast, productive."), "Matching line should equal 'safe, fast, productive.'");
+}
+
+test "search returns empty Vec when query is absent" {
+    let query = "monad";
+    let contents = "Zen C:\nsafe, fast, productive.\nPick three.";
+
+    let results = search(query, contents);
+    expect_eq((int)results.length(), 0, "Expected 0 matches when query is not present");
+}
+
+test "search finds multiple matching lines" {
+    let query = "you";
+    let contents = "I'm nobody! Who are you?\nAre you nobody, too?\nHow dreary to be somebody!";
+
+    let results = search(query, contents);
+    expect_eq((int)results.length(), 2, "Expected 2 lines containing 'you'");
+}
+

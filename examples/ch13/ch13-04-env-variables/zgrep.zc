@@ -1,0 +1,120 @@
+// File: examples/ch13/ch13-04-env-variables/zgrep.zc
+import "std/fs.zc"
+import "std/env.zc"
+import "std/string.zc"
+import "std/vec.zc"
+import "std/result.zc"
+import "std/option.zc"
+
+struct Config {
+    query: string,
+    file_path: string,
+    ignore_case: bool,
+}
+
+impl Config {
+    fn build(argc: int, argv: char**) -> Result<Config> {
+        if argc < 3 {
+            return Result<Config>::Err("not enough arguments (usage: zgrep <query> <file_path>)");
+        }
+
+        let query: string = argv[1];
+        let file_path: string = argv[2];
+
+        let ignore_case = false;
+        let env_val = Env::get("IGNORE_CASE");
+        if env_val.is_some() {
+            let val = env_val.unwrap();
+            if strlen(val) > 0 && strcmp(val, "0") != 0 {
+                ignore_case = true;
+            }
+        }
+
+        return Result<Config>::Ok(Config {
+            query: query,
+            file_path: file_path,
+            ignore_case: ignore_case,
+        });
+    }
+}
+
+fn search(query: string, contents: string) -> Vec<String> {
+    let results = Vec<String>::new();
+    let text = String::from(contents);
+    let lines = text.split('\n');
+
+    for line in &lines {
+        let cleaned = (*line).trim_end();
+        if cleaned.contains_str(query) {
+            results.push(cleaned);
+        }
+    }
+
+    return results;
+}
+
+fn search_case_insensitive(query: string, contents: string) -> Vec<String> {
+    let results = Vec<String>::new();
+    let q_str = String::from(query);
+    let query_lower = q_str.to_lowercase();
+
+    let text = String::from(contents);
+    let lines = text.split('\n');
+
+    for line in &lines {
+        let cleaned = (*line).trim_end();
+        let line_lower = cleaned.to_lowercase();
+        if line_lower.contains_str(query_lower.c_str()) {
+            results.push(cleaned);
+        }
+    }
+
+    return results;
+}
+
+fn run(config: Config) -> Result<int> {
+    let contents = File::read_all(config.file_path)?;
+
+    let matches: Vec<String> = if config.ignore_case {
+        search_case_insensitive(config.query, contents.c_str())
+    } else {
+        search(config.query, contents.c_str())
+    };
+
+    let count: int = (int)matches.length();
+    for line in &matches {
+        println "{(*line).c_str()}";
+    }
+
+    return Result<int>::Ok(count);
+}
+
+test "case-sensitive search distinguishes uppercase and lowercase" {
+    let query = "duct";
+    let contents = "Zen C:\nsafe, fast, productive.\nPick three.\nDuct tape.";
+
+    let results = search(query, contents);
+    expect_eq((int)results.length(), 1, "Case-sensitive search should only match lowercase 'duct'");
+    assert(results.get_ref(0).eq_str("safe, fast, productive."), "Line content should match");
+}
+
+test "case-insensitive search matches regardless of casing" {
+    let query = "rUsT";
+    let contents = "Zen C:\nsafe, fast, productive.\nPick three.\nTrust me.";
+
+    let results = search_case_insensitive(query, contents);
+    expect_eq((int)results.length(), 1, "Expected 1 matching line for 'rUsT'");
+    assert(results.get_ref(0).eq_str("Trust me."), "Should match 'Trust me.'");
+}
+
+test "Env::set, Env::get, and Env::unset control environment state" {
+    Env::set("IGNORE_CASE", "1");
+    let present = Env::get("IGNORE_CASE");
+    assert(present.is_some(), "IGNORE_CASE should be Some after Env::set");
+    assert(strcmp(present.unwrap(), "1") == 0, "IGNORE_CASE value should be '1'");
+
+    Env::unset("IGNORE_CASE");
+    let absent = Env::get("IGNORE_CASE");
+    assert(absent.is_none(), "IGNORE_CASE should be None after Env::unset");
+}
+

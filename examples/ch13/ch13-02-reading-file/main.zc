@@ -1,0 +1,32 @@
+// File: examples/ch13/ch13-02-reading-file/main.zc
+import "std/fs.zc"
+import "std/string.zc"
+import "std/result.zc"
+
+fn resolve_default_poem() -> string {
+    if File::exists("poem.txt") {
+        return "poem.txt";
+    }
+    return "examples/ch13/ch13-02-reading-file/poem.txt";
+}
+
+fn main(argc: int, argv: char**) -> int {
+    let query: string = "the";
+    let file_path: string = resolve_default_poem();
+    if argc >= 3 {
+        query = argv[1];
+        file_path = argv[2];
+    }
+
+    println "Searching for '{query}'";
+    println "In file {file_path}";
+
+    let contents: String = File::read_all(file_path)
+        .expect("Should have been able to read the file");
+
+    println "\nWith text:\n{contents.c_str()}";
+    assert(contents.length() > 0, "poem.txt should not be empty");
+
+    return 0;
+}
+

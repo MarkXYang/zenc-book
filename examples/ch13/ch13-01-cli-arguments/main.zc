@@ -1,0 +1,25 @@
+// File: examples/ch13/ch13-01-cli-arguments/main.zc
+
+fn main(argc: int, argv: char**) -> int {
+    println "Received {argc} argument(s):";
+    for i in 0..argc {
+        let arg: string = argv[i];
+        println "  argv[{i}] = {arg}";
+    }
+
+    // Default to sample values when run without arguments (`zc run main.zc`),
+    // or extract argv[1] and argv[2] when invoked as `./zgrep <query> <file_path>`.
+    let query: string = "frog";
+    let file_path: string = "poem.txt";
+    if argc >= 3 {
+        query = argv[1];
+        file_path = argv[2];
+    }
+
+    println "";
+    println "Searching for: '{query}'";
+    println "In file:       '{file_path}'";
+
+    return 0;
+}
+
