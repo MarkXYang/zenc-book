@@ -1,0 +1,49 @@
+// File: examples/ch14/ch14-01-lambdas/main.zc
+
+// Higher-order function accepting a Zen C closure `fn(int) -> int`
+fn apply_twice(f: fn(int) -> int, x: int) -> int {
+    return f(f(x));
+}
+
+fn main() {
+    // 1. Concise arrow syntax vs. explicit block syntax
+    let factor = 3;
+    let triple_arrow = x -> x * factor;
+    let triple_block = fn(x: int) -> int { return x * factor; };
+
+    println "triple_arrow(7) = {triple_arrow(7)}";
+    println "triple_block(7) = {triple_block(7)}";
+    assert(triple_arrow(7) == 21 && triple_block(7) == 21, "Both lambdas should return 21");
+
+    // 2. Capture by value (default / `[=]`): snapshots `offset` at creation time
+    let offset = 10;
+    let add_snapshot = [=] x -> x + offset;
+    offset = 999; // Mutating `offset` later does NOT affect `add_snapshot`
+    let snap_res = add_snapshot(5);
+    println "add_snapshot(5) (captured offset=10) = {snap_res}";
+    assert(snap_res == 15, "Value capture must use the snapshot (10), not 999");
+
+    // 3. Passing a closure inline to a higher-order function
+    let base = 4;
+    let twice_res = apply_twice([=] x -> x + base, 10);
+    println "apply_twice(x + 4, 10) = {twice_res}";
+    assert(twice_res == 18, "10 + 4 + 4 should equal 18");
+
+    // 4. Capture by reference (`[&]`): mutates outer variables directly
+    let running_total = 0;
+    let add_to_total = [&] x -> running_total += x;
+    add_to_total(10);
+    add_to_total(25);
+    println "running_total after arrow [&] calls = {running_total}";
+    assert(running_total == 35, "10 + 25 should equal 35");
+
+    // Block syntax with reference capture `fn[&](...)`
+    let accumulate_pair = fn[&](a: int, b: int) -> int {
+        running_total += (a + b);
+        return running_total;
+    };
+    let final_total = accumulate_pair(3, 4);
+    println "running_total after block fn[&] call = {final_total}";
+    assert(running_total == 42 && final_total == 42, "35 + (3 + 4) should equal 42");
+}
+

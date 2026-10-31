@@ -1,0 +1,92 @@
+// File: examples/ch14/ch14-03-iterators/main.zc
+import "std/vec.zc"
+import "std/option.zc"
+import "std/slice.zc"
+
+// Custom stateful iterator generating the first `max_steps` Fibonacci numbers
+struct Fibonacci {
+    curr: int,
+    next_val: int,
+    step: int,
+    max_steps: int,
+}
+
+impl Fibonacci {
+    fn new(max_steps: int) -> Fibonacci {
+        return Fibonacci {
+            curr: 0,
+            next_val: 1,
+            step: 0,
+            max_steps: max_steps,
+        };
+    }
+
+    fn iterator(self) -> Fibonacci {
+        return self;
+    }
+
+    fn next(self) -> Option<int> {
+        if self.step >= self.max_steps {
+            return Option<int>::None();
+        }
+        let yielded = self.curr;
+        let upcoming = self.curr + self.next_val;
+        self.curr = self.next_val;
+        self.next_val = upcoming;
+        self.step += 1;
+        return Option<int>::Some(yielded);
+    }
+}
+
+fn main() {
+    let scores = Vec<int>::new();
+    scores.push(45);
+    scores.push(82);
+    scores.push(91);
+    scores.push(60);
+    scores.push(77);
+    scores.push(95);
+
+    // 1. filter() with a closure capturing a threshold
+    let min_passing = 75;
+    let passing = scores.iterator().filter([=] s -> s >= min_passing);
+    println "Passing scores (>= {min_passing}): {passing.length()}";
+    assert(passing.length() == 4, "Expected 4 passing scores (82, 91, 77, 95)");
+
+    // 2. fold() to sum all passing scores
+    let passing_sum = passing.iterator().fold(0, (acc, x) -> acc + x);
+    println "Sum of passing scores: {passing_sum}";
+    assert(passing_sum == 345, "82 + 91 + 77 + 95 should equal 345");
+
+    // 3. find(), any(), and all()
+    let first_honors = scores.iterator().find(s -> s >= 90);
+    assert(first_honors.is_some() && first_honors.unwrap() == 91, "First score >= 90 is 91");
+
+    let has_perfect = scores.iterator().any(s -> s == 100);
+    let all_positive = scores.iterator().all(s -> s > 0);
+    println "has_perfect={has_perfect}, all_positive={all_positive}";
+    assert(!has_perfect && all_positive, "No 100s, all scores > 0");
+
+    // 4. Reference iteration (`&scores`) vs. value iteration (`scores`)
+    let bonus_count = 0;
+    for score_ptr in &scores {
+        if *score_ptr >= 90 {
+            bonus_count += 1;
+        }
+    }
+    println "Scores >= 90 via reference iterator: {bonus_count}";
+    assert(bonus_count == 2, "Expected 2 scores >= 90 (91 and 95)");
+
+    // 5. Using our custom Fibonacci iterator in a native `for ... in` loop
+    let fib = Fibonacci::new(8);
+    let fib_sum = 0;
+    print "First 8 Fibonacci numbers:";
+    for n in fib {
+        print " {n}";
+        fib_sum += n;
+    }
+    println "";
+    println "Sum of first 8 Fibonacci numbers: {fib_sum}";
+    assert(fib_sum == 33, "0 + 1 + 1 + 2 + 3 + 5 + 8 + 13 = 33");
+}
+
