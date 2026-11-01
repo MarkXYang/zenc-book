@@ -1,0 +1,74 @@
+// File: examples/ch15/ch15-01-compiler-backends/main.zc
+//
+// Build directives: zc reads these `//>` comments before compiling and
+// forwards them to the backend C compiler.
+//> link: -lm
+//> linux: define: ZC_OS_LINUX
+//> macos: define: ZC_OS_MACOS
+//> windows: define: ZC_OS_WINDOWS
+
+include <math.h>
+
+// A raw C block can inspect the predefined macros of whichever backend
+// compiler (`--cc`) is used to build the generated C file.
+raw {
+    // Turn a bare token such as `-DAPP_VERSION=1.2.0` into the string "1.2.0".
+    #define ZC_STR_(x) #x
+    #define ZC_STR(x) ZC_STR_(x)
+
+    static const char *app_version(void) {
+        #ifdef APP_VERSION
+        return ZC_STR(APP_VERSION);
+        #else
+        return "dev";
+        #endif
+    }
+
+    static const char *target_os(void) {
+        #if defined(ZC_OS_LINUX)
+        return "linux";
+        #elif defined(ZC_OS_MACOS)
+        return "macos";
+        #elif defined(ZC_OS_WINDOWS)
+        return "windows";
+        #else
+        return "unknown";
+        #endif
+    }
+
+    static const char *backend_name(void) {
+        #if defined(__TINYC__)
+        return "tcc";
+        #elif defined(__clang__)
+        return "clang (or zig cc)";
+        #elif defined(__GNUC__)
+        return "gcc";
+        #else
+        return "unknown C compiler";
+        #endif
+    }
+
+    static const char *opt_mode(void) {
+        #if defined(__OPTIMIZE__)
+        return "optimized";
+        #else
+        return "unoptimized (-O0)";
+        #endif
+    }
+}
+
+extern fn app_version() -> const char*;
+extern fn target_os() -> const char*;
+extern fn backend_name() -> const char*;
+extern fn opt_mode() -> const char*;
+
+fn main() {
+    println "App version : {app_version()}";
+    println "Target OS   : {target_os()}";
+    println "C backend   : {backend_name()}";
+    println "Optimization: {opt_mode()}";
+
+    // sqrt comes from libm, linked via the `//> link: -lm` directive.
+    let hyp = sqrt(3.0 * 3.0 + 4.0 * 4.0);
+    println "hypot(3, 4) = {hyp}";
+}

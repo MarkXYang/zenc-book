@@ -1,0 +1,44 @@
+// File: examples/ch15/ch15-03-portable-ape/main.zc
+//
+// Native build:   zc build examples/ch15/ch15-03-portable-ape/main.zc -o sysinfo
+// Portable build: zc build examples/ch15/ch15-03-portable-ape/main.zc --cc cosmocc -o sysinfo.com
+//
+// The same source works for both. With cosmocc, the resulting `sysinfo.com`
+// runs unmodified on Linux, macOS, Windows, and the BSDs (x86_64 and aarch64).
+
+include <sys/utsname.h>
+
+raw {
+    // Report *how* this binary was built (decided at compile time).
+    static const char *build_kind(void) {
+        #if defined(__COSMOPOLITAN__)
+        return "Actually Portable Executable (cosmocc)";
+        #else
+        return "native executable";
+        #endif
+    }
+
+    // Report *where* this binary is running (decided at run time).
+    // uname(2) is provided by both the host libc and Cosmopolitan Libc.
+    static const char *running_os(void) {
+        static struct utsname info;
+        if (uname(&info) != 0) return "unknown";
+        return info.sysname;
+    }
+
+    static const char *running_arch(void) {
+        static struct utsname info;
+        if (uname(&info) != 0) return "unknown";
+        return info.machine;
+    }
+}
+
+extern fn build_kind() -> const char*;
+extern fn running_os() -> const char*;
+extern fn running_arch() -> const char*;
+
+fn main() {
+    println "Build kind : {build_kind()}";
+    println "Running on : {running_os()} ({running_arch()})";
+    println "Hello from one binary, many operating systems!";
+}

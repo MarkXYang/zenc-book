@@ -1,0 +1,58 @@
+// File: examples/ch15/ch15-04-developer-tooling/main.zc
+//
+// A tiny temperature-logging module used to demonstrate the Zen C tooling:
+//   zc-doc --no-recursive-doc main.zc   (generate Markdown API docs)
+//   zc-format --check main.zc           (verify formatting in CI)
+//   zc check main.zc                    (type-check without building)
+
+include <stdio.h>
+
+/// A fixed-capacity temperature log, in tenths of a degree Celsius.
+struct TempLog {
+    readings: int[8];
+    count: int;
+}
+
+impl TempLog {
+    /// Creates an empty log.
+    fn new() -> TempLog {
+        return TempLog { readings: [0, 0, 0, 0, 0, 0, 0, 0], count: 0 };
+    }
+
+    /// Records a reading. Returns `false` when the log is full.
+    fn record(self, tenths: int) -> bool {
+        if self.count >= 8 {
+            return false;
+        }
+        self.readings[self.count] = tenths;
+        self.count += 1;
+        return true;
+    }
+
+    /// Returns the average reading in tenths of a degree (0 if empty).
+    fn average(self) -> int {
+        if self.count == 0 {
+            return 0;
+        }
+        let total = 0;
+        for i in 0..self.count {
+            total += self.readings[i];
+        }
+        return total / self.count;
+    }
+}
+
+/// Formats tenths of a degree as `whole.fraction`, e.g. 215 -> "21.5".
+fn print_temp(label: const char*, tenths: int) {
+    println "{label}: {tenths / 10}.{tenths % 10} C";
+}
+
+fn main() {
+    let log = TempLog::new();
+    log.record(198);
+    log.record(215);
+    log.record(207);
+
+    println "readings: {log.count}";
+    print_temp("average", log.average());
+}

@@ -1,0 +1,72 @@
+// File: examples/ch15/ch15-02-generated-c/main.zc
+//
+// Transpile this file and inspect the C symbols that zc emits:
+//   zc transpile examples/ch15/ch15-02-generated-c/main.zc -o shapes.c
+
+/// Shared behavior for anything with an area.
+trait Shape {
+    fn area(self) -> f64;
+}
+
+/// A square with a side length.
+struct Square {
+    side: f64;
+}
+
+/// A generic box holding a single value.
+struct Boxed<T> {
+    value: T;
+}
+
+impl Boxed<T> {
+    fn get(self) -> T {
+        return self.value;
+    }
+}
+
+impl Square {
+    // Associated function (no `self`)   -> Square__new
+    fn new(side: f64) -> Square {
+        return Square { side: side };
+    }
+
+    // Leading underscore is preserved   -> Square___grow (three underscores)
+    fn _grow(self, k: f64) -> Square {
+        return Square { side: self.side * k };
+    }
+
+    // Regular method                    -> Square__scale
+    fn scale(self, k: f64) -> Square {
+        return self._grow(k);
+    }
+}
+
+// Trait implementation                  -> Square__Shape__area
+impl Shape for Square {
+    fn area(self) -> f64 {
+        return self.side * self.side;
+    }
+}
+
+// Generic function, monomorphized       -> largest__int32_t, largest__double
+fn largest<T>(a: T, b: T) -> T {
+    if a > b { return a; }
+    return b;
+}
+
+// Plain global function: not mangled, callable from C as `zc_area_sum`.
+fn zc_area_sum(a: f64, b: f64) -> f64 {
+    return a + b;
+}
+
+fn main() {
+    let s = Square::new(2.0);
+    let big = s.scale(3.0);
+    println "small area = {s.area()}";
+    println "big area   = {big.area()}";
+    println "sum        = {zc_area_sum(s.area(), big.area())}";
+
+    let bi = Boxed<int> { value: 42 };
+    println "boxed      = {bi.get()}";
+    println "largest    = {largest<int>(7, 3)} / {largest<f64>(1.5, 2.5)}";
+}
