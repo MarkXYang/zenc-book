@@ -66,7 +66,7 @@ Let's see this in action with a two-file project: a `stats.zc` library module co
 
 ### 1. The Library Module with Embedded Unit Tests (`stats.zc`)
 
-```zc
+```zenc
 // File: examples/ch11/ch11-02-running-tests/stats.zc
 
 struct Summary {
@@ -135,7 +135,7 @@ $ zc run -q examples/ch11/ch11-02-running-tests/stats.zc
 
 Now let's import `stats.zc` from our application entry point `app.zc`, which defines `fn main()`:
 
-```zc
+```zenc
 // File: examples/ch11/ch11-02-running-tests/app.zc
 
 import "./stats.zc"
@@ -164,7 +164,7 @@ What if you have a single-file tool that defines `fn main()`, or an application 
 
 Whenever at least one `test` block is present in your program (or its imported modules), the Zen C compiler emits the C test runner function `int _z_run_tests()`. You can call `_z_run_tests()` directly from Zen C code!
 
-```zc
+```zenc
 fn clamp(val: int, lo: int, hi: int) -> int {
     if val < lo { return lo; }
     if val > hi { return hi; }
@@ -196,7 +196,7 @@ fn main() -> int {
 
 In systems programming, some tests only make sense on a specific operating system, compiler backend, or feature configuration. You can attach `@cfg(...)` attributes directly to `test` blocks—including `not(...)`, `any(...)`, and `all(...)` combinators:
 
-```zc
+```zenc
 @cfg(linux)
 test "Linux procfs path resolution" {
     assert(true, "Runs only on Linux hosts");
@@ -240,7 +240,7 @@ As your project grows, you have two ways to run tests across multiple modules:
 
 Because `zc` collects `test` blocks across all imported modules when synthesizing `_z_run_tests()`, you can create a single `tests/all_tests.zc` file that imports every module in your project:
 
-```zc
+```zenc
 // File: tests/all_tests.zc
 import "../src/math.zc"
 import "../src/parser.zc"

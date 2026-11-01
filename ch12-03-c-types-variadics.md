@@ -55,7 +55,7 @@ note: previous definition of 'mock_db_exec' with type 'int(MockDb *, const char 
 
 To emit an exact `const`-qualified C type in the generated prototype while keeping Zen C's `string` or pointer type checking at call sites, place the `@ctype("...")` attribute before the parameter name:
 
-```zc
+```zenc
 extern fn execute_query(
     db: MockDb*,
     @ctype("const char*") sql: string
@@ -68,7 +68,7 @@ You can also use `@ctype` for other `const`-qualified C pointers, such as `@ctyp
 
 When a C function writes into a caller-provided character buffer (such as `snprintf`, `getcwd`, or `strerror_r`), allocate a fixed-size `char[N]` array on the stack (or heap) and pass the address of its first element (`&buf[0]`):
 
-```zc
+```zenc
 let buf: char[64];
 let written: c_int = snprintf(&buf[0], 64, "Sensor[%d] = %.2f V", 3, 3.30);
 let formatted: string = &buf[0];
@@ -82,7 +82,7 @@ let formatted: string = &buf[0];
 
 To declare an external C function that accepts a variable number of arguments (like `printf`, `snprintf`, or `ioctl`), place `...` after the last fixed parameter:
 
-```zc
+```zenc
 extern fn snprintf(
     buf: char*,
     size: usize,
@@ -98,7 +98,7 @@ extern fn snprintf(
 
 You can also write your own C-compatible variadic functions in Zen C! Include `<stdarg.h>` and use the built-in `va_list` type along with `va_start`, `va_arg`, `va_copy`, and `va_end`:
 
-```zc
+```zenc
 include <stdarg.h>
 
 fn sum_c_ints(count: c_int, ...) -> c_int {
@@ -131,7 +131,7 @@ Notice two important details in [`sum_c_ints`](file:///home/mark/code/zenc-app/b
 
 Here is the complete, runnable program (`examples/ch12/ch12-03-c-types-variadics/main.zc`) demonstrating `c_*` ABI sizes, calling C's variadic `snprintf` into a stack buffer, and defining a variadic Zen C function with `va_list`:
 
-```zc
+```zenc
 // File: examples/ch12/ch12-03-c-types-variadics/main.zc
 include <stdarg.h>
 

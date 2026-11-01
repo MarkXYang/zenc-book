@@ -16,7 +16,7 @@ $ ./zgrep needle haystack.txt
 
 In earlier chapters, most of our programs used a parameterless entry point (`fn main()`). When building command-line tools, Zen C also supports the standard C ABI entry-point signature directly:
 
-```zc
+```zenc
 fn main(argc: int, argv: char**) -> int {
     // ...
     return 0;
@@ -42,7 +42,7 @@ Because Zen C's `string` type is a direct alias for `char*`, indexing `argv[i]` 
 
 **Listing 13-1: `list13-1.zc` — Inspecting `argc` and `argv` and extracting `query` and `file_path`**
 
-```zc
+```zenc
 // File: examples/ch13/ch13-01-cli-arguments/main.zc
 
 fn main(argc: int, argv: char**) -> int {
@@ -119,7 +119,7 @@ In C and Zen C, the memory backing `argv[0..argc]` is owned by the operating sys
 
 If your CLI tool needs to mutate, split, or store arguments in a growable collection, you can also collect `argv` into a `Vec<String>` using `std/vec.zc` and `std/string.zc`:
 
-```zc
+```zenc
 import "std/vec.zc"
 import "std/string.zc"
 

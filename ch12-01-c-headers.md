@@ -11,7 +11,7 @@ When working with C libraries in Zen C, the first question is how to bring a `.h
 
 The cleanest way to consume a C header without polluting your file's global namespace is `import "header.h" as alias;`:
 
-```zc
+```zenc
 //> link: -lm
 import "math.h" as c_math;
 import "stdio.h" as c_io;
@@ -47,7 +47,7 @@ Zen C also provides the `include` keyword in two forms:
 
 ### Angle-Bracket System Includes (`include <header.h>`)
 
-```zc
+```zenc
 include <stdlib.h>
 include <stdarg.h>
 ```
@@ -56,7 +56,7 @@ include <stdarg.h>
 
 ### Quoted Local Includes (`include "local.h"`) and Auto-Scanning
 
-```zc
+```zenc
 include "sensor_hal.h"
 ```
 
@@ -124,7 +124,7 @@ static inline double hal_apply_calibration(HalCalibration cal, int raw_adc) {
 
 And here is the Zen C program (`examples/ch12/ch12-01-c-headers/main.zc`) that consumes both system headers and `"sensor_hal.h"`:
 
-```zc
+```zenc
 // File: examples/ch12/ch12-01-c-headers/main.zc
 //> link: -lm
 

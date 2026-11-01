@@ -27,7 +27,7 @@ With this layout:
 
 Instead of keeping `query` and `file_path` as separate variables, let's define a `Config` struct in `zgrep.zc` and give it a `Config::build` constructor that validates `argc` and returns `Result<Config>`:
 
-```zc
+```zenc
 import "std/result.zc"
 
 struct Config {
@@ -60,7 +60,7 @@ Notice the naming choice: rather than naming the constructor `Config::new`, we n
 
 Next, we extract all file-reading and line-printing work out of `main()` into a `run` function inside `zgrep.zc`:
 
-```zc
+```zenc
 fn run(config: Config) -> Result<int> {
     let contents = File::read_all(config.file_path)?;
     let matches = search(config.query, contents.c_str());
@@ -76,7 +76,7 @@ fn run(config: Config) -> Result<int> {
 
 Look at the first line of `run`:
 
-```zc
+```zenc
 let contents = File::read_all(config.file_path)?;
 ```
 
@@ -98,7 +98,7 @@ Now that `zgrep.zc` is separate from `main.zc`, we can write our core `search(qu
 
 At the bottom of `zgrep.zc`, we write three `test` blocks covering a single match, zero matches, and multiple matches:
 
-```zc
+```zenc
 test "search finds one matching line" {
     let query = "duct";
     let contents = "Zen C:\nsafe, fast, productive.\nPick three.";
@@ -129,7 +129,7 @@ test "search finds multiple matching lines" {
 
 To implement `search`, we wrap `contents` in a `String`, split it on `'\n'` via `.split('\n')`, strip any trailing whitespace/carriage returns with `.trim_end()`, and check whether each line contains `query` using `.contains_str(query)`:
 
-```zc
+```zenc
 fn search(query: string, contents: string) -> Vec<String> {
     let results = Vec<String>::new();
     let text = String::from(contents);
@@ -154,7 +154,7 @@ Here are the complete `zgrep.zc` library module (`examples/ch13/ch13-03-refactor
 
 **Listing 13-3: `zgrep.zc` and `main.zc`**
 
-```zc
+```zenc
 // File: examples/ch13/ch13-03-refactoring/zgrep.zc
 import "std/fs.zc"
 import "std/string.zc"
@@ -237,7 +237,7 @@ test "search finds multiple matching lines" {
 
 And here is `main.zc`:
 
-```zc
+```zenc
 // File: examples/ch13/ch13-03-refactoring/main.zc
 import "./zgrep.zc"
 
@@ -296,7 +296,7 @@ Application error: Failed to open file
 
 Look closely at the loop inside `search()`:
 
-```zc
+```zenc
 for line in &lines {
     let cleaned = (*line).trim_end();
     if cleaned.contains_str(query) {

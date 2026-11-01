@@ -12,7 +12,7 @@ In Zen C, iterators power two ergonomic language and library features:
 
 In `std/iter.zc`, Zen C defines two foundational traits that describe how iteration works:
 
-```zc
+```zenc
 // From std/iter.zc:
 import "./option.zc"
 
@@ -40,7 +40,7 @@ When iterating over a `Vec<T>` (from `std/vec.zc`), Zen C provides two iterator 
 | `for x in vec` or `vec.iterator()` | `Vec::iterator(self)` | `VecIter<T>` | `T` (copy of element) | `T` is a small scalar or value type (`int`, `f64`, small structs) or you want to chain `VecIter<T>` combinators (`filter`, `fold`, `any`, `all`). |
 | `for ptr in &vec` or `vec.iter_ref()` | `Vec::iter_ref(self)` | `VecIterRef<T>` | `T*` (pointer to element in place) | `T` is a heap-owning type (`String`, `Vec<U>`) or a large struct that you want to inspect or mutate in place without copying or triggering `Drop`. |
 
-```zc
+```zenc
 import "std/vec.zc"
 
 let nums = Vec<int>::new();
@@ -77,7 +77,7 @@ Calling `vec.iterator()` returns a `VecIter<T>` cursor equipped with rich functi
 
 Because these methods accept full Zen C closures (`fn(...)`), your predicates and reducers can capture local variables from the surrounding function:
 
-```zc
+```zenc
 let min_passing = 75;
 
 // `min_passing` is captured from the enclosing scope!
@@ -93,7 +93,7 @@ You are not limited to iterating over standard library collections. You can crea
 
 For example, let's build a `Fibonacci` struct that lazily generates the first `max_steps` Fibonacci numbers (`0, 1, 1, 2, 3, 5, 8, 13, ...`) on the fly without allocating an array:
 
-```zc
+```zenc
 import "std/option.zc"
 
 struct Fibonacci {
@@ -133,7 +133,7 @@ impl Fibonacci {
 
 Because `Fibonacci` defines `iterator` and `next`, you can use it directly in a `for` loop:
 
-```zc
+```zenc
 for n in Fibonacci::new(8) {
     print "{n} "; // 0 1 1 2 3 5 8 13
 }
@@ -147,7 +147,7 @@ Here is a complete runnable program (`examples/ch14/ch14-03-iterators/main.zc`) 
 
 **Listing 14-3: `list14-3.zc` — `VecIter<T>` combinators and a custom `Fibonacci` iterator**
 
-```zc
+```zenc
 // File: examples/ch14/ch14-03-iterators/main.zc
 import "std/vec.zc"
 import "std/option.zc"

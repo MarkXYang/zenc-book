@@ -28,7 +28,7 @@ Any comment line starting with `//>` is parsed by Zen C's build-directive scanne
 
 Native C libraries often require different linker flags on Linux, macOS, and Windows. You can prefix any `//>` directive with an operating system selector (`linux:`, `macos:` / `darwin:`, or `windows:`):
 
-```zc
+```zenc
 // Cross-platform build directives in a single .zc file:
 //> linux: link: -lm -lpthread -ldl
 //> macos: framework: Cocoa IOKit CoreVideo
@@ -41,7 +41,7 @@ When `zc` runs on Linux, it executes the `//> linux:` directives and ignores `ma
 
 Build directives also support `${ENV_VAR}` interpolation before parsing paths or flags. This is especially useful when SDKs are installed in user-specific or CI-configured locations:
 
-```zc
+```zenc
 //> include: ${OPENSSL_ROOT_DIR}/include
 //> lib: ${OPENSSL_ROOT_DIR}/lib
 //> link: -lssl -lcrypto
@@ -57,7 +57,7 @@ Many C libraries are distributed as single-file or amalgamation C sources—such
 
 Instead of compiling `.c` files manually into `.o` object files first, place the `@link("path/to/file.c")` attribute at the top level of your `.zc` file:
 
-```zc
+```zenc
 @link("examples/ch12/ch12-04-linking-directives/crc16.c")
 extern fn compute_crc16_ccitt(@ctype("const uint8_t*") data: u8*, len: usize) -> u16;
 ```
@@ -70,7 +70,7 @@ When `zc` parses `@link("path/to/file.c")`, it resolves the path (checking the c
 
 Let's see how `//> cflags:`, `//> link:`, and `//> define:` work together with `@cfg(...)` conditional compilation and a C CRC-16-CCITT implementation (`examples/ch12/ch12-04-linking-directives/main.zc`):
 
-```zc
+```zenc
 // File: examples/ch12/ch12-04-linking-directives/main.zc
 // 1. Source-embedded build directives
 //> cflags: -O2 -Wall

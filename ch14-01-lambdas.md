@@ -12,7 +12,7 @@ Zen C provides two complementary syntaxes for writing closures depending on whet
 
 For single-expression lambdas, list the parameter name (or parenthesized parameter list) followed by `->` and the return expression:
 
-```zc
+```zenc
 let factor = 3;
 
 // Single parameter arrow lambda
@@ -26,7 +26,7 @@ let weighted_sum = (a, b) -> (a * factor) + b;
 
 When your closure requires explicit parameter/return type annotations, multiple statements, local variables, or early `return` branches, use the `fn(...) -> R { ... }` block syntax:
 
-```zc
+```zenc
 let factor = 3;
 
 let triple_block = fn(x: int) -> int {
@@ -50,7 +50,7 @@ When a lambda references a variable from an enclosing function, how is that vari
 
 By default (or when prefixed with `[=]`), a closure takes an independent **snapshot** of any outer variable it uses. Mutating the outer variable *after* the closure is created does not change the value seen inside the closure:
 
-```zc
+```zenc
 let offset = 10;
 let add_snapshot = [=] x -> x + offset;
 
@@ -62,7 +62,7 @@ println "{add_snapshot(5)}"; // Prints 15 (5 + 10)
 
 When you want a closure to accumulate state or mutate a variable in the surrounding scope, prefix an arrow lambda with `[&]` or a block lambda with `fn[&]`:
 
-```zc
+```zenc
 let running_total = 0;
 
 // Arrow syntax with reference capture:
@@ -84,7 +84,7 @@ accumulate_pair(3, 4); // running_total is now 42
 
 To write a function that accepts a closure as a parameter, annotate the parameter with `fn(ParamTypes) -> ReturnType` (or `fn(ParamTypes)` when the closure returns `void`):
 
-```zc
+```zenc
 fn apply_twice(f: fn(int) -> int, x: int) -> int {
     return f(f(x));
 }
@@ -92,7 +92,7 @@ fn apply_twice(f: fn(int) -> int, x: int) -> int {
 
 You can then pass any lambda expression—including one that captures local variables—directly into `apply_twice`:
 
-```zc
+```zenc
 let base = 4;
 let result = apply_twice([=] x -> x + base, 10); // (10 + 4) + 4 = 18
 ```
@@ -105,7 +105,7 @@ Here is a complete example (`examples/ch14/ch14-01-lambdas/main.zc`) demonstrati
 
 **Listing 14-1: `list14-1.zc` — Lambdas, closure capture modes, and higher-order functions**
 
-```zc
+```zenc
 // File: examples/ch14/ch14-01-lambdas/main.zc
 
 // Higher-order function accepting a Zen C closure `fn(int) -> int`

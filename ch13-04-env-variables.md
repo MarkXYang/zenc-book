@@ -30,7 +30,7 @@ Zen C's `std/env.zc` module wraps these platform differences behind the `Env` st
 
 Following our TDD workflow from Section 13.3, let's add a new unit test in `zgrep.zc` for a `search_case_insensitive(query: string, contents: string) -> Vec<String>` function, while also updating our existing `search` test to verify that `"duct"` does *not* match `"Duct tape."` in case-sensitive mode:
 
-```zc
+```zenc
 test "case-sensitive search distinguishes uppercase and lowercase" {
     let query = "duct";
     let contents = "Zen C:\nsafe, fast, productive.\nPick three.\nDuct tape.";
@@ -56,7 +56,7 @@ test "case-insensitive search matches regardless of casing" {
 
 To compare lines without regard to ASCII letter case, we convert both the `query` and each candidate line to lowercase using `String::to_lowercase()` (from `std/string.zc`), while pushing the **original** `cleaned` line (with its original casing intact) into `results`:
 
-```zc
+```zenc
 fn search_case_insensitive(query: string, contents: string) -> Vec<String> {
     let results = Vec<String>::new();
     let q_str = String::from(query);
@@ -83,7 +83,7 @@ fn search_case_insensitive(query: string, contents: string) -> Vec<String> {
 
 Now let's add an `ignore_case: bool` field to `struct Config` and populate it inside `Config::build` by checking `Env::get("IGNORE_CASE")`:
 
-```zc
+```zenc
 struct Config {
     query: string,
     file_path: string,
@@ -120,7 +120,7 @@ impl Config {
 
 And in `run(config: Config)`, we dispatch between `search_case_insensitive` and `search` based on `config.ignore_case`:
 
-```zc
+```zenc
 fn run(config: Config) -> Result<int> {
     let contents = File::read_all(config.file_path)?;
 
@@ -147,7 +147,7 @@ Here is the updated `examples/ch13/ch13-04-env-variables/zgrep.zc` module, inclu
 
 **Listing 13-4: `list13-4.zc` — `zgrep.zc` with `IGNORE_CASE` environment variable support**
 
-```zc
+```zenc
 // File: examples/ch13/ch13-04-env-variables/zgrep.zc
 import "std/fs.zc"
 import "std/env.zc"

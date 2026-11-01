@@ -8,7 +8,7 @@ Zen C provides first-class language syntax for writing automated tests: the `tes
 
 A test in Zen C is declared at the top level of a file using the `test` keyword, followed by a human-readable string literal describing the behavior under test, and a block `{ ... }` containing the test body:
 
-```zc
+```zenc
 test "descriptive name of the behavior" {
     // Arrange, Act, Assert
 }
@@ -18,7 +18,7 @@ Unlike ordinary `fn` declarations, `test` blocks use arbitrary string literals f
 
 Let's build a complete example that tests a `Rectangle` struct and its methods:
 
-```zc
+```zenc
 // File: examples/ch11/ch11-01-writing-tests/main.zc
 
 struct Rectangle {
@@ -87,7 +87,7 @@ $ zc run examples/ch11/ch11-01-writing-tests/main.zc
 
 Zen C provides two built-in verification statements—`assert` and `expect`—which can be written either with parentheses (like a function call) or without parentheses (like a statement):
 
-```zc
+```zenc
 // Parenthesized style (idiomatic in expressions and multi-argument checks)
 assert(x > 0);
 assert(x == 42, "Expected x to be 42, got {x}");
@@ -130,7 +130,7 @@ When a test fails, knowing *that* `rect.area() == 50` was false is only half the
 
 Both `assert` and `expect` support full Zen C `{...}` string interpolation inside their failure message argument:
 
-```zc
+```zenc
 test "interpolated failure messages" {
     let r = Rectangle::new(6, 7);
     let expected = 42;
@@ -156,7 +156,7 @@ Whenever the Zen C parser encounters a `test` block in your file, it automatical
 
 Because IEEE 754 floating-point arithmetic is subject to rounding (for example, `0.1 + 0.2` in binary floating point is `0.30000000000000004`), testing `f64` calculations with exact `==` is a classic source of flaky tests. Always use `expect_approx_eq` with an explicit tolerance `epsilon`:
 
-```zc
+```zenc
 fn circle_area(radius: f64) -> f64 {
     return 3.141592653589793 * radius * radius;
 }
@@ -182,7 +182,7 @@ Because a `test "name" { ... }` block compiles to a regular C function scope, al
 
 Here is an example demonstrating how to test both `Result<T>` error paths and deterministic RAII `Drop` cleanup inside a `test` block:
 
-```zc
+```zenc
 import "std/result.zc"
 
 struct TempBuffer {

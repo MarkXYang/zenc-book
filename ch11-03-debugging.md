@@ -19,7 +19,7 @@ $ zc build -g -ggdb -O0 examples/ch11/ch11-03-debugging/main.zc -o debug_demo
 
 > **Tip: Embedding Debug Flags with `//> cflags:`**
 > If you are iterating on a debug target and want `zc build -g` to automatically include backend DWARF symbols and `-O0`, you can also place a build directive at the top of your entry file:
-> ```zc
+> ```zenc
 > //> cflags: -g -O0
 > ```
 
@@ -37,7 +37,7 @@ $ zc build --emit-c -g -ggdb -O0 main.zc -o app
 
 Consider the following order-processing program in `examples/ch11/ch11-03-debugging/main.zc`, which uses a struct, methods, a slice, and a tagged-union `enum`:
 
-```zc
+```zenc
 // File: examples/ch11/ch11-03-debugging/main.zc
 
 enum Discount {

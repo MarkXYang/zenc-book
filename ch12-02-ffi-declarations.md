@@ -8,7 +8,7 @@ While `import "header.h" as alias` is convenient for quick calls, production sys
 
 Use `extern fn` terminated by a semicolon (`;`) to declare a function implemented in C (either in libc, a linked static/dynamic library, or a companion `.c` file):
 
-```zc
+```zenc
 extern fn puts(@ctype("const char*") s: string) -> c_int;
 extern fn abs(val: c_int) -> c_int;
 extern fn getenv(@ctype("const char*") name: string) -> char*;
@@ -27,7 +27,7 @@ Many C libraries (such as SQLite's `sqlite3*`, OpenSSL's `SSL_CTX*`, `zlib`'s in
 
 In Zen C, declare opaque C structs and unions with `extern struct Name;` or `extern union Name;`:
 
-```zc
+```zenc
 // Opaque C handle: fields are unknown to Zen C
 extern struct sqlite3;
 
@@ -40,7 +40,7 @@ Because `sqlite3` is registered as an external opaque struct:
 - Zen C does not emit a duplicate `typedef struct sqlite3 { ... }` definition in the generated C file.
 - Pairing opaque C constructor/destructor pairs with Zen C's `defer` statement guarantees deterministic cleanup on every return path:
 
-```zc
+```zenc
 let db: MockDb* = mock_db_open(7);
 defer mock_db_close(db); // Automatically called when the scope exits!
 ```
@@ -51,7 +51,7 @@ defer mock_db_close(db); // Automatically called when the scope exits!
 
 If a C library exposes a global state variable (such as POSIX `environ` or a library version/configuration variable), declare it at the top level with `extern let`:
 
-```zc
+```zenc
 extern let g_c_library_version: c_int;
 ```
 
@@ -67,7 +67,7 @@ Sometimes a C symbol name is awkward to call directly from Zen C:
 
 Attach `@link_name("C_Symbol_Name")` to any `extern fn`, `fn`, `struct`, or `enum` to decouple its Zen C identifier from the emitted C linker symbol:
 
-```zc
+```zenc
 @link_name("mock_db_exec")
 extern fn execute_query(db: MockDb*, @ctype("const char*") sql: string) -> c_int;
 
@@ -99,7 +99,7 @@ Interoperability works in both directions:
 
 To call a Zen C function from C, Python (`ctypes`/`cffi`), Rust, or C#, annotate it with `@export`:
 
-```zc
+```zenc
 @export
 fn zc_compute_checksum(a: c_int, b: c_int) -> c_int {
     return (a * 31) + b;
@@ -122,7 +122,7 @@ When you need to define a small C helper function, include a C macro wrapper, or
 
 The following self-contained example (`examples/ch12/ch12-02-ffi-declarations/main.zc`) demonstrates `raw { ... }`, an opaque `extern struct MockDb;`, `extern fn`, `@link_name`, `@ctype("const char*")`, `extern let`, `defer` cleanup, and `@export`:
 
-```zc
+```zenc
 // File: examples/ch12/ch12-02-ffi-declarations/main.zc
 
 // 1. Verbatim C block providing a mock C library & opaque handle implementation

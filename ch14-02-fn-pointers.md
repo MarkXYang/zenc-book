@@ -26,7 +26,7 @@ Compare Zen C's clean left-to-right `fn*` syntax against traditional C's "spiral
 
 Any top-level Zen C function (`fn`) with a matching parameter and return signature can be assigned to a `fn*` variable, passed as a `fn*` argument, or returned from a function returning `fn*`:
 
-```zc
+```zenc
 fn add(a: int, b: int) -> int { return a + b; }
 fn sub(a: int, b: int) -> int { return a - b; }
 fn mul(a: int, b: int) -> int { return a * b; }
@@ -50,7 +50,7 @@ fn select_op(symbol: char) -> fn*(int, int) -> int {
 
 You can embed `fn*` fields directly inside structs to build table-driven command dispatchers, state machines, or plugin registries:
 
-```zc
+```zenc
 struct OpEntry {
     symbol: char,
     label: string,
@@ -80,7 +80,7 @@ void qsort(void *base, size_t nmemb, size_t size,
 
 In Zen C, we declare `qsort` with `compar: fn*(const void*, const void*) -> c_int` and pass a normal Zen C function directly:
 
-```zc
+```zenc
 include <stdlib.h>
 
 extern fn qsort(
@@ -107,7 +107,7 @@ Here is the complete program (`examples/ch14/ch14-02-fn-pointers/main.zc`) combi
 
 **Listing 14-2: `list14-2.zc` — Dispatch tables, higher-order `fn*`, and C `qsort` interop**
 
-```zc
+```zenc
 // File: examples/ch14/ch14-02-fn-pointers/main.zc
 include <stdlib.h>
 

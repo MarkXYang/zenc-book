@@ -49,7 +49,7 @@ Let's update `main.zc` so that argument-parsing errors and file I/O errors are p
 
 **Listing 13-5: `list13-5.zc` — Final `main.zc` writing diagnostics to `stderr`**
 
-```zc
+```zenc
 // File: examples/ch13/ch13-05-stderr/main.zc
 import "./zgrep.zc"
 
@@ -73,7 +73,7 @@ fn main(argc: int, argv: char**) -> int {
 
 > [!TIP]
 > You can also write those two error statements using Zen C's `!` stderr shorthand:
-> ```zc
+> ```zenc
 > if config_res.is_err() {
 >     !"Problem parsing arguments: {config_res.err}";
 >     return 1;

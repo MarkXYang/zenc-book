@@ -56,7 +56,7 @@ For this initial prototype, we will unwrap the `Result<String>` using `.expect("
 
 **Listing 13-2: `list13-2.zc` — Reading the contents of `poem.txt` into a `String`**
 
-```zc
+```zenc
 // File: examples/ch13/ch13-02-reading-file/main.zc
 import "std/fs.zc"
 import "std/string.zc"
@@ -128,7 +128,7 @@ I'm nobody! Who are you?
 
 Notice what is *not* in Listing 13-2:
 - There is no manual `fclose(fp)` call. Inside `File::read_all`, the `File` handle is closed immediately after reading, and even when you use `File::open` directly, `std/fs.zc` defines:
-  ```zc
+  ```zenc
   impl Drop for File {
       fn drop(self) {
           self.close();

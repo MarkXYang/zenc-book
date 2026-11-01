@@ -17,7 +17,7 @@ Let's compare four ways to compute the exact same result—summing `val * 3` for
 
 **Listing 14-4: `list14-4.zc` — Comparing four iteration strategies on `100,000` integers**
 
-```zc
+```zenc
 // File: examples/ch14/ch14-04-performance/main.zc
 import "std/vec.zc"
 import "std/time.zc"

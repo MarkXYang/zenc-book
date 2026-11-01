@@ -10,7 +10,7 @@ Raylib is an ideal showcase for Zen C's zero-overhead C ABI compatibility becaus
 
 If you have Raylib installed on your system (e.g., via `apt install libraylib-dev`, `pacman -S raylib`, or `brew install raylib`), you can write a complete, cross-platform graphical application in a single `.zc` file using `import "raylib.h" as rl;`:
 
-```zc
+```zenc
 // Cross-platform Raylib build directives:
 //> linux: link: -lraylib -lm -lpthread -ldl -lrt -lX11
 //> macos: pkg-config: raylib
@@ -73,7 +73,7 @@ When writing automated tests or running on headless CI servers without an X11/Wa
 
 The following complete example (`examples/ch12/ch12-05-raylib-example/main.zc`) uses the exact Raylib data structures and function signatures while stepping through 5 frames at 60 FPS so you can run and verify it on any machine:
 
-```zc
+```zenc
 // File: examples/ch12/ch12-05-raylib-example/main.zc
 //> link: -lm
 
