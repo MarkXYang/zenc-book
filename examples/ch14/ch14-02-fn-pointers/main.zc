@@ -55,12 +55,12 @@ fn main() {
         println "{entry.label} (12 {entry.symbol} 4) = {res}";
     }
 
-    let op_ptr = select_op('*');
-    let prod = execute_op(op_ptr, 7, 6);
+    let prod = execute_op(select_op('*'), 7, 6);
     println "execute_op(select_op('*'), 7, 6) = {prod}";
     assert(prod == 42, "7 * 6 must equal 42");
 
     // Pointer-to-function-pointer (`fn**`)
+    let op_ptr: fn*(int, int) -> int = select_op('*');
     let pptr: fn**(int, int) -> int = &op_ptr;
     let deref_op = *pptr;
     assert(deref_op(9, 5) == 45, "Dereferenced fn** should call mul(9, 5)");
