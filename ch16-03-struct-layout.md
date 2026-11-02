@@ -1,163 +1,228 @@
-# Low-Level Struct Layout: Bitfields, Packing, and Alignment
+# 16.3 Struct Layout, Padding, and Alignment (`@packed`, `@align`)
 
-## Low-Level Control: Bitfields & Attributes
+When you declare a `struct` in Zen C, its fields are laid out in memory in the exact order you write them, following the target platform's C Application Binary Interface (ABI). However, `sizeof(MyStruct)` is often larger than the sum of its individual field sizes.
 
-Zen C is designed for systems-level control. When writing drivers, network protocols, or memory-constrained embedded systems, you often need exact control over struct layout, padding, and alignment.
+Understanding *why* the compiler inserts invisible padding bytes—and knowing how to eliminate or increase that padding with field reordering, `@packed`, bitfields, and `@align(N)`—is essential when you parse binary network packets, memory-map hardware registers, or optimize cache-line density.
 
-### Bitfields
+---
 
-Zen C natively supports C-style bitfields using `field: Type : N;` where `N` is the number of bits allocated to the field:
+## 1. Natural Alignment and Compiler Padding
 
-**Listing 5-6: `list5-6.zc`**
+Modern CPUs fetch memory most efficiently when a primitive value of size $N$ bytes is stored at a memory address that is a multiple of $N$:
+
+| Type | Size (`sizeof`) | Natural Alignment Boundary |
+| :--- | :--- | :--- |
+| `u8`, `i8`, `char`, `bool` | 1 byte | Any address (multiple of 1) |
+| `u16`, `i16` | 2 bytes | Even address (multiple of 2) |
+| `u32`, `i32`, `int`, `f32` | 4 bytes | Multiple of 4 |
+| `u64`, `i64`, `f64`, `usize`, `T*` (64-bit) | 8 bytes | Multiple of 8 |
+
+Furthermore, a `struct` as a whole must have an alignment equal to the **largest alignment of any of its fields**, and its total `sizeof` must be padded to a multiple of that struct alignment so that elements in a contiguous array `MyStruct[N]` stay properly aligned.
+
+Consider `UnpackedHeader`, which mixes a 1-byte `u8`, an 8-byte `u64`, and a 2-byte `u16`:
 
 ```zenc
- 1 | struct Flags {
- 2 |     is_readable:   u8 : 1; // 1 bit
- 3 |     is_writable:   u8 : 1; // 1 bit
- 4 |     is_executable: u8 : 1; // 1 bit
- 5 |     mode:          u8 : 2; // 2 bits (values 0-3)
- 6 |     reserved:      u8 : 3; // 3 bits padding out the 8-bit byte
- 7 | }
- 8 |
- 9 | fn main() {
-10 |     let perms = Flags {
-11 |         is_readable: 1,
-12 |         is_writable: 1,
-13 |         is_executable: 0,
-14 |         mode: 2,
-15 |         reserved: 0,
-16 |     };
-17 |
-18 |     if perms.is_readable == 1 {
-19 |         println "File is readable";
-20 |     }
-21 | }
+struct UnpackedHeader {
+    tag: u8;        // 1 byte  (offset 0) + 7 bytes padding (offsets 1..7)
+    timestamp: u64; // 8 bytes (offsets 8..15, must be 8-byte aligned)
+    length: u16;    // 2 bytes (offsets 16..17) + 6 bytes tail padding (offsets 18..23)
+}
 ```
 
-Output:
-```text
-File is readable
+Even though the useful payload is only $1 + 8 + 2 = 11$ bytes, `sizeof(UnpackedHeader)` is **24 bytes**—more than half of the struct is padding!
+
+```
+UnpackedHeader (24 bytes total, 8-byte alignment):
+Offset:  0    1..7 (7B)     8..15 (8B)       16..17 (2B)  18..23 (6B)
+       +-----+------------+----------------+-------------+------------+
+       | tag | [padding]  |   timestamp    |   length    | [padding]  |
+       +-----+------------+----------------+-------------+------------+
 ```
 
-### Packing with `@packed`
+### Shrinking Structs for Free by Reordering Fields
 
-By default, the C compiler aligns struct fields on natural boundary multiples (e.g. 4 bytes or 8 bytes) by inserting invisible padding bytes. In binary protocol headers or file formats, padding causes field offsets to mismatch.
+By sorting fields in **descending order of alignment** (8-byte fields first, then 4-byte, 2-byte, and 1-byte fields), every field naturally lands on an aligned offset without interior gaps:
 
-Add `@packed` above a struct definition to instruct the compiler to eliminate all padding:
+```zenc
+struct ReorderedHeader {
+    timestamp: u64; // 8 bytes (offsets 0..7)
+    length: u16;    // 2 bytes (offsets 8..9)
+    tag: u8;        // 1 byte  (offset 10) + 5 bytes tail padding (offsets 11..15)
+}
+```
+
+```
+ReorderedHeader (16 bytes total, 8-byte alignment):
+Offset:  0..7 (8B)          8..9 (2B)     10   11..15 (5B)
+       +------------------+-------------+-----+------------+
+       |    timestamp     |   length    | tag | [padding]  |
+       +------------------+-------------+-----+------------+
+```
+
+Simply reordering the three fields shrinks the struct from **24 bytes to 16 bytes** (a 33% memory reduction across large arrays) while keeping every field fast and naturally aligned.
+
+---
+
+## 2. Eliminating Padding with `@packed`
+
+When you read or write a binary wire protocol (such as a TCP/IP header, a PNG chunk, or a custom telemetry frame), the external byte stream does not contain compiler padding. Annotating a struct with `@packed` instructs the compiler to place every field immediately after the previous one with **1-byte alignment and zero padding**:
 
 ```zenc
 @packed
-struct EthernetHeader {
-    dest_mac:   [u8; 6];
-    src_mac:    [u8; 6];
-    ether_type: u16;
-} // Exact binary size: 14 bytes (no padding between fields)
-```
-
-### Alignment with `@align(N)`
-
-To enforce custom memory alignment boundaries (for example, 16-byte or 32-byte alignment required by SIMD instructions):
-
-```zenc
-@align(16)
-struct Vector4 {
-    x: f32;
-    y: f32;
-    z: f32;
-    w: f32;
+struct PackedHeader {
+    tag: u8;        // 1 byte  (offset 0)
+    timestamp: u64; // 8 bytes (offsets 1..8)
+    length: u16;    // 2 bytes (offsets 9..10)
 }
+// sizeof(PackedHeader) == 11 bytes
 ```
 
-You can also combine attributes:
-
-```zenc
-@packed @align(4)
-struct HardwarePacket {
-    id: u8;
-    payload_len: u16;
-}
+```
+PackedHeader (11 bytes total, 1-byte alignment, 0 padding bytes):
+Offset:  0    1..8 (8B)          9..10 (2B)
+       +-----+------------------+-------------+
+       | tag |    timestamp     |   length    |
+       +-----+------------------+-------------+
 ```
 
-### Opting Into Copy Semantics (`@derive(Copy)`)
-
-As introduced in [Chapter 4](ch04-02-ownership-and-allocation.md), structs in Zen C default to move semantics to prevent accidental double frees. However, plain data structs containing only primitive values can opt into implicit copying using the `@derive(Copy)` attribute:
-
-**Listing 5-7: `list5-7.zc`**
-
-```zenc
- 1 | @derive(Copy)
- 2 | struct Point {
- 3 |     x: int;
- 4 |     y: int;
- 5 | }
- 6 |
- 7 | fn main() {
- 8 |     let p1 = Point { x: 1, y: 2 };
- 9 |     let p2 = p1; // Copied! p1 remains completely valid.
-10 |
-11 |     println "p1: ({p1.x}, {p1.y}), p2: ({p2.x}, {p2.y})";
-12 | }
-```
-
-Output:
-```text
-p1: (1, 2), p2: (1, 2)
-```
-
-> [!CAUTION]
-> **Safety Rule**: Types that implement `Copy` must not define a custom destructor (`Drop`).
+> [!WARNING]
+> **Unaligned Access and Pointers to `@packed` Fields**: Because `PackedHeader.timestamp` starts at byte offset `1`, it is **unaligned** in memory. Accessing `hdr.timestamp` directly by value is safe (the compiler emits unaligned load/store instructions), but you should **never take a raw pointer (`&hdr.timestamp`)** to a multi-byte field inside a `@packed` struct and pass it to a function expecting a naturally aligned `u64*`. On strict-alignment architectures (or vectorized SIMD instructions), dereferencing an unaligned `u64*` can trigger a hardware alignment fault.
 
 ---
 
-## Working with Pointers to Structs
+## 3. Sub-Byte Packing with Bitfields
 
-In systems programming, structs are frequently passed by reference using pointers (`Type*`) to avoid copying large amounts of memory:
-
-**Listing 5-8: `list5-8.zc`**
+Hardware status registers and compact protocol flags often pack multiple boolean flags or small multi-bit fields into a single byte or word. Zen C supports C-compatible bitfield widths using the syntax `field_name: IntegralType : bit_width;`:
 
 ```zenc
- 1 | struct User {
- 2 |     username: string;
- 3 |     email: string;
- 4 |     sign_in_count: int;
- 5 |     active: bool;
- 6 | }
- 7 |
- 8 | fn print_user(user: User*) {
- 9 |     // In Zen C, dot (.) automatically dereferences pointers!
-10 |     println "User: {user.username} <{user.email}>";
-11 | }
-12 |
-13 | fn main() {
-14 |     let u = User {
-15 |         username: "mark",
-16 |         email: "mark@example.com",
-17 |         sign_in_count: 5,
-18 |         active: true,
-19 |     };
-20 |
-21 |     print_user(&u); // Pass pointer to u
-22 | }
+struct StatusRegister {
+    ready: u8 : 1;    // Bit 0     (0..1)
+    error: u8 : 1;    // Bit 1     (0..1)
+    tx_empty: u8 : 1; // Bit 2     (0..1)
+    mode: u8 : 2;     // Bits 3..4 (0..3)
+    reserved: u8 : 3; // Bits 5..7 (0..7)
+}
+// Total: 1 + 1 + 1 + 2 + 3 = 8 bits -> sizeof(StatusRegister) == 1 byte
 ```
 
-Output:
-```text
-User: mark <mark@example.com>
-```
+When you read or write `reg.mode = (u8)3`, the compiler automatically generates the bitwise shift and mask instructions needed to update bits 3 and 4 without disturbing the neighboring flags. Because bitfields do not have their own individual byte addresses, you cannot take the address of a bitfield (`&reg.ready` is not allowed).
 
-> [!IMPORTANT]
-> **Unified Dot Operator**: In traditional C, you must write `ptr->field` or `(*ptr).field`. In Zen C, dot syntax (`.`) works uniformly on both **struct values** and **struct pointers**! The compiler automatically transpiles `user.username` to `user->username` in C.
+---
 
-### Safe Navigation Operator (`?.`)
+## 4. Enforcing Boundary Alignment with `@align(N)`
 
-When working with potentially null pointers, Zen C provides the **safe navigation operator** (`?.`). If the pointer is `NULL`, accessing a field evaluates safely to zero/null rather than triggering a segmentation fault:
+Sometimes you want the *opposite* of `@packed`: you need a struct to start on a stricter power-of-two boundary than its fields would naturally require:
+
+- **SIMD Vector Loads (`@align(16)` or `@align(32)`)**: SSE (`16`-byte) and AVX (`32`-byte) vector registers load four `f32` or eight `f32` values in a single instruction when the struct is aligned to 16 or 32 bytes.
+- **Preventing False Sharing Across CPU Cores (`@align(64)`)**: Modern CPU caches transfer memory in **64-byte cache lines**. If two threads on different cores frequently increment two separate 8-byte counters that happen to sit in the same 64-byte cache line, the cores constantly invalidate each other's cache line (*false sharing*). Annotating the struct with `@align(64)` forces each instance onto its own 64-byte cache line and pads `sizeof` to a multiple of 64 bytes:
 
 ```zenc
-let valid_ptr: User* = &u;
-let safe_count = valid_ptr?.sign_in_count; // Evaluates to 5
-
-let null_ptr: User* = NULL;
-let zero_count = null_ptr?.sign_in_count; // Evaluates safely to 0 (no segfault!)
+@align(64)
+struct CacheAlignedCounter {
+    count: u64;
+    label_id: u32;
+}
+// sizeof(CacheAlignedCounter) == 64 bytes, address is always a multiple of 64
 ```
 
 ---
+
+## 5. Complete Example: Inspecting Sizes, Bitfields, and Cache Alignment
+
+Listing 16-3 compares the memory footprint of `UnpackedHeader` (24 bytes), `ReorderedHeader` (16 bytes), and `PackedHeader` (11 bytes), packs five hardware flags into a 1-byte `StatusRegister`, and verifies that `CacheAlignedCounter` is aligned on a 64-byte boundary.
+
+**Listing 16-3**: Controlling struct padding, bitfields, and alignment (`examples/ch16/ch16-03-struct-layout/main.zc`)
+
+```zenc
+// File: examples/ch16/ch16-03-struct-layout/main.zc
+
+// 1. Default C alignment inserts padding between `u8`, `u64`, and `u16`
+struct UnpackedHeader {
+    tag: u8;        // 1 byte + 7 bytes padding
+    timestamp: u64; // 8 bytes
+    length: u16;    // 2 bytes + 6 bytes tail padding
+}
+
+// 2. Reordering fields by descending alignment reduces padding naturally
+struct ReorderedHeader {
+    timestamp: u64; // 8 bytes
+    length: u16;    // 2 bytes
+    tag: u8;        // 1 byte + 5 bytes tail padding
+}
+
+// 3. `@packed` removes all compiler-inserted padding for wire/file protocols
+@packed
+struct PackedHeader {
+    tag: u8;        // 1 byte
+    timestamp: u64; // 8 bytes (immediately at offset 1)
+    length: u16;    // 2 bytes (immediately at offset 9)
+}
+
+// 4. C-style bitfields pack multiple sub-byte flags into a single `u8`
+struct StatusRegister {
+    ready: u8 : 1;
+    error: u8 : 1;
+    tx_empty: u8 : 1;
+    mode: u8 : 2;
+    reserved: u8 : 3;
+}
+
+// 5. `@align(64)` enforces 64-byte cache-line alignment for concurrent/SIMD data
+@align(64)
+struct CacheAlignedCounter {
+    count: u64;
+    label_id: u32;
+}
+
+fn main() {
+    let sz_unpacked = sizeof(UnpackedHeader);
+    let sz_reordered = sizeof(ReorderedHeader);
+    let sz_packed = sizeof(PackedHeader);
+    let sz_status = sizeof(StatusRegister);
+    let sz_aligned = sizeof(CacheAlignedCounter);
+
+    println "sizeof(UnpackedHeader)      = {sz_unpacked} bytes";
+    println "sizeof(ReorderedHeader)     = {sz_reordered} bytes";
+    println "sizeof(PackedHeader)        = {sz_packed} bytes";
+    println "sizeof(StatusRegister)      = {sz_status} byte";
+    println "sizeof(CacheAlignedCounter) = {sz_aligned} bytes";
+
+    assert(sz_unpacked == 24, "UnpackedHeader has 13 bytes of padding (24 bytes total)");
+    assert(sz_reordered == 16, "ReorderedHeader shrinks to 16 bytes");
+    assert(sz_packed == 11, "PackedHeader is exactly 1 + 8 + 2 = 11 bytes");
+    assert(sz_status == 1, "1 + 1 + 1 + 2 + 3 = 8 bits = 1 byte");
+    assert(sz_aligned == 64, "@align(64) pads the struct size to a multiple of 64 bytes");
+
+    let reg = StatusRegister {
+        ready: (u8)1,
+        error: (u8)0,
+        tx_empty: (u8)1,
+        mode: (u8)3,
+        reserved: (u8)0,
+    };
+    let ready: u8 = reg.ready;
+    let error: u8 = reg.error;
+    let tx_empty: u8 = reg.tx_empty;
+    let mode: u8 = reg.mode;
+    println "StatusRegister: ready={ready}, error={error}, tx_empty={tx_empty}, mode={mode}";
+    assert(ready == 1 && mode == 3, "Bitfields should store 1 and 3");
+
+    let counter = CacheAlignedCounter { count: 42, label_id: 7 };
+    let addr: usize = (usize)&counter;
+    println "CacheAlignedCounter address mod 64 = {addr % 64}";
+    assert(addr % 64 == 0, "@align(64) must align variable on a 64-byte boundary");
+}
+```
+
+Run and verify Listing 16-3 with `zc run -q`:
+
+```text
+$ zc run -q examples/ch16/ch16-03-struct-layout/main.zc
+sizeof(UnpackedHeader)      = 24 bytes
+sizeof(ReorderedHeader)     = 16 bytes
+sizeof(PackedHeader)        = 11 bytes
+sizeof(StatusRegister)      = 1 byte
+sizeof(CacheAlignedCounter) = 64 bytes
+StatusRegister: ready=1, error=0, tx_empty=1, mode=3
+CacheAlignedCounter address mod 64 = 0
+```

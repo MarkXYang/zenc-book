@@ -1,0 +1,83 @@
+// File: examples/ch16/ch16-02-arenas/main.zc
+import "std/arena.zc"
+
+struct AstNode {
+    op: char;
+    value: int;
+    label: char*;
+    left: AstNode*;
+    right: AstNode*;
+}
+
+fn make_leaf(arena: Arena*, val: int, text: char*) -> AstNode* {
+    let node: AstNode* = arena.alloc<AstNode>();
+    *node = AstNode {
+        op: '#',
+        value: val,
+        label: arena.dup_str(text),
+        left: NULL,
+        right: NULL,
+    };
+    return node;
+}
+
+fn make_binary(arena: Arena*, op: char, left: AstNode*, right: AstNode*) -> AstNode* {
+    let node: AstNode* = arena.alloc<AstNode>();
+    *node = AstNode {
+        op: op,
+        value: 0,
+        label: arena.dup_str("expr"),
+        left: left,
+        right: right,
+    };
+    return node;
+}
+
+fn eval_ast(node: AstNode*) -> int {
+    if node == NULL { return 0; }
+    if node.op == '#' { return node.value; }
+    let l = eval_ast(node.left);
+    let r = eval_ast(node.right);
+    if node.op == '+' { return l + r; }
+    if node.op == '*' { return l * r; }
+    return 0;
+}
+
+fn main() {
+    // Allocate a 4 KB backing buffer once; freed automatically on scope exit
+    let arena = Arena::new(4096);
+    println "Arena initialized: capacity=4096, free={arena.bytes_free()} bytes";
+
+    // 1. Allocate an expression tree `(10 + 20) * 3` inside the arena
+    let n10 = make_leaf(&arena, 10, "ten");
+    let n20 = make_leaf(&arena, 20, "twenty");
+    let sum_node = make_binary(&arena, '+', n10, n20);
+    let n3 = make_leaf(&arena, 3, "three");
+    let root = make_binary(&arena, '*', sum_node, n3);
+
+    let result = eval_ast(root);
+    let used_after_ast = arena.bytes_used();
+    println "AST result: ({n10.label} + {n20.label}) * {n3.label} = {result}";
+    println "Bytes used by AST: {used_after_ast}";
+    assert(result == 90, "(10 + 20) * 3 must equal 90");
+
+    // 2. Scoped checkpoint with `save()` and `restore()`
+    let mark: usize = arena.save();
+    let scratch: int* = arena.alloc_n<int>(128);
+    scratch[0] = 42;
+    scratch[127] = 99;
+    println "Bytes used with temporary 128-int scratch table: {arena.bytes_used()}";
+    assert(arena.bytes_used() > used_after_ast, "Scratch allocation should advance arena offset");
+
+    // Reclaim the temporary scratch table in O(1) while keeping the AST valid!
+    arena.restore(mark);
+    println "Bytes used after arena.restore(mark): {arena.bytes_used()}";
+    assert(arena.bytes_used() == used_after_ast, "restore(mark) must rewind used offset");
+    assert(eval_ast(root) == 90, "AST allocated before mark remains intact");
+
+    // 3. Reset the entire arena in O(1) for the next request/frame
+    arena.reset();
+    println "Bytes used after arena.reset(): {arena.bytes_used()}";
+    assert(arena.bytes_used() == 0, "reset() must zero the bump offset");
+}
+

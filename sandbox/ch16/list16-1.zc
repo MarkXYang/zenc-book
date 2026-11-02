@@ -1,0 +1,79 @@
+// File: examples/ch16/ch16-01-raw-pointers/main.zc
+import "std/mem.zc"
+
+@derive(Copy)
+struct Sample {
+    id: int;
+    reading: f64;
+}
+
+// Walk a contiguous buffer using raw pointer arithmetic (`base + i`)
+fn sum_via_pointer_walk(base: int*, count: usize) -> int {
+    let total = 0;
+    for i in (usize)0..count {
+        let elem_ptr: int* = base + i;
+        total += *elem_ptr;
+    }
+    return total;
+}
+
+// Inspect raw bytes of any value in memory through a type-erased `void*`
+fn checksum_bytes(raw_ptr: void*, byte_len: usize) -> u32 {
+    let bytes: u8* = (u8*)raw_ptr;
+    let sum: u32 = 0;
+    for i in (usize)0..byte_len {
+        sum += (u32)bytes[i];
+    }
+    return sum;
+}
+
+fn main() {
+    // 1. Typed heap allocation and dynamic growth with `std/mem.zc`
+    let count: usize = 4;
+    let buf: int* = alloc_n<int>(count);
+    defer dealloc<int>(buf);
+
+    for i in (usize)0..count {
+        buf[i] = ((int)i + 1) * 10; // 10, 20, 30, 40
+    }
+
+    // Grow the allocation from 4 ints to 6 ints (zeroes the new elements)
+    buf = realloc_n<int>(buf, 4, 6);
+    buf[4] = 50;
+    buf[5] = 60;
+
+    // 2. Swap two elements in place via `T*` pointers
+    swap<int>(&buf[0], &buf[5]);
+    println "After swap(&buf[0], &buf[5]): buf[0]={buf[0]}, buf[5]={buf[5]}";
+    assert(buf[0] == 60 && buf[5] == 10, "Endpoints should be swapped");
+
+    // 3. Pointer arithmetic (`base + i` advances by `i * sizeof(int)` bytes)
+    let sum = sum_via_pointer_walk(buf, 6);
+    println "Sum via pointer walk: {sum}";
+    assert(sum == 210, "10 + 20 + 30 + 40 + 50 + 60 = 210");
+
+    let first_addr: usize = (usize)&buf[0];
+    let fourth_addr: usize = (usize)(buf + 3);
+    let byte_delta: usize = fourth_addr - first_addr;
+    println "Byte distance from buf[0] to (buf + 3): {byte_delta} bytes";
+    assert(byte_delta == 3 * sizeof(int), "Pointer + 3 must advance by 3 * sizeof(int)");
+
+    // 4. Type-erased `void*` and byte-level inspection via `(u8*)` cast
+    let magic: u32 = 0x04030201;
+    let bsum = checksum_bytes((void*)&magic, sizeof(u32));
+    println "Byte checksum of 0x04030201: {bsum}";
+    assert(bsum == 10, "0x01 + 0x02 + 0x03 + 0x04 = 10");
+
+    // 5. Typed single-struct allocation and `mem_copy<T>`
+    let src_sample: Sample* = alloc<Sample>();
+    let dst_sample: Sample* = alloc<Sample>();
+    defer dealloc<Sample>(src_sample);
+    defer dealloc<Sample>(dst_sample);
+
+    src_sample.id = 7;
+    src_sample.reading = 98.6;
+    mem_copy<Sample>(dst_sample, src_sample, 1);
+    println "Copied Sample: id={dst_sample.id}, reading={dst_sample.reading}";
+    assert(dst_sample.id == 7 && dst_sample.reading == 98.6, "Copied struct fields must match");
+}
+

@@ -1,0 +1,71 @@
+// File: examples/ch16/ch16-04-unions/main.zc
+
+// 1. Untagged union overlaying a 32-bit unsigned integer and 4 raw bytes
+union IpAddress4 {
+    packed: u32;
+    octets: u8[4];
+}
+
+// 2. IEEE 754 single-precision float bit reinterpretation
+union FloatBits {
+    value: f32;
+    bits: u32;
+}
+
+// 3. Compact C-style tagged union for hardware events
+def EVENT_KEY: u8 = 1;
+def EVENT_MOTION: u8 = 2;
+
+@derive(Copy)
+struct MotionData {
+    dx: i16;
+    dy: i16;
+}
+
+union EventPayload {
+    key_code: u32;
+    motion: MotionData;
+}
+
+struct HardwareEvent {
+    kind: u8;
+    payload: EventPayload;
+}
+
+fn main() {
+    // 1. Overlaying a 32-bit word and a 4-byte array in the same 4 bytes
+    let ip = IpAddress4 { packed: 0 };
+    ip.octets[0] = (u8)192;
+    ip.octets[1] = (u8)168;
+    ip.octets[2] = (u8)1;
+    ip.octets[3] = (u8)100;
+
+    println "sizeof(IpAddress4) = {sizeof(IpAddress4)} bytes";
+    println "IP octets: {ip.octets[0]}.{ip.octets[1]}.{ip.octets[2]}.{ip.octets[3]}";
+    println "IP packed u32: {ip.packed}";
+    assert(sizeof(IpAddress4) == 4, "Union size equals its largest member (4 bytes)");
+    assert(ip.packed != 0, "Writing to octets modifies the shared 32-bit word");
+
+    // 2. Inspecting IEEE 754 sign, exponent, and mantissa bits of -3.5f
+    let fb = FloatBits { value: -3.5 };
+    let sign_bit: u32 = (fb.bits >> 31) & 1;
+    let biased_exp: u32 = (fb.bits >> 23) & 0xFF;
+    let mantissa: u32 = fb.bits & 0x7FFFFF;
+
+    println "FloatBits(-3.5): raw={fb.bits}, sign={sign_bit}, exp={biased_exp}, mantissa={mantissa}";
+    assert(fb.bits == 0xC0600000, "-3.5f in IEEE 754 binary32 is 0xC0600000");
+    assert(sign_bit == 1 && biased_exp == 128, "Sign bit is 1 and biased exponent is 128 (2^1)");
+
+    // 3. C-style manual tagged union struct
+    let ev = HardwareEvent {
+        kind: EVENT_MOTION,
+        payload: EventPayload {
+            motion: MotionData { dx: (i16)(-12), dy: (i16)34 },
+        },
+    };
+    if ev.kind == EVENT_MOTION {
+        println "Motion event: dx={ev.payload.motion.dx}, dy={ev.payload.motion.dy}";
+        assert(ev.payload.motion.dx == -12 && ev.payload.motion.dy == 34, "Motion payload should match");
+    }
+}
+

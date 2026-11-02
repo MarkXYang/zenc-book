@@ -1,0 +1,79 @@
+// File: examples/ch16/ch16-03-struct-layout/main.zc
+
+// 1. Default C alignment inserts padding between `u8`, `u64`, and `u16`
+struct UnpackedHeader {
+    tag: u8;        // 1 byte + 7 bytes padding
+    timestamp: u64; // 8 bytes
+    length: u16;    // 2 bytes + 6 bytes tail padding
+}
+
+// 2. Reordering fields by descending alignment reduces padding naturally
+struct ReorderedHeader {
+    timestamp: u64; // 8 bytes
+    length: u16;    // 2 bytes
+    tag: u8;        // 1 byte + 5 bytes tail padding
+}
+
+// 3. `@packed` removes all compiler-inserted padding for wire/file protocols
+@packed
+struct PackedHeader {
+    tag: u8;        // 1 byte
+    timestamp: u64; // 8 bytes (immediately at offset 1)
+    length: u16;    // 2 bytes (immediately at offset 9)
+}
+
+// 4. C-style bitfields pack multiple sub-byte flags into a single `u8`
+struct StatusRegister {
+    ready: u8 : 1;
+    error: u8 : 1;
+    tx_empty: u8 : 1;
+    mode: u8 : 2;
+    reserved: u8 : 3;
+}
+
+// 5. `@align(64)` enforces 64-byte cache-line alignment for concurrent/SIMD data
+@align(64)
+struct CacheAlignedCounter {
+    count: u64;
+    label_id: u32;
+}
+
+fn main() {
+    let sz_unpacked = sizeof(UnpackedHeader);
+    let sz_reordered = sizeof(ReorderedHeader);
+    let sz_packed = sizeof(PackedHeader);
+    let sz_status = sizeof(StatusRegister);
+    let sz_aligned = sizeof(CacheAlignedCounter);
+
+    println "sizeof(UnpackedHeader)      = {sz_unpacked} bytes";
+    println "sizeof(ReorderedHeader)     = {sz_reordered} bytes";
+    println "sizeof(PackedHeader)        = {sz_packed} bytes";
+    println "sizeof(StatusRegister)      = {sz_status} byte";
+    println "sizeof(CacheAlignedCounter) = {sz_aligned} bytes";
+
+    assert(sz_unpacked == 24, "UnpackedHeader has 13 bytes of padding (24 bytes total)");
+    assert(sz_reordered == 16, "ReorderedHeader shrinks to 16 bytes");
+    assert(sz_packed == 11, "PackedHeader is exactly 1 + 8 + 2 = 11 bytes");
+    assert(sz_status == 1, "1 + 1 + 1 + 2 + 3 = 8 bits = 1 byte");
+    assert(sz_aligned == 64, "@align(64) pads the struct size to a multiple of 64 bytes");
+
+    let reg = StatusRegister {
+        ready: (u8)1,
+        error: (u8)0,
+        tx_empty: (u8)1,
+        mode: (u8)3,
+        reserved: (u8)0,
+    };
+    let ready: u8 = reg.ready;
+    let error: u8 = reg.error;
+    let tx_empty: u8 = reg.tx_empty;
+    let mode: u8 = reg.mode;
+    println "StatusRegister: ready={ready}, error={error}, tx_empty={tx_empty}, mode={mode}";
+    assert(ready == 1 && mode == 3, "Bitfields should store 1 and 3");
+
+    let counter = CacheAlignedCounter { count: 42, label_id: 7 };
+    let addr: usize = (usize)&counter;
+    println "CacheAlignedCounter address mod 64 = {addr % 64}";
+    assert(addr % 64 == 0, "@align(64) must align variable on a 64-byte boundary");
+}
+
