@@ -24,6 +24,12 @@ import "std/time.zc"
 
 def NUM_ITEMS = 100000;
 
+fn now_us() -> u64 {
+    let tv: timeval;
+    gettimeofday(&tv, NULL);
+    return (u64)tv.tv_sec * 1000000 + (u64)tv.tv_usec;
+}
+
 // 1. Direct indexed loop over contiguous memory
 fn sum_indexed_loop(v: Vec<int>*) -> i64 {
     let total: i64 = 0;
@@ -77,29 +83,40 @@ fn main() {
         data.push(i + 1);
     }
 
+    let t0 = now_us();
     let s1 = sum_indexed_loop(&data);
+    let t1 = now_us();
     let s2 = sum_for_in_ref(&data);
+    let t2 = now_us();
     let s3 = sum_for_in_val(&data);
+    let t3 = now_us();
     let s4 = sum_closure_forEach(&data);
+    let t4 = now_us();
 
-    println "Indexed loop sum:       {s1}";
-    println "for-in ref (&vec) sum:  {s2}";
-    println "for-in val (vec) sum:   {s3}";
-    println "VecIter::forEach sum:   {s4}";
+    println "Indexed loop sum:       {s1} ({t1 - t0} us)";
+    println "for-in ref (&vec) sum:  {s2} ({t2 - t1} us)";
+    println "for-in val (vec) sum:   {s3} ({t3 - t2} us)";
+    println "VecIter::forEach sum:   {s4} ({t4 - t3} us)";
 
     assert(s1 == 7500150000, "Expected sum of even numbers * 3 in 1..100000");
-    assert(s1 == s2 && s2 == s3 && s2 == s4, "All four approaches must produce identical results");
+    assert(s1 == s2 && s2 == s3 && s3 == s4, "All four approaches must produce identical results");
 }
 ```
 
-Run the example with `zc run`:
+Run the example in both default (unoptimized) mode and `-O3` release mode to see how optimization narrows the gap (measured on a **12th Gen Intel Core i7-12850HX** (24 threads), **32 GB RAM**, running **Ubuntu 26.04.1 LTS (Linux 7.0.0-38-generic x86_64)** with **GCC 15.2.0**):
 
 ```bash
 $ zc run -q examples/ch14/ch14-04-performance/main.zc
-Indexed loop sum:       7500150000
-for-in ref (&vec) sum:  7500150000
-for-in val (vec) sum:   7500150000
-VecIter::forEach sum:   7500150000
+Indexed loop sum:       7500150000 (356 us)
+for-in ref (&vec) sum:  7500150000 (1487 us)
+for-in val (vec) sum:   7500150000 (1959 us)
+VecIter::forEach sum:   7500150000 (1241 us)
+
+$ zc run -O3 -q examples/ch14/ch14-04-performance/main.zc
+Indexed loop sum:       7500150000 (120 us)
+for-in ref (&vec) sum:  7500150000 (288 us)
+for-in val (vec) sum:   7500150000 (403 us)
+VecIter::forEach sum:   7500150000 (453 us)
 ```
 
 ---

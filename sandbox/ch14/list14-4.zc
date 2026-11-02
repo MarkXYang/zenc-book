@@ -1,0 +1,83 @@
+// File: examples/ch14/ch14-04-performance/main.zc
+import "std/vec.zc"
+import "std/time.zc"
+
+def NUM_ITEMS = 100000;
+
+fn now_us() -> u64 {
+    let tv: timeval;
+    gettimeofday(&tv, NULL);
+    return (u64)tv.tv_sec * 1000000 + (u64)tv.tv_usec;
+}
+
+// 1. Direct indexed loop over contiguous memory
+fn sum_indexed_loop(v: Vec<int>*) -> i64 {
+    let total: i64 = 0;
+    let n = (*v).length();
+    for i in 0..n {
+        let val = (*v).data[i];
+        if (val & 1) == 0 {
+            total += (i64)(val * 3);
+        }
+    }
+    return total;
+}
+
+// 2. Reference iterator (`VecIterRef<T>`) yielding `int*` pointers
+fn sum_for_in_ref(v: Vec<int>*) -> i64 {
+    let total: i64 = 0;
+    for ptr in (*v).iter_ref() {
+        let val = *ptr;
+        if (val & 1) == 0 {
+            total += (i64)(val * 3);
+        }
+    }
+    return total;
+}
+
+// 3. Value iterator (`VecIter<T>`) yielding `Option<int>` copies
+fn sum_for_in_val(v: Vec<int>*) -> i64 {
+    let total: i64 = 0;
+    for val in *v {
+        if (val & 1) == 0 {
+            total += (i64)(val * 3);
+        }
+    }
+    return total;
+}
+
+// 4. Higher-order closure combinator (`VecIter::forEach`)
+fn sum_closure_forEach(v: Vec<int>*) -> i64 {
+    let total: i64 = 0;
+    (*v).iterator().forEach(fn[&](val: int) {
+        if (val & 1) == 0 {
+            total += (i64)(val * 3);
+        }
+    });
+    return total;
+}
+
+fn main() {
+    let data = Vec<int>::with_capacity(NUM_ITEMS);
+    for i in 0..NUM_ITEMS {
+        data.push(i + 1);
+    }
+
+    let t0 = now_us();
+    let s1 = sum_indexed_loop(&data);
+    let t1 = now_us();
+    let s2 = sum_for_in_ref(&data);
+    let t2 = now_us();
+    let s3 = sum_for_in_val(&data);
+    let t3 = now_us();
+    let s4 = sum_closure_forEach(&data);
+    let t4 = now_us();
+
+    println "Indexed loop sum:       {s1} ({t1 - t0} us)";
+    println "for-in ref (&vec) sum:  {s2} ({t2 - t1} us)";
+    println "for-in val (vec) sum:   {s3} ({t3 - t2} us)";
+    println "VecIter::forEach sum:   {s4} ({t4 - t3} us)";
+
+    assert(s1 == 7500150000, "Expected sum of even numbers * 3 in 1..100000");
+    assert(s1 == s2 && s2 == s3 && s3 == s4, "All four approaches must produce identical results");
+}
