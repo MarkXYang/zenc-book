@@ -1,0 +1,83 @@
+// File: examples/ch18/ch18-03-vtables-in-c/main.zc
+
+trait Shape {
+    fn area_x100(self) -> int;
+    fn perimeter_x100(self) -> int;
+}
+
+struct Circle {
+    radius: int;
+}
+
+impl Shape for Circle {
+    fn area_x100(self) -> int {
+        return 314 * self.radius * self.radius;
+    }
+
+    fn perimeter_x100(self) -> int {
+        return 628 * self.radius;
+    }
+}
+
+struct Rectangle {
+    width: int;
+    height: int;
+}
+
+impl Shape for Rectangle {
+    fn area_x100(self) -> int {
+        return 100 * self.width * self.height;
+    }
+
+    fn perimeter_x100(self) -> int {
+        return 200 * (self.width + self.height);
+    }
+}
+
+// Mirror of the 16-byte `{ void* self, void* vtable }` fat pointer emitted by `zc`
+struct RawFatPointer {
+    self_ptr: usize;
+    vtable_ptr: usize;
+}
+
+fn inspect_fat_pointer(s: Shape) -> RawFatPointer {
+    let raw_ptr: RawFatPointer* = (RawFatPointer*)&s;
+    return *raw_ptr;
+}
+
+fn main() {
+    let c1 = Circle { radius: 10 };
+    let c2 = Circle { radius: 5 };
+    let r1 = Rectangle { width: 4, height: 6 };
+
+    // 1. Zero per-instance vptr overhead on concrete structs
+    let sz_circle = sizeof(Circle);
+    let sz_rect = sizeof(Rectangle);
+    let sz_shape = sizeof(Shape);
+    println "sizeof(Circle)    = {sz_circle} bytes (only `radius: int`, no hidden vptr!)";
+    println "sizeof(Rectangle) = {sz_rect} bytes (only `width` + `height`, no hidden vptr!)";
+    println "sizeof(Shape)     = {sz_shape} bytes (two 8-byte pointers: `self` + `vtable`)";
+
+    assert(sz_circle == 4, "Circle has no vptr overhead (4 bytes)");
+    assert(sz_rect == 8, "Rectangle has no vptr overhead (8 bytes)");
+    assert(sz_shape == 16, "Shape trait object is a 16-byte fat pointer on 64-bit");
+
+    // 2. Inspecting the `{ self, vtable }` pointers inside three `Shape` trait objects
+    let s_c1: Shape = &c1;
+    let s_c2: Shape = &c2;
+    let s_r1: Shape = &r1;
+
+    let fp_c1 = inspect_fat_pointer(s_c1);
+    let fp_c2 = inspect_fat_pointer(s_c2);
+    let fp_r1 = inspect_fat_pointer(s_r1);
+
+    assert(fp_c1.self_ptr == (usize)&c1, "s_c1.self must point to &c1");
+    assert(fp_c2.self_ptr == (usize)&c2, "s_c2.self must point to &c2");
+    assert(fp_c1.vtable_ptr == fp_c2.vtable_ptr, "Both Circle instances share Circle__Shape__VTable");
+    assert(fp_c1.vtable_ptr != fp_r1.vtable_ptr, "Rectangle uses a distinct Rectangle__Shape__VTable");
+
+    println "c1 & c2 share Circle__Shape__VTable: {fp_c1.vtable_ptr == fp_c2.vtable_ptr}";
+    println "Circle vs Rectangle vtables differ:  {fp_c1.vtable_ptr != fp_r1.vtable_ptr}";
+    println "c1 area_x100={s_c1.area_x100()}, r1 area_x100={s_r1.area_x100()}";
+    assert(s_c1.area_x100() == 31400 && s_r1.area_x100() == 2400, "Vtable dispatch must compute exact areas");
+}

@@ -1,0 +1,98 @@
+// File: examples/ch18/ch18-01-oop-characteristics/main.zc
+
+// 1. Primary spatial base mixed in at offset 0 via unnamed `use Transform2D;`
+struct Transform2D {
+    x: int;
+    y: int;
+}
+
+impl Transform2D {
+    fn translate(self, dx: int, dy: int) {
+        self.x += dx;
+        self.y += dy;
+    }
+
+    fn manhattan_dist(self) -> int {
+        let ax = self.x < 0 ? -self.x : self.x;
+        let ay = self.y < 0 ? -self.y : self.y;
+        return ax + ay;
+    }
+}
+
+// 2. Reusable health component with encapsulated invariant (`0 <= hp <= max_hp`)
+struct HealthPool {
+    hp: int;
+    max_hp: int;
+}
+
+impl HealthPool {
+    fn apply_damage(self, amount: int) {
+        if amount <= 0 {
+            return;
+        }
+        self.hp -= amount;
+        if self.hp < 0 {
+            self.hp = 0;
+        }
+    }
+
+    fn heal(self, amount: int) {
+        if amount <= 0 {
+            return;
+        }
+        self.hp += amount;
+        if self.hp > self.max_hp {
+            self.hp = self.max_hp;
+        }
+    }
+
+    fn is_alive(self) -> bool {
+        return self.hp > 0;
+    }
+}
+
+// `Player` combines an unnamed primary mixin (`use Transform2D;` at offset 0)
+// with named component composition (`use health: HealthPool;`)
+struct Player {
+    use Transform2D;
+    use health: HealthPool;
+    callsign: string;
+}
+
+impl Player {
+    fn new(callsign: string, start_x: int, start_y: int, max_hp: int) -> Player {
+        return Player {
+            x: start_x,
+            y: start_y,
+            health: HealthPool { hp: max_hp, max_hp: max_hp },
+            callsign: callsign,
+        };
+    }
+
+    fn status_report(self) -> string {
+        return "{self.callsign} @ ({self.x}, {self.y}) [HP: {self.health.hp}/{self.health.max_hp}]";
+    }
+}
+
+fn main() {
+    let hero = Player::new("Vanguard", 2, -3, 100);
+
+    // 1. Call methods forwarded automatically from the primary `Transform2D` mixin
+    hero.translate(8, 15); // (2 + 8, -3 + 15) = (10, 12)
+    let dist = hero.manhattan_dist();
+    println "After translate: {hero.status_report()}, dist={dist}";
+    assert(hero.x == 10 && hero.y == 12 && dist == 22, "Transform2D mixin methods must update x and y");
+
+    // 2. Call methods on the composed `health` component
+    hero.health.apply_damage(65);
+    println "After 65 damage: {hero.status_report()}";
+    assert(hero.health.hp == 35 && hero.health.is_alive(), "HP should be 35 and alive");
+
+    // 3. Invariant enforcement: healing clamps to `max_hp`, lethal damage clamps to 0
+    hero.health.heal(200);
+    assert(hero.health.hp == 100, "Heal must clamp to max_hp (100)");
+
+    hero.health.apply_damage(250);
+    println "After 250 damage: {hero.status_report()}, alive={hero.health.is_alive()}";
+    assert(hero.health.hp == 0 && !hero.health.is_alive(), "Lethal damage must clamp hp to 0");
+}

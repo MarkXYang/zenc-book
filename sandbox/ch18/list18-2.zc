@@ -1,0 +1,99 @@
+// File: examples/ch18/ch18-02-trait-objects/main.zc
+import "std/vec.zc"
+
+trait Widget {
+    fn min_width(self) -> int;
+    fn advance_tick(self);
+    fn render(self) -> string;
+}
+
+struct Button {
+    label: string;
+    padding: int;
+    clicks: int;
+}
+
+impl Widget for Button {
+    fn min_width(self) -> int {
+        return (int)strlen(self.label) + self.padding * 2 + 2;
+    }
+
+    fn advance_tick(self) {
+        self.clicks += 1;
+    }
+
+    fn render(self) -> string {
+        return "[Button '{self.label}' clicks={self.clicks}]";
+    }
+}
+
+struct ProgressBar {
+    width: int;
+    percent: int;
+}
+
+impl Widget for ProgressBar {
+    fn min_width(self) -> int {
+        return self.width;
+    }
+
+    fn advance_tick(self) {
+        self.percent += 25;
+        if self.percent > 100 {
+            self.percent = 100;
+        }
+    }
+
+    fn render(self) -> string {
+        return "[ProgressBar {self.percent}% ({self.width}px)]";
+    }
+}
+
+struct StatusLabel {
+    prefix: string;
+    frame: int;
+}
+
+impl Widget for StatusLabel {
+    fn min_width(self) -> int {
+        return (int)strlen(self.prefix) + 6;
+    }
+
+    fn advance_tick(self) {
+        self.frame += 1;
+    }
+
+    fn render(self) -> string {
+        return "[StatusLabel {self.prefix} #{self.frame}]";
+    }
+}
+
+fn main() {
+    let btn = Button { label: "Deploy", padding: 2, clicks: 0 };
+    let bar = ProgressBar { width: 24, percent: 50 };
+    let lbl = StatusLabel { prefix: "Build", frame: 1 };
+
+    // Store heterogeneous concrete types inside a single `Vec<Widget>` of trait objects!
+    let toolbar = Vec<Widget>::with_capacity(3);
+    let w_btn: Widget = &btn;
+    let w_bar: Widget = &bar;
+    let w_lbl: Widget = &lbl;
+    toolbar.push(w_btn);
+    toolbar.push(w_bar);
+    toolbar.push(w_lbl);
+
+    // 1. Mutate every concrete widget through dynamic dispatch (`advance_tick`)
+    let total_width = 0;
+    for i in (usize)0..toolbar.length() {
+        let w = toolbar.get(i);
+        w.advance_tick();
+        total_width += w.min_width();
+        println "Widget {i}: {w.render()} (min_width={w.min_width()})";
+    }
+
+    println "Toolbar total min_width: {total_width}px";
+    assert(btn.clicks == 1, "Button click count must increment via trait object");
+    assert(bar.percent == 75, "ProgressBar must advance from 50% to 75%");
+    assert(lbl.frame == 2, "StatusLabel frame must advance from 1 to 2");
+    assert(total_width == 12 + 24 + 11, "Total min_width must equal 47");
+}

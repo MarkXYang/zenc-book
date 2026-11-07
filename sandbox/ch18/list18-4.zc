@@ -1,0 +1,134 @@
+// File: examples/ch18/ch18-04-oop-patterns/main.zc
+
+// State interface for a document publishing workflow
+trait PostState {
+    fn status_name(self) -> string;
+    fn can_edit(self) -> bool;
+    fn can_view(self) -> bool;
+    fn record_edit(self);
+}
+
+struct DraftState {
+    revisions: int;
+}
+
+impl PostState for DraftState {
+    fn status_name(self) -> string {
+        return "Draft";
+    }
+
+    fn can_edit(self) -> bool {
+        return true;
+    }
+
+    fn can_view(self) -> bool {
+        return false;
+    }
+
+    fn record_edit(self) {
+        self.revisions += 1;
+    }
+}
+
+struct PendingReviewState {
+    reviewer_id: int;
+}
+
+impl PostState for PendingReviewState {
+    fn status_name(self) -> string {
+        return "PendingReview";
+    }
+
+    fn can_edit(self) -> bool {
+        return false;
+    }
+
+    fn can_view(self) -> bool {
+        return false;
+    }
+
+    fn record_edit(self) {}
+}
+
+struct PublishedState {
+    version: int;
+}
+
+impl PostState for PublishedState {
+    fn status_name(self) -> string {
+        return "Published";
+    }
+
+    fn can_edit(self) -> bool {
+        return false;
+    }
+
+    fn can_view(self) -> bool {
+        return true;
+    }
+
+    fn record_edit(self) {}
+}
+
+struct Post {
+    body: string;
+    state: PostState;
+}
+
+impl Post {
+    fn new(initial_state: PostState) -> Post {
+        return Post {
+            body: "",
+            state: initial_state,
+        };
+    }
+
+    fn write_body(self, new_text: string) -> bool {
+        if self.state.can_edit() {
+            self.body = new_text;
+            self.state.record_edit();
+            return true;
+        }
+        return false;
+    }
+
+    fn transition_to(self, next_state: PostState) {
+        self.state = next_state;
+    }
+
+    fn content(self) -> string {
+        if self.state.can_view() {
+            return self.body;
+        }
+        return "";
+    }
+
+    fn status(self) -> string {
+        return self.state.status_name();
+    }
+}
+
+fn main() {
+    let draft = DraftState { revisions: 0 };
+    let review = PendingReviewState { reviewer_id: 42 };
+    let published = PublishedState { version: 1 };
+
+    // 1. Start in `Draft` state: writing is allowed, but public `content()` is empty
+    let post = Post::new(&draft);
+    let wrote_in_draft = post.write_body("Zen C trait objects compile to 16-byte C11 fat pointers.");
+    println "State: {post.status()}, wrote={wrote_in_draft}, revisions={draft.revisions}, content='{post.content()}'";
+    assert(wrote_in_draft && draft.revisions == 1, "Draft state must allow writing and increment revisions");
+    assert(strcmp(post.content(), "") == 0, "Draft post must not expose unpublished content");
+
+    // 2. Request review: transition to `PendingReviewState`
+    post.transition_to(&review);
+    let wrote_in_review = post.write_body("Unauthorized edit during review!");
+    println "State: {post.status()}, wrote={wrote_in_review}, content='{post.content()}'";
+    assert(!wrote_in_review, "PendingReview state must reject edits");
+    assert(strcmp(post.content(), "") == 0, "PendingReview post must not expose content yet");
+
+    // 3. Approve: transition to `PublishedState`
+    post.transition_to(&published);
+    println "State: {post.status()}, content='{post.content()}'";
+    assert(strcmp(post.content(), "Zen C trait objects compile to 16-byte C11 fat pointers.") == 0, "Published post must return the approved body");
+}
