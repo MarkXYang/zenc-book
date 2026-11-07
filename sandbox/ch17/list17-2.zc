@@ -1,0 +1,75 @@
+// File: examples/ch17/ch17-02-mutex-sync/main.zc
+import "std/thread.zc"
+import "std/sync.zc"
+import "std/vec.zc"
+
+def NUM_THREADS = 4;
+def TRANSFERS_PER_THREAD = 2500;
+
+struct SharedLedger {
+    mutex: Mutex;
+    once: Once;
+    balance: i64;
+    tx_count: i64;
+    init_calls: int;
+    atomic_ops: i64;
+}
+
+fn record_deposits(ledger: SharedLedger*, amount: i64, iterations: int) {
+    // `Once::call` guarantees the initialization closure runs exactly once across all threads
+    let l_ptr = ledger;
+    ledger.once.call(fn[=]() {
+        l_ptr.init_calls += 1;
+        l_ptr.balance += 1000; // Initial opening bonus
+    });
+
+    for i in 0..iterations {
+        // 1. Critical section protected by `Mutex`
+        ledger.mutex.lock();
+        ledger.balance += amount;
+        ledger.tx_count += 1;
+        ledger.mutex.unlock();
+
+        // 2. Lock-free hardware atomic increment
+        raw {
+            __atomic_fetch_add(&ledger->atomic_ops, 1, __ATOMIC_SEQ_CST);
+        }
+    }
+}
+
+fn main() {
+    let ledger = SharedLedger {
+        mutex: Mutex::new(),
+        once: Once::new(),
+        balance: 0,
+        tx_count: 0,
+        init_calls: 0,
+        atomic_ops: 0,
+    };
+
+    let threads = Vec<Thread>::with_capacity(NUM_THREADS);
+    let ledger_ptr: SharedLedger* = &ledger;
+
+    for t in 0..NUM_THREADS {
+        let res = Thread::spawn(fn[=]() {
+            record_deposits(ledger_ptr, 10, TRANSFERS_PER_THREAD);
+        });
+        assert(res.is_ok(), "Failed to spawn worker thread");
+        threads.push(res.unwrap());
+    }
+
+    for i in (usize)0..threads.length() {
+        let th = threads.get(i);
+        th.join().unwrap();
+    }
+
+    println "One-time init calls: {ledger.init_calls}";
+    println "Total transactions:  {ledger.tx_count}";
+    println "Final balance:       {ledger.balance}";
+    println "Atomic operations:   {ledger.atomic_ops}";
+
+    assert(ledger.init_calls == 1, "Once::call must execute only once");
+    assert(ledger.tx_count == 10000, "4 * 2500 = 10000 transactions");
+    assert(ledger.balance == 101000, "1000 opening bonus + 10000 * 10 = 101000");
+    assert(ledger.atomic_ops == 10000, "Atomic counter must be exact without locks");
+}

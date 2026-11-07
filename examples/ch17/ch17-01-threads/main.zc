@@ -1,0 +1,65 @@
+// File: examples/ch17/ch17-01-threads/main.zc
+import "std/thread.zc"
+import "std/vec.zc"
+
+def NUM_WORKERS = 4;
+def ITEMS_PER_WORKER = 250;
+
+struct WorkerTask {
+    worker_id: int;
+    start_val: int;
+    count: int;
+    partial_sum: i64;
+}
+
+fn run_partition(task: WorkerTask*) {
+    let sum: i64 = 0;
+    for i in 0..task.count {
+        let v: i64 = (i64)(task.start_val + i);
+        sum += v * v;
+    }
+    task.partial_sum = sum;
+}
+
+fn main() {
+    let tasks: WorkerTask[4];
+    let threads = Vec<Thread>::with_capacity(NUM_WORKERS);
+
+    // 1. Partition 1..=1000 across 4 OS threads (250 numbers per thread)
+    for w in 0..NUM_WORKERS {
+        tasks[w] = WorkerTask {
+            worker_id: w,
+            start_val: w * ITEMS_PER_WORKER + 1,
+            count: ITEMS_PER_WORKER,
+            partial_sum: 0,
+        };
+
+        let task_ptr: WorkerTask* = &tasks[w];
+        let spawned = Thread::spawn(fn[=]() {
+            run_partition(task_ptr);
+        });
+        assert(spawned.is_ok(), "Thread::spawn should succeed");
+        threads.push(spawned.unwrap());
+    }
+
+    // 2. Join every worker thread before reading its partial_sum
+    for i in (usize)0..threads.length() {
+        let th = threads.get(i);
+        let joined = th.join();
+        assert(joined.is_ok(), "Thread::join should succeed");
+    }
+
+    // 3. Aggregate deterministic partial sums in worker order
+    let total_sum_of_squares: i64 = 0;
+    for w in 0..NUM_WORKERS {
+        let lo = tasks[w].start_val;
+        let hi = lo + tasks[w].count - 1;
+        let part = tasks[w].partial_sum;
+        println "Worker {w} ({lo}..={hi}): partial_sum = {part}";
+        total_sum_of_squares += part;
+    }
+
+    // Formula: n(n + 1)(2n + 1) / 6 for n = 1000 -> 1000 * 1001 * 2001 / 6 = 333833500
+    println "Total sum of squares (1..=1000): {total_sum_of_squares}";
+    assert(total_sum_of_squares == 333833500, "Sum of squares 1..=1000 must equal 333833500");
+}

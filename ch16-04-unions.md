@@ -201,4 +201,4 @@ In this chapter, you mastered Zen C's low-level memory management toolkit:
 - **Binary Struct Layout**: Minimizing compiler padding by ordering fields from largest alignment to smallest, stripping all padding for wire protocols with `@packed`, packing sub-byte flags with bitfields (`u8 : N`), and enforcing cache-line or SIMD alignment with `@align(N)`.
 - **Untagged Unions (`union`)**: Overlaying multiple representations at byte offset `0` for C FFI compatibility, hardware event records, and IEEE 754 bit manipulation.
 
-In [Chapter 17](ch17-00-metaprogramming-and-comptime.md), we will shift from runtime memory layout to compile-time code generation—exploring `comptime` execution, compile-time assertions, `@derive`, and build directives.
+In [Chapter 17: Concurrency](ch17-00-concurrency.md), we will explore how to run code simultaneously across multiple CPU cores using OS threads, synchronization primitives, message-passing channels, and `async`/`await`.
