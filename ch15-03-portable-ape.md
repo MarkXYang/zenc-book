@@ -28,14 +28,22 @@ flowchart TD
 
 ## 2. Installing `cosmocc`
 
-To build APE binaries, download the `cosmocc` toolchain from Cosmopolitan's releases and add its `bin/` directory to your `PATH`:
+To build APE binaries, download the `cosmocc` toolchain from Cosmopolitan's GitHub Releases (matching the version pinned in Zen C's CI) and add its `bin/` directory to your `PATH`:
 
 ```bash
 mkdir -p ~/cosmocc
 cd ~/cosmocc
-curl -LO https://cosmo.zip/pub/cosmocc/cosmocc.zip
-unzip cosmocc.zip
+curl -LO https://github.com/jart/cosmopolitan/releases/download/4.0.2/cosmocc-4.0.2.zip
+unzip cosmocc-4.0.2.zip
 export PATH="$HOME/cosmocc/bin:$PATH"
+```
+
+> **Note:** The rolling upstream mirror (`https://cosmo.zip/pub/cosmocc/cosmocc.zip`) is frequently unreachable, so downloading a pinned release archive directly from [`jart/cosmopolitan` GitHub Releases](https://github.com/jart/cosmopolitan/releases) is recommended.
+
+The `export` only affects the current terminal. To make `cosmocc` available in every new shell, add it to your shell profile:
+
+```bash
+echo 'export PATH="$HOME/cosmocc/bin:$PATH"' >> ~/.bashrc
 ```
 
 Verify that `cosmocc` is available:
@@ -138,9 +146,10 @@ Hello from one binary, many operating systems!
 Not only can your Zen C programs be compiled as APE binaries — the **Zen C compiler (`zc`) itself** has first-class APE support in its repository Makefile:
 
 ```bash
-# Inside the Zen-C compiler repository (with cosmocc in PATH):
-make ape
-sudo env "PATH=$PATH" make install-ape
+# Inside the Zen-C compiler repository:
+export PATH="$HOME/cosmocc/bin:$PATH"
+make ape ZC_HAS_JIT=0
+sudo env "PATH=$PATH" make install-ape ZC_HAS_JIT=0
 ```
 
 Running `make ape` builds two self-contained artifacts in `out/bin/`:
