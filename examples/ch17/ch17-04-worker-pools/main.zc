@@ -1,0 +1,216 @@
+// File: examples/ch17/ch17-04-worker-pools/main.zc
+import "std/thread.zc"
+import "std/sync.zc"
+import "std/option.zc"
+import "std/vec.zc"
+
+def POOL_QUEUE_CAP = 16;
+
+@derive(Copy)
+struct Task {
+    id: int;
+    base: int;
+    multiplier: int;
+}
+
+@derive(Copy)
+struct TaskResult {
+    task_id: int;
+    value: int;
+}
+
+// Bounded concurrent queue for dispatching tasks to worker threads
+struct TaskQueue {
+    tasks: Task[16];
+    head: usize;
+    tail: usize;
+    count: usize;
+    mutex: Mutex;
+    not_empty: CondVar;
+    not_full: CondVar;
+    shutdown: bool;
+}
+
+impl TaskQueue {
+    fn new() -> TaskQueue {
+        let q: TaskQueue;
+        q.head = 0;
+        q.tail = 0;
+        q.count = 0;
+        q.mutex = Mutex::new();
+        q.not_empty = CondVar::new();
+        q.not_full = CondVar::new();
+        q.shutdown = false;
+        return q;
+    }
+
+    fn submit(self, task: Task) -> bool {
+        self.mutex.lock();
+        while self.count == (usize)POOL_QUEUE_CAP && !self.shutdown {
+            self.not_full.wait(&self.mutex);
+        }
+        if self.shutdown {
+            self.mutex.unlock();
+            return false;
+        }
+
+        self.tasks[self.tail] = task;
+        self.tail = (self.tail + 1) % (usize)POOL_QUEUE_CAP;
+        self.count += 1;
+
+        self.not_empty.signal();
+        self.mutex.unlock();
+        return true;
+    }
+
+    fn next_task(self) -> Option<Task> {
+        self.mutex.lock();
+        while self.count == 0 && !self.shutdown {
+            self.not_empty.wait(&self.mutex);
+        }
+        if self.count == 0 {
+            self.mutex.unlock();
+            return Option<Task>::None();
+        }
+
+        let task = self.tasks[self.head];
+        self.head = (self.head + 1) % (usize)POOL_QUEUE_CAP;
+        self.count -= 1;
+
+        self.not_full.signal();
+        self.mutex.unlock();
+        return Option<Task>::Some(task);
+    }
+
+    fn stop(self) {
+        self.mutex.lock();
+        self.shutdown = true;
+        self.not_empty.broadcast();
+        self.not_full.broadcast();
+        self.mutex.unlock();
+    }
+}
+
+// Thread-safe collector for aggregating completed task results
+struct ResultAggregator {
+    mutex: Mutex;
+    results: Vec<TaskResult>;
+    total_computed: int;
+}
+
+impl ResultAggregator {
+    fn new() -> ResultAggregator {
+        return ResultAggregator {
+            mutex: Mutex::new(),
+            results: Vec<TaskResult>::new(),
+            total_computed: 0,
+        };
+    }
+
+    fn record(self, res: TaskResult) {
+        self.mutex.lock();
+        self.results.push(res);
+        self.total_computed += res.value;
+        self.mutex.unlock();
+    }
+}
+
+// Fixed-size ThreadPool coordinating worker threads
+struct ThreadPool {
+    queue: TaskQueue;
+    workers: Vec<Thread>;
+    aggregator: ResultAggregator;
+}
+
+fn worker_loop(queue: TaskQueue*, agg: ResultAggregator*) {
+    while true {
+        let task_opt = queue.next_task();
+        if task_opt.is_none() {
+            break;
+        }
+        let task = task_opt.unwrap();
+
+        // Perform computation: sum (base + i) * multiplier for i in 1..=5
+        let acc = 0;
+        for i in 1..=5 {
+            acc += (task.base + i) * task.multiplier;
+        }
+
+        agg.record(TaskResult {
+            task_id: task.id,
+            value: acc,
+        });
+    }
+}
+
+impl ThreadPool {
+    fn new(num_workers: usize) -> ThreadPool {
+        return ThreadPool {
+            queue: TaskQueue::new(),
+            workers: Vec<Thread>::with_capacity(num_workers),
+            aggregator: ResultAggregator::new(),
+        };
+    }
+
+    fn start(self, num_workers: usize) {
+        let q_ptr: TaskQueue* = &self.queue;
+        let agg_ptr: ResultAggregator* = &self.aggregator;
+
+        for _ in 0..num_workers {
+            let res = Thread::spawn(fn[=]() {
+                worker_loop(q_ptr, agg_ptr);
+            });
+            assert(res.is_ok(), "Thread::spawn should succeed");
+            self.workers.push(res.unwrap());
+        }
+    }
+
+    fn dispatch(self, task: Task) -> bool {
+        return self.queue.submit(task);
+    }
+
+    fn shutdown_and_wait(self) {
+        self.queue.stop();
+        for i in (usize)0..self.workers.length() {
+            let th = self.workers.get(i);
+            th.join().unwrap();
+        }
+    }
+}
+
+fn main() {
+    let pool = ThreadPool::new(4);
+    pool.start(4);
+
+    // Dispatch 8 tasks across the 4-worker pool
+    // Task 1: base=10, mult=1 -> (11+12+13+14+15)*1 = 65
+    // Task 2: base=15, mult=2 -> (16+17+18+19+20)*2 = 180
+    // Task 3: base=20, mult=3 -> (21+22+23+24+25)*3 = 345
+    // Task 4: base=25, mult=4 -> (26+27+28+29+30)*4 = 560
+    // Task 5: base=30, mult=5 -> (31+32+33+34+35)*5 = 825
+    // Task 6: base=10, mult=2 -> 65 * 2 = 130
+    // Task 7: base=10, mult=3 -> 65 * 3 = 195
+    // Task 8: base=10, mult=4 -> 65 * 4 = 260
+    // Total = 65 + 180 + 345 + 560 + 825 + 130 + 195 + 260 = 2560
+    let dispatched = 0;
+    for id in 1..=8 {
+        let base = (id <= 5) ? (id * 5 + 5) : 10;
+        let mult = (id <= 5) ? id : (id - 4);
+        let ok = pool.dispatch(Task { id: id, base: base, multiplier: mult });
+        if ok {
+            dispatched += 1;
+        }
+    }
+    println "Dispatched {dispatched} tasks to ThreadPool";
+
+    pool.shutdown_and_wait();
+
+    let completed_count = pool.aggregator.results.length();
+    let total_sum = pool.aggregator.total_computed;
+
+    println "Completed tasks: {completed_count}";
+    println "Total computed sum: {total_sum}";
+
+    assert(completed_count == 8, "All 8 tasks must complete");
+    assert(total_sum == 2560, "Sum of all tasks must equal 2560");
+}

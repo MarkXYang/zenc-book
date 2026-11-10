@@ -104,7 +104,7 @@
     - [Using Threads to Run Code Simultaneously](ch17-01-threads.md)
     - [Shared-State Concurrency: Mutex and Atomics](ch17-02-mutex-sync.md)
     - [Message Passing with Queues](ch17-03-message-passing.md)
-    - [Asynchronous Programming with async/await](ch17-04-async-await.md)
+    - [Asynchronous Worker Pools](ch17-04-worker-pools.md)
 
 - [Polymorphism: Composition and Trait Objects](ch18-00-polymorphism.md)
     - [Object-Oriented Characteristics of Zen C](ch18-01-oop-characteristics.md)
