@@ -1,0 +1,49 @@
+// File: examples/ch20/ch20-04-cpp-objc-cuda/main.zc
+//
+// Demonstrates writing polyglot-compatible Zen C code that can be:
+// 1. Compiled and run natively: zc run -q main.zc
+// 2. Transpiled to C++17:      zc transpile main.zc --cpp -o app.cpp
+// 3. Transpiled to Objective-C: zc transpile main.zc --objc -o app.m
+// 4. Transpiled to CUDA:        zc transpile main.zc --cuda -o app.cu
+
+struct Vector3 {
+    x: f32;
+    y: f32;
+    z: f32;
+}
+
+impl Vector3 {
+    fn new(x: f32, y: f32, z: f32) -> Vector3 {
+        return Vector3 { x: x, y: y, z: z };
+    }
+
+    fn dot(self, other: Vector3) -> f32 {
+        return (self.x * other.x) + (self.y * other.y) + (self.z * other.z);
+    }
+}
+
+// In polyglot mode:
+// - Under C++ (--cpp), NULL expands to nullptr and drops use C++ template overloads
+// - Under CUDA (--cuda), functions can target device kernels
+// - Under Objective-C (--objc), C-compatible structs and methods interoperate directly
+fn test_pointer_interop() -> bool {
+    let p: int* = NULL;
+    return p == NULL;
+}
+
+fn main() {
+    println "Polyglot Interoperability in Zen C (C++, Objective-C, CUDA)";
+
+    let v1 = Vector3::new(1.0, 2.0, 3.0);
+    let v2 = Vector3::new(4.0, 5.0, 6.0);
+    let d = v1.dot(v2);
+
+    println "v1 . v2 dot product = {d}";
+    assert(d == 32.0, "Dot product should be 32.0");
+
+    let is_null = test_pointer_interop();
+    assert(is_null, "Pointer null check must succeed");
+    println "Pointer null check passed (emits nullptr in C++)";
+
+    println "Polyglot verification successful!";
+}

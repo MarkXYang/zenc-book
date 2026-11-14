@@ -1,0 +1,35 @@
+// File: examples/ch20/ch20-05-embedding-zc/zenc_math.zc
+//
+// Transpile with: zc transpile zenc_math.zc --shared -o libzenc_math.so
+
+@export
+@link_name("zenc_add")
+fn add(a: int, b: int) -> int {
+    return a + b;
+}
+
+@export
+@link_name("zenc_fibonacci")
+fn fibonacci(n: int) -> int {
+    if n <= 1 {
+        return n;
+    }
+    let a = 0;
+    let b = 1;
+    for _ in 2..=n {
+        let temp = a + b;
+        a = b;
+        b = temp;
+    }
+    return b;
+}
+
+@export
+@link_name("zenc_dot_product")
+fn dot_product(a: f32*, b: f32*, len: int) -> f32 {
+    let sum: f32 = 0.0;
+    for i in 0..len {
+        sum += a[i] * b[i];
+    }
+    return sum;
+}

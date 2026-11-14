@@ -1,0 +1,55 @@
+// File: examples/ch20/ch20-01-inline-assembly/main.zc
+
+// 1. Basic assembly block: CPU pause instruction in spinlock or delay
+fn cpu_pause() {
+    asm { pause }
+}
+
+// 2. Volatile memory barrier: prevent compiler and CPU memory reordering
+fn memory_barrier() {
+    asm volatile {
+        mfence
+    }
+}
+
+// 3. Extended inline assembly with inputs, outputs, and condition code clobber
+fn add_fast(a: int, b: int) -> int {
+    let result: int;
+    asm {
+        "mov {a}, {result}"
+        "add {b}, {result}"
+        : out(result)
+        : in(a), in(b)
+        : clobber("cc")
+    }
+    return result;
+}
+
+// 4. Inout constraint: modifying a variable in-place via register (+r)
+fn double_in_place(x: int) -> int {
+    let val = x;
+    asm {
+        "shl $1, {val}"
+        : inout(val)
+        :
+        : clobber("cc")
+    }
+    return val;
+}
+
+fn main() {
+    println "Testing inline assembly in Zen C...";
+
+    cpu_pause();
+    memory_barrier();
+
+    let sum = add_fast(40, 2);
+    println "add_fast(40, 2) = {sum}";
+    assert(sum == 42, "add_fast failed");
+
+    let doubled = double_in_place(21);
+    println "double_in_place(21) = {doubled}";
+    assert(doubled == 42, "double_in_place failed");
+
+    println "Inline assembly executed successfully!";
+}

@@ -1,0 +1,42 @@
+// File: examples/ch20/ch20-02-simd/main.zc
+import "std/simd.zc"
+
+fn main() {
+    println "Testing SIMD vectorization in Zen C...";
+
+    // 1. 128-bit float vectors (4 x f32)
+    let a = f32x4 { v: 1.5 };
+    let b = f32x4 { v: 2.5 };
+
+    // Parallel component-wise addition: [1.5, 1.5, 1.5, 1.5] + [2.5, 2.5, 2.5, 2.5]
+    let c = a + b;
+    let c0 = c[0];
+    let c3 = c[3];
+    println "f32x4 addition [0]: {c0}, [3]: {c3}";
+    assert(c0 == 4.0 && c3 == 4.0, "f32x4 addition mismatch");
+
+    // Parallel component-wise multiplication
+    let d = a * b;
+    let d0 = d[0];
+    println "f32x4 multiplication [0]: {d0}";
+    assert(d0 == 3.75, "f32x4 multiplication mismatch");
+
+    // 2. 128-bit integer vectors (4 x i32) with bitwise operations
+    let mask1 = i32x4 { v: 0xFF };
+    let mask2 = i32x4 { v: 0x0F };
+    let bit_and = mask1 & mask2;
+    let b0 = bit_and[0];
+    println "i32x4 bitwise AND [0]: {b0}";
+    assert(b0 == 15, "i32x4 bitwise AND mismatch");
+
+    // 3. 256-bit AVX vectors (8 x f32)
+    let v8_a = f32x8 { v: 10.0 };
+    let v8_b = f32x8 { v: 2.0 };
+    let v8_sub = v8_a - v8_b;
+    let s0 = v8_sub[0];
+    let s7 = v8_sub[7];
+    println "f32x8 subtraction [0]: {s0}, [7]: {s7}";
+    assert(s0 == 8.0 && s7 == 8.0, "f32x8 subtraction mismatch");
+
+    println "SIMD vector operations executed successfully!";
+}
