@@ -1,0 +1,87 @@
+// File: examples/ch21/ch21-01-single-threaded/main.zc
+import "std/net/tcp.zc"
+import "std/thread.zc"
+
+fn handle_connection(stream: TcpStream) {
+    let buffer: char[1024];
+    let n_res = stream.read(buffer, 1023);
+    if n_res.is_err() {
+        return;
+    }
+    let n = n_res.unwrap();
+    buffer[n] = '\0';
+
+    let status_line = "HTTP/1.1 200 OK";
+    let body = "<h1>Hello from Zen C Single-Threaded Server!</h1>";
+    if strncmp(buffer, "GET / ", 6) != 0 && strncmp(buffer, "GET /hello ", 11) != 0 {
+        status_line = "HTTP/1.1 404 NOT FOUND";
+        body = "<h1>404 Not Found</h1>";
+    }
+
+    let resp_buf: char[1024];
+    snprintf(
+    resp_buf,
+    1024,
+    "%s\r\nContent-Type: text/html\r\nContent-Length: %zu\r\nConnection: close\r\n\r\n%s",
+    status_line,
+    strlen(body),
+    body
+    );
+
+    stream.write((u8*)resp_buf, strlen(resp_buf));
+}
+
+fn run_server(port: int, max_requests: int) {
+    let listener_res = TcpListener::bind("127.0.0.1", port);
+    if listener_res.is_err() {
+        println "Failed to bind to port {port}";
+        return;
+    }
+    let listener = listener_res.unwrap();
+    println "Single-threaded server listening on http://127.0.0.1:{port}";
+
+    for _ in 0..max_requests {
+        let stream_res = listener.accept();
+        if stream_res.is_ok() {
+            let stream = stream_res.unwrap();
+            handle_connection(stream);
+        }
+    }
+}
+
+fn main() {
+    let port = 7878;
+
+    // Run server in background thread for 2 requests to verify end-to-end
+    let s_thread = Thread::spawn(fn[=]() {
+        run_server(port, 2);
+    }).unwrap();
+
+    sleep_ms(50); // wait for server to start
+
+    // 1. Send GET /
+    let client1 = TcpStream::connect("127.0.0.1", port).unwrap();
+    let req1 = "GET / HTTP/1.1\r\nHost: 127.0.0.1\r\n\r\n";
+    client1.write((u8*)req1, strlen(req1));
+
+    let buf1: char[1024];
+    let n1 = client1.read(buf1, 1023).unwrap();
+    buf1[n1] = '\0';
+    println "Response 1:\n{buf1}";
+    assert(strstr(buf1, "200 OK") != NULL, "Expected 200 OK");
+    assert(strstr(buf1, "Hello from Zen C") != NULL, "Expected body match");
+
+    // 2. Send GET /unknown
+    let client2 = TcpStream::connect("127.0.0.1", port).unwrap();
+    let req2 = "GET /unknown HTTP/1.1\r\nHost: 127.0.0.1\r\n\r\n";
+    client2.write((u8*)req2, strlen(req2));
+
+    let buf2: char[1024];
+    let n2 = client2.read(buf2, 1023).unwrap();
+    buf2[n2] = '\0';
+    println "Response 2:\n{buf2}";
+    assert(strstr(buf2, "404 NOT FOUND") != NULL, "Expected 404 NOT FOUND");
+
+    s_thread.join().unwrap();
+    println "Single-threaded web server test passed!";
+}
