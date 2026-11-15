@@ -1,0 +1,21 @@
+// File: examples/ch19/ch19-03-embed-plugins/main.zc
+
+fn main() {
+    println "Testing Asset Embedding (embed)...";
+
+    // Embed as a compile-time string literal (path is relative to build CWD)
+    let banner = embed "examples/ch19/ch19-03-embed-plugins/banner.txt" as string;
+    println "Embedded string: {banner}";
+
+    // Embed as a raw byte slice ({ data, len })
+    let raw_bytes = embed "examples/ch19/ch19-03-embed-plugins/banner.txt";
+    println "Embedded raw slice len = {raw_bytes.len}";
+    assert(raw_bytes.len > 0, "Embedded slice must not be empty");
+
+    // Embed into a fixed-size byte array (u8[41])
+    let fixed = embed "examples/ch19/ch19-03-embed-plugins/banner.txt" as u8[41];
+    assert(fixed[0] == 'Z', "First byte must be 'Z'");
+    assert(fixed[4] == 'C', "Fifth byte must be 'C'");
+
+    println "All embed checks passed!";
+}

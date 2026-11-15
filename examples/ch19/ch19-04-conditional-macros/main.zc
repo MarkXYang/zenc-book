@@ -1,0 +1,32 @@
+// File: examples/ch19/ch19-04-conditional-macros/main.zc
+//> define: ENABLE_METRICS
+
+#define BUFFER_CAP 64
+#define SQUARE(x) ((x) * (x))
+
+@cfg(ENABLE_METRICS)
+fn report_mode() {
+    println "Mode: Metrics ENABLED";
+}
+
+@cfg(not(ENABLE_METRICS))
+fn report_mode() {
+    println "Mode: Metrics DISABLED";
+}
+
+fn main() {
+    println "Testing Conditional Compilation & C Macros...";
+    report_mode();
+
+    #ifdef ENABLE_METRICS
+    println "Preprocessor #ifdef ENABLE_METRICS is active";
+    #endif
+
+    let cap = BUFFER_CAP;
+    let sq = SQUARE(5);
+    println "BUFFER_CAP = {cap}, SQUARE(5) = {sq}";
+    assert(cap == 64, "BUFFER_CAP must be 64");
+    assert(sq == 25, "SQUARE(5) must be 25");
+
+    println "All conditional & macro checks passed!";
+}
