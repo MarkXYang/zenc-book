@@ -52,19 +52,22 @@ Third (First deferred)
 
 ---
 
-## Automatic Memory Management with `autofree`
+## Freeing Heap Memory with `defer free(...)`
 
-For heap-allocated pointers created with `malloc`, qualifying a local variable declaration with `autofree` automatically injects a `free()` call when the variable goes out of scope:
+For heap memory you get from `malloc`, put the matching `free()` in a `defer` right after the allocation. The allocation and its cleanup then sit next to each other, and the memory is released on every exit path, including early returns:
 
 ```zenc
 fn process_buffer() {
-    autofree let buffer = malloc(1024); // Automatically freed on scope exit
+    let buffer = malloc(1024);
+    defer free(buffer); // Runs when process_buffer returns, however it returns
 
-    // Use buffer safely without explicit free(buffer)
+    // Use buffer without worrying about the free
 }
 ```
 
-Under the hood, `autofree` binds the pointer to the scope using compiler-level cleanup attributes, ensuring memory is reclaimed even if the function exits early.
+When a heap allocation belongs to a struct rather than a single function, implement `Drop` for that struct instead (covered next), so the memory is freed wherever the value goes out of scope.
+
+> **Note:** Earlier versions of Zen C had an `autofree` qualifier (`autofree let p = malloc(n);`). It was removed; the compiler now reports `'autofree' was removed; declare the variable normally and add 'defer free(x)'`.
 
 ---
 

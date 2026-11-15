@@ -45,8 +45,8 @@ raw {
 
     void sim_DrawCircleV(Vector2 center, float radius, Color color) {
         printf("  Frame #%d -> DrawCircleV(pos=(%.1f, %.1f), r=%.1f, rgba=(%u,%u,%u,%u))\n",
-               g_frame_counter + 1, center.x, center.y, radius,
-               color.r, color.g, color.b, color.a);
+        g_frame_counter + 1, center.x, center.y, radius,
+        color.r, color.g, color.b, color.a);
     }
 
     void sim_EndDrawing(void) {

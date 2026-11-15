@@ -1,3 +1,5 @@
+include <time.h>
+
 fn main() {
     println "=== Guess the Number! ===";
 

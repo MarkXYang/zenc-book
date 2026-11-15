@@ -8,7 +8,7 @@ In this chapter, you will learn about:
 - **Data Types**: Scalar primitive types (integers, floating-point numbers, booleans, characters, strings), fixed-size arrays (`T[N]`), and tuples.
 - **Functions**: Defining functions (`fn`), parameter types, explicit return types (`-> T`), named arguments, `const` arguments, and default arguments.
 - **Comments, Printing and String Interpolation**: Standard output keywords (`println`), string shorthands, implicit `{}` interpolation, raw strings (`r"..."`), multiline blocks (`"""`), and interactive input prompts (`?`).
-- **Control Flow**: Using conditional expressions (`if / else if / else`), repeating loops (`while`, `for`, `loop`, `break`, `continue`), and guard statements (`guard`, `unless`).
+- **Control Flow**: Using conditional expressions (`if / else if / else`), repeating loops (`while`, `for`, `loop`, `break`, `continue`), and early-return guard clauses with `if`.
 
 > [!NOTE]
 > Advanced functional features such as closures (lambdas) and raw function pointers (`fn*`) are explored in [Chapter 14](ch14-00-functional-features.md). Pattern matching on tagged unions is explored in depth in [Chapter 6](ch06-00-enums.md).

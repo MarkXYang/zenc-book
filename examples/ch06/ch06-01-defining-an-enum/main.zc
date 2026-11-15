@@ -84,7 +84,7 @@ fn main() {
 
     // 6. Generic enum preview
     let _opt_int = MyOption<int>::Some(42);
-    let _opt_empty = MyOption<int>::None;
+    let _opt_empty = MyOption<int>::None();
     println "Generic MyOption<int> instantiated successfully";
 
     println "Section 6.1 examples executed successfully!";

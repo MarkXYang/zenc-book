@@ -47,9 +47,10 @@ fn main() {
         println "Wrote to file using defer fclose(f)";
     }
 
-    // 2. Autofree variable
-    autofree let temp_mem = malloc(256);
-    println "Allocated memory with autofree";
+    // 2. Heap memory freed with defer
+    let temp_mem = malloc(256);
+    defer free(temp_mem);
+    println "Allocated memory freed with defer free(...)";
 
     // 3. Drop trait & Move semantics
     let buf = CustomBuffer {

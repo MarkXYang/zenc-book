@@ -5,6 +5,9 @@
 # Build artifacts & binaries
 guessing_game
 hello
+zgrep
+output.txt
+debug_demo
 *.out
 *.o
 *.a
@@ -12,6 +15,9 @@ hello
 *.dylib
 *.dll
 *.exe
+*.com
+*.com.dbg
+*.aarch64.elf
 
 # Temporary files
 .DS_Store

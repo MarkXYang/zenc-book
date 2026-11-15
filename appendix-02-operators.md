@@ -297,7 +297,7 @@ In Chapter 3, you mastered all the core foundational concepts of Zen C:
 - **Variables & Constants** (`def`, `let`, type inference, `const`).
 - **Data Types** (scalar types, C interop types, arbitrary bit-width `iN`/`uN`, literals, fixed-size arrays `T[N]`).
 - **Functions & Lambdas** (named arguments, `const` args, defaults, closures `[=]`/`[&]`, raw pointers `fn*`, variadics `...`).
-- **Control Flow** (`if`, `match` pattern matching, `ref` binding, range loops, enumerated iteration, `guard`, `unless`).
+- **Control Flow** (`if`, `match` pattern matching, `ref` binding, range loops, enumerated iteration, early-return guard clauses).
 - **Operators** (operator overloading `add`/`sub`/`get`/`set`, string equality rules, pipeline `|>`, null coalescing `??`, null assignment `??=`, safe navigation `?.`, try `?`, auto-dereference).
 
 In **Chapter 4**, we will dive into Zen C's automatic resource management: **Drop and Memory Safety (RAII)**!

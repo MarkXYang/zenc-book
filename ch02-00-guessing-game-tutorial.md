@@ -86,20 +86,22 @@ Update `main.zc` to seed the random number generator and produce a secret intege
 **Listing 2-2: `list2-2.zc`**
 
 ```zenc
- 1 | fn main() {
- 2 |     println "=== Guess the Number! ===";
- 3 |
- 4 |     // Seed the random number generator with current Unix time
- 5 |     srand(time(0));
- 6 |     let secret_number = (rand() % 100) + 1;
- 7 |
- 8 |     print "Please input your guess: ";
+ 1 | include <time.h>
+ 2 |
+ 3 | fn main() {
+ 4 |     println "=== Guess the Number! ===";
+ 5 |
+ 6 |     // Seed the random number generator with current Unix time
+ 7 |     srand(time(0));
+ 8 |     let secret_number = (rand() % 100) + 1;
  9 |
-10 |     let guess: int = 0;
-11 |     scanf("%d", &guess);
-12 |
-13 |     println "You guessed: {guess}";
-14 | }
+10 |     print "Please input your guess: ";
+11 |
+12 |     let guess: int = 0;
+13 |     scanf("%d", &guess);
+14 |
+15 |     println "You guessed: {guess}";
+16 | }
 ```
 
 ### Understanding Type Inference (`let`)
@@ -126,27 +128,29 @@ Update `main.zc`:
 **Listing 2-3: `list2-3.zc`**
 
 ```zenc
- 1 | fn main() {
- 2 |     println "=== Guess the Number! ===";
- 3 |
- 4 |     srand(time(0));
- 5 |     let secret_number = (rand() % 100) + 1;
- 6 |
- 7 |     print "Please input your guess: ";
+ 1 | include <time.h>
+ 2 |
+ 3 | fn main() {
+ 4 |     println "=== Guess the Number! ===";
+ 5 |
+ 6 |     srand(time(0));
+ 7 |     let secret_number = (rand() % 100) + 1;
  8 |
- 9 |     let guess: int = 0;
-10 |     scanf("%d", &guess);
-11 |
-12 |     println "You guessed: {guess}";
+ 9 |     print "Please input your guess: ";
+10 |
+11 |     let guess: int = 0;
+12 |     scanf("%d", &guess);
 13 |
-14 |     if guess < secret_number {
-15 |         println "Too small!";
-16 |     } else if guess > secret_number {
-17 |         println "Too big!";
-18 |     } else {
-19 |         println "You win!";
-20 |     }
-21 | }
+14 |     println "You guessed: {guess}";
+15 |
+16 |     if guess < secret_number {
+17 |         println "Too small!";
+18 |     } else if guess > secret_number {
+19 |         println "Too big!";
+20 |     } else {
+21 |         println "You win!";
+22 |     }
+23 | }
 ```
 
 Output:
@@ -174,34 +178,36 @@ Update `main.zc` to include a `loop` block and `break` statements:
 **Listing 2-4: `list2-4.zc`**
 
 ```zenc
- 1 | fn main() {
- 2 |     println "=== Guess the Number! ===";
- 3 |
- 4 |     // Seed the random number generator
- 5 |     srand(time(0));
- 6 |     let secret_number = (rand() % 100) + 1;
- 7 |
- 8 |     loop {
- 9 |         print "Please input your guess: ";
-10 |
-11 |         let guess: int = 0;
-12 |         if scanf("%d", &guess) != 1 {
-13 |             println "Please enter a valid integer!";
-14 |             break;
-15 |         }
-16 |
-17 |         println "You guessed: {guess}";
+ 1 | include <time.h>
+ 2 |
+ 3 | fn main() {
+ 4 |     println "=== Guess the Number! ===";
+ 5 |
+ 6 |     // Seed the random number generator
+ 7 |     srand(time(0));
+ 8 |     let secret_number = (rand() % 100) + 1;
+ 9 |
+10 |     loop {
+11 |         print "Please input your guess: ";
+12 |
+13 |         let guess: int = 0;
+14 |         if scanf("%d", &guess) != 1 {
+15 |             println "Please enter a valid integer!";
+16 |             break;
+17 |         }
 18 |
-19 |         if guess < secret_number {
-20 |             println "Too small!";
-21 |         } else if guess > secret_number {
-22 |             println "Too big!";
-23 |         } else {
-24 |             println "You win! You guessed the secret number!";
-25 |             break; // Exit the loop on victory
-26 |         }
-27 |     }
-28 | }
+19 |         println "You guessed: {guess}";
+20 |
+21 |         if guess < secret_number {
+22 |             println "Too small!";
+23 |         } else if guess > secret_number {
+24 |             println "Too big!";
+25 |         } else {
+26 |             println "You win! You guessed the secret number!";
+27 |             break; // Exit the loop on victory
+28 |         }
+29 |     }
+30 | }
 ```
 
 ### Explaining the Loop Control Flow
@@ -219,34 +225,36 @@ Here is the complete, working code for your Zen C Guessing Game:
 **Listing 2-5: `list2-5.zc`**
 
 ```zenc
- 1 | fn main() {
- 2 |     println "=== Guess the Number! ===";
- 3 |
- 4 |     // Seed the random number generator
- 5 |     srand(time(0));
- 6 |     let secret_number = (rand() % 100) + 1;
- 7 |
- 8 |     loop {
- 9 |         print "Please input your guess: ";
-10 |
-11 |         let guess: int = 0;
-12 |         if scanf("%d", &guess) != 1 {
-13 |             println "Please enter a valid integer!";
-14 |             break;
-15 |         }
-16 |
-17 |         println "You guessed: {guess}";
+ 1 | include <time.h>
+ 2 |
+ 3 | fn main() {
+ 4 |     println "=== Guess the Number! ===";
+ 5 |
+ 6 |     // Seed the random number generator
+ 7 |     srand(time(0));
+ 8 |     let secret_number = (rand() % 100) + 1;
+ 9 |
+10 |     loop {
+11 |         print "Please input your guess: ";
+12 |
+13 |         let guess: int = 0;
+14 |         if scanf("%d", &guess) != 1 {
+15 |             println "Please enter a valid integer!";
+16 |             break;
+17 |         }
 18 |
-19 |         if guess < secret_number {
-20 |             println "Too small!";
-21 |         } else if guess > secret_number {
-22 |             println "Too big!";
-23 |         } else {
-24 |             println "You win! You guessed the secret number!";
-25 |             break;
-26 |         }
-27 |     }
-28 | }
+19 |         println "You guessed: {guess}";
+20 |
+21 |         if guess < secret_number {
+22 |             println "Too small!";
+23 |         } else if guess > secret_number {
+24 |             println "Too big!";
+25 |         } else {
+26 |             println "You win! You guessed the secret number!";
+27 |             break;
+28 |         }
+29 |     }
+30 | }
 ```
 
 ---

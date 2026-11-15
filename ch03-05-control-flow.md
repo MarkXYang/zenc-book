@@ -1,6 +1,6 @@
 # Control Flow
 
-The ability to control execution flow based on conditions, pattern matching, or repetition is fundamental to programming. Zen C provides modern conditional expressions, powerful `match` pattern matching, reference binding, rich range and enumerated loops, labeled loop control, and guard statements (`guard`, `unless`).
+The ability to control execution flow based on conditions, pattern matching, or repetition is fundamental to programming. Zen C provides modern conditional expressions, powerful `match` pattern matching, reference binding, rich range and enumerated loops, labeled loop control, and early-return guard clauses.
 
 ---
 
@@ -140,7 +140,7 @@ Inspected value: 42
 
 ## Loops and Iteration
 
-Zen C provides rich loop constructs: range loops, array/collection loops, enumerated loops, `while`, `do-while`, and labeled infinite `loop` blocks.
+Zen C provides rich loop constructs: range loops, array/collection loops, enumerated loops, `while`, and labeled infinite `loop` blocks.
 
 ### 1. Range Loops (`for ..`)
 
@@ -223,7 +223,9 @@ arr[1] = 200
 arr[2] = 300
 ```
 
-### 4. `while` and `do-while` Loops
+### 4. `while` Loops
+
+Zen C has a single conditional loop, `while`. When the body must run at least once before the condition is tested (what C calls `do … while`), loop unconditionally and `break` at the bottom:
 
 **Listing 3-14: `list3-14.zc`**
 
@@ -235,13 +237,18 @@ arr[2] = 300
  5 |     count--;
  6 | }
  7 |
- 8 | // do-while loop (guaranteed to execute at least once)
+ 8 | // Run the body once before testing the condition
  9 | let x = 0;
-10 | do {
+10 | while true {
 11 |     println "Executed at least once!";
 12 |     x++;
-13 | } while x < 0;
+13 |     if !(x < 0) {
+14 |         break;
+15 |     }
+16 | }
 ```
+
+> **Note:** Earlier versions of Zen C had a `do { … } while cond;` loop. It was removed; the compiler now reports `'do ... while' was removed; use 'while'`.
 
 Output:
 ```text
@@ -270,18 +277,15 @@ outer: loop {
 
 ---
 
-## Advanced Control Statements (`guard` and `unless`)
+## Early Returns (Guard Clauses)
 
-Zen C introduces `guard` and `unless` statements to simplify early-exit error handling and negative condition checks:
-
-- **`guard`**: Checks a condition. If the condition is `false`, the mandatory `else` block executes and **must** exit the current scope (via `return`, `break`, or `continue`).
-- **`unless`**: An inverted `if` statement. It executes its block when the condition is `false`.
+A common pattern is to check for bad input at the top of a function and leave immediately, so the rest of the body can assume the input is valid. In Zen C you write these guard clauses with a plain `if`, negating the condition with `!` when needed:
 
 **Listing 3-15: `list3-15.zc`**
 
 ```zenc
  1 | fn process_ptr(ptr: void*) {
- 2 |     guard ptr != NULL else {
+ 2 |     if ptr == NULL {
  3 |         println "Null pointer provided! Exiting early.";
  4 |         return;
  5 |     }
@@ -290,7 +294,7 @@ Zen C introduces `guard` and `unless` statements to simplify early-exit error ha
  8 | }
  9 |
 10 | fn validate(is_valid: bool) {
-11 |     unless is_valid {
+11 |     if !is_valid {
 12 |         println "State is invalid!";
 13 |         return;
 14 |     }
@@ -322,6 +326,6 @@ In Chapter 3, you mastered Zen C's core language concepts:
 - **Variables & Constants**: Compile-time `def`, inferred `let`, and read-only `const`.
 - **Data Types**: Scalar types (`i8`..`i128`, `u8`..`u128`, `usize`, `f32`, `f64`, `bool`, `char`, `rune`, `string`), C interop types, arbitrary bit-width integers (`iN`/`uN`), numeric literal features, and fixed-size arrays (`T[N]`).
 - **Functions & Lambdas**: Named arguments, `const` arguments, default parameters, closures with capture by value (`[=]`) and reference (`[&]`), raw function pointers (`fn*`), and variadic functions (`...`, `va_list`).
-- **Control Flow**: Conditionals, `match` pattern matching, `ref` binding, range loops, enumerated iteration, labeled loops, `guard`, and `unless`.
+- **Control Flow**: Conditionals, `match` pattern matching, `ref` binding, range loops, enumerated iteration, labeled loops, and early-return guard clauses.
 
 In **Chapter 4**, we will explore Zen C's memory management model: **Drop and RAII**!

@@ -119,7 +119,7 @@ If you omit the custom message string, `assert(cond)` defaults to `"Assertion fa
 > In Zen C's built-in test runner, neither `assert` nor `expect` aborts the process with `SIGABRT`; both record the failure in `_zc_test_failures` and allow subsequent checks and tests to run so you can see *all* broken expectations in a single test run.
 >
 > By convention:
-> - Use **`assert`** for preconditions and structural invariants (e.g., verifying that a pointer is non-null or a parse result is `Ok` before inspecting its fields). If you must stop the current `test` block immediately when a precondition fails, pair `assert` with an early `return;` inside an `if` or `guard`.
+> - Use **`assert`** for preconditions and structural invariants (e.g., verifying that a pointer is non-null or a parse result is `Ok` before inspecting its fields). If you must stop the current `test` block immediately when a precondition fails, pair `assert` with an early `return;` inside an `if` block.
 > - Use **`expect`** (and the `expect_*` helpers) when verifying multiple independent properties of an output (such as checking `width`, `height`, and `area` in sequence).
 
 ---

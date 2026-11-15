@@ -62,7 +62,7 @@ extern let g_c_library_version: c_int;
 ## 4. Symbol Renaming with `@link_name`
 
 Sometimes a C symbol name is awkward to call directly from Zen C:
-- It collides with a Zen C keyword (such as `match`, `def`, `test`, or `guard`).
+- It collides with a Zen C keyword (such as `match`, `def`, `test`, or `loop`).
 - It uses a verbose C library prefix (`sqlite3_exec`, `raylib_DrawCircleV`) that you want to expose under a clean, idiomatic Zen C name.
 
 Attach `@link_name("C_Symbol_Name")` to any `extern fn`, `fn`, `struct`, or `enum` to decouple its Zen C identifier from the emitted C linker symbol:

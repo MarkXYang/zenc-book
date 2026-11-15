@@ -24,4 +24,4 @@ fn print_integers(items: Slice<int>) {
 
 Slices allow high-performance zero-copy string parsing, buffer scanning, and algorithms across both fixed-size stack arrays and dynamic heap vectors.
 
-Next, let's examine Deterministic Cleanup with `defer`, `autofree`, and `Drop`!
+Next, let's examine Deterministic Cleanup with `defer` and `Drop`!

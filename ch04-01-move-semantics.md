@@ -145,7 +145,7 @@ p1: (10, 20), p2: (10, 20)
 ## Summary of Chapter 4
 
 In Chapter 4, you mastered Zen C's memory management paradigm:
-1. **Automatic Scope Cleanup**: Using `defer` (LIFO execution order) and `autofree` for stack-bound heap pointers.
+1. **Automatic Scope Cleanup**: Using `defer` (LIFO execution order), including `defer free(p)` for heap pointers.
 2. **RAII & Destructors**: Custom teardown logic using `impl Drop for Struct`.
 3. **Disarming Cleanup (`forget`)**: Detaching underlying resources via `.forget()` to prevent destructors from running during ownership handoffs.
 4. **Resource Semantics**: Move-by-default assignment to eliminate double-free bugs.

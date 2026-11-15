@@ -22,7 +22,7 @@
     - [Stack, Heap and Move Semantics](ch04-01-move-semantics.md)
     - [Pointers as Borrows](ch04-02-pointers.md)
     - [Slices](ch04-03-slices.md)
-    - [Deterministic Cleanup: defer, autofree and Drop](ch04-04-cleanup.md)
+    - [Deterministic Cleanup: defer and Drop](ch04-04-cleanup.md)
 
 - [Structs and Composition](ch05-00-structs.md)
     - [Defining and Instantiating Structs](ch05-01-defining-structs.md)

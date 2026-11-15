@@ -3,10 +3,10 @@ include <stdlib.h>
 
 // Binding C's standard qsort with a typed raw function pointer `fn*`
 extern fn qsort(
-    base: void*,
-    nmemb: usize,
-    size: usize,
-    compar: fn*(const void*, const void*) -> c_int
+base: void*,
+nmemb: usize,
+size: usize,
+compar: fn*(const void*, const void*) -> c_int
 );
 
 fn add(a: int, b: int) -> int { return a + b; }
@@ -43,9 +43,9 @@ fn cmp_ints_asc(a: const void*, b: const void*) -> c_int {
 
 fn main() {
     let table: OpEntry[3] = [
-        OpEntry { symbol: '+', label: "Add",      handler: add },
-        OpEntry { symbol: '-', label: "Subtract", handler: sub },
-        OpEntry { symbol: '*', label: "Multiply", handler: mul },
+    OpEntry { symbol: '+', label: "Add",      handler: add },
+    OpEntry { symbol: '-', label: "Subtract", handler: sub },
+    OpEntry { symbol: '*', label: "Multiply", handler: mul },
     ];
 
     for i in 0..3 {

@@ -9,7 +9,7 @@ Historically, systems developers have been forced to choose between two ends of 
 1. **Classic C (C11/C23)**: Utterly transparent, lightweight, universal ABI, but lacking modern ergonomics—burdened by manual memory tracking, weak type systems, verbose syntax, and lack of algebraic types.
 2. **Modern Heavyweight Systems Languages**: Rich type systems, safety, and modern syntax, but accompanied by complex runtimes, heavy toolchains, incompatible ABIs, or massive compilation overhead.
 
-**Zen C** eliminates this compromise. It brings pattern matching, zero-overhead generics, implicit resource management (RAII), traits, and async/await directly into the C ecosystem by transpiling cleanly to standard GNU C11.
+**Zen C** eliminates this compromise. It brings pattern matching, zero-overhead generics, implicit resource management (RAII), traits, and native thread-based concurrency directly into the C ecosystem by transpiling cleanly to standard GNU C11.
 
 ---
 
@@ -48,6 +48,8 @@ This book is organized into chapters that build on one another:
 - **Chapter 1: Getting Started** walks you through installing the `zc` compiler, setting up your environment, writing your first "Hello, World!" program, and mastering the `zc` command-line toolchain.
 - **Chapter 2** is a hands-on tutorial where you'll build an interactive guessing game to get a feel for Zen C syntax and stdlib.
 - **Chapters 3 through 10** cover core language concepts: variables, memory management, structs, enums, modules, collections, error handling, generics, and traits.
-- **Chapters 11 through 20** delve into testing, advanced memory management (arenas), concurrency, async I/O, C/C++/CUDA interop, metaprogramming, and a final real-world web server project.
+- **Chapters 11 through 13** cover testing and debugging, calling C libraries, and a hands-on command-line project (`zgrep`).
+- **Chapters 14 through 20** go further: closures and iterators, the `zc` toolchain, advanced memory management, threads and worker pools, trait objects, metaprogramming, and systems programming (inline assembly, SIMD, MISRA, C++/CUDA interop).
+- **Chapter 21** brings it all together in a final project: a multithreaded web server.
 
 Let's begin our journey with **Chapter 1: Getting Started**!

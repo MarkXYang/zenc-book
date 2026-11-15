@@ -22,7 +22,7 @@ fn main(argc: int, argv: char**) -> int {
     println "In file {file_path}";
 
     let contents: String = File::read_all(file_path)
-        .expect("Should have been able to read the file");
+    .expect("Should have been able to read the file");
 
     println "\nWith text:\n{contents.c_str()}";
     assert(contents.length() > 0, "poem.txt should not be empty");

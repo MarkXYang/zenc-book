@@ -52,9 +52,9 @@ impl Matrix3x3 {
     fn identity() -> Matrix3x3 {
         return Matrix3x3 {
             data: [
-                1, 0, 0,
-                0, 1, 0,
-                0, 0, 1,
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1,
             ],
         };
     }
