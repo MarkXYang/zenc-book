@@ -50,7 +50,7 @@ Our web server will:
 
 ## 2. Chapter Organization
 
-We build the web server across three progressive milestones:
+We build the web server across four progressive milestones:
 
 1. **[21.1 Building a Single-Threaded Web Server](ch21-01-single-threaded.md)**:
    - Binding TCP sockets on `127.0.0.1`.
@@ -67,5 +67,10 @@ We build the web server across three progressive milestones:
    - Implementing cooperative cancellation flags and `CondVar::broadcast`.
    - Draining in-flight client connections before server process exit.
    - Ensuring zero resource leaks via deterministic `Drop` and `thread.join()`.
+
+4. **[21.4 Extending the Server: Routing, Static Files, Timing, and JSON](ch21-04-extending-server.md)**:
+   - Adding clean path routing (`GET /`, `/status`, `/static/index.html`, `404`).
+   - Serving static HTML assets from disk with `std/fs.zc`.
+   - Building JSON status payloads with `std/json.zc` and measuring latency with `std/time.zc`.
 
 Let's begin by building the single-threaded prototype!

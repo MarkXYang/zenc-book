@@ -129,6 +129,7 @@
     - [Building a Single-Threaded Web Server](ch21-01-single-threaded.md)
     - [Turning Our Single-Threaded Server into a Multithreaded Server](ch21-02-multithreaded.md)
     - [Graceful Shutdown and Cleanup](ch21-03-graceful-shutdown.md)
+    - [Extending the Server: Routing, Static Files, Timing, and JSON](ch21-04-extending-server.md)
 
 # Appendix
 
@@ -139,3 +140,4 @@
 - [Appendix E: MISRA C Compliance Rules Reference](appendix-05-misra-rules.md)
 - [Appendix F: Zen C for C and Rust Programmers](appendix-06-cheatsheet.md)
 - [Appendix G: Diagnostics and Compiler Options](appendix-07-diagnostics.md)
+- [Appendix H: Migrating Older Zen C Code](appendix-08-migration.md)

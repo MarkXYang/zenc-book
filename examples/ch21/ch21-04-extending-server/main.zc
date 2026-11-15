@@ -1,0 +1,142 @@
+// File: examples/ch21/ch21-04-extending-server/main.zc
+
+import "std/fs.zc"
+import "std/json.zc"
+import "std/net/tcp.zc"
+import "std/string.zc"
+import "std/thread.zc"
+import "std/time.zc"
+
+include <string.h>
+
+struct HttpResponse {
+    status: string;
+    content_type: string;
+    body: String;
+}
+
+fn build_http_frame(resp: HttpResponse*) -> String {
+    let body_len = resp.body.length();
+    let frame = String::new("HTTP/1.1 ");
+    frame.append_c(resp.status);
+    frame.append_c("\r\nContent-Type: ");
+    frame.append_c(resp.content_type);
+    frame.append_c("\r\nContent-Length: ");
+    let len_str = "{body_len}";
+    frame.append_c(len_str);
+    frame.append_c("\r\nConnection: close\r\n\r\n");
+    frame.append(&resp.body);
+    return frame;
+}
+
+fn route_request(request_line: char*, start_ms: u64, req_count: int) -> HttpResponse {
+    let now_ms = Time::now();
+    let elapsed_ms = now_ms - start_ms;
+
+    if strncmp(request_line, "GET / ", 6) == 0 {
+        return HttpResponse {
+            status: "200 OK",
+            content_type: "text/plain",
+            body: String::new("Welcome to Zen C Extended Server!"),
+        };
+    }
+
+    if strncmp(request_line, "GET /status ", 12) == 0 {
+        let obj = JsonValue::object();
+        obj.set("status", JsonValue::string("ok"));
+        obj.set("requests", JsonValue::number((f64)req_count));
+        obj.set("uptime_ms", JsonValue::number((f64)elapsed_ms));
+        let json_cstr = obj.to_string();
+        return HttpResponse {
+            status: "200 OK",
+            content_type: "application/json",
+            body: String::new(json_cstr),
+        };
+    }
+
+    if strncmp(request_line, "GET /static/index.html ", 23) == 0 {
+        let asset_path = "examples/ch21/ch21-04-extending-server/index.html";
+        if File::exists(asset_path) {
+            let res = File::read_all(asset_path);
+            if res.is_ok() {
+                return HttpResponse {
+                    status: "200 OK",
+                    content_type: "text/html",
+                    body: res.unwrap(),
+                };
+            }
+        }
+    }
+
+    return HttpResponse {
+        status: "404 NOT FOUND",
+        content_type: "text/plain",
+        body: String::new("404 Not Found"),
+    };
+}
+
+fn serve_n(port: int, count: int) {
+    let start_ms = Time::now();
+    let listener = TcpListener::bind("127.0.0.1", port).unwrap();
+    let served = 0;
+
+    while served < count {
+        let stream = listener.accept().unwrap();
+        let req_start = Time::now();
+        let buf: char[1024];
+        let n = stream.read(buf, 1023).unwrap();
+        buf[n] = '\0';
+
+        served += 1;
+        let resp = route_request(buf, start_ms, served);
+        let frame = build_http_frame(&resp);
+        stream.write((u8*)frame.c_str(), frame.length());
+        stream.close();
+
+        let req_ms = Time::now() - req_start;
+        println "[router] Request #{served} handled in {req_ms} ms -> {resp.status}";
+    }
+
+    listener.close();
+}
+
+fn send_request(port: int, path: string) -> String {
+    let client = TcpStream::connect("127.0.0.1", port).unwrap();
+    let req = String::new("GET ");
+    req.append_c(path);
+    req.append_c(" HTTP/1.1\r\nHost: localhost\r\n\r\n");
+    client.write((u8*)req.c_str(), req.length());
+
+    let buf: char[2048];
+    let n = client.read(buf, 2047).unwrap();
+    buf[n] = '\0';
+    client.close();
+    return String::new(buf);
+}
+
+fn main() {
+    let port = 7884;
+    let t = Thread::spawn(fn[=]() {
+        serve_n(port, 4);
+    }).unwrap();
+
+    Time::sleep_ms(50);
+
+    let r1 = send_request(port, "/");
+    assert(strstr(r1.c_str(), "200 OK") != NULL, "GET / must return 200 OK");
+    assert(strstr(r1.c_str(), "Welcome to Zen C Extended Server!") != NULL, "GET / body mismatch");
+
+    let r2 = send_request(port, "/status");
+    assert(strstr(r2.c_str(), "application/json") != NULL, "GET /status must return JSON");
+    assert(strstr(r2.c_str(), "\"status\":\"ok\"") != NULL || strstr(r2.c_str(), "\"status\": \"ok\"") != NULL, "JSON status field missing");
+
+    let r3 = send_request(port, "/static/index.html");
+    assert(strstr(r3.c_str(), "text/html") != NULL, "GET /static/index.html must return text/html");
+    assert(strstr(r3.c_str(), "Zen C Static File Server") != NULL, "Static HTML body mismatch");
+
+    let r4 = send_request(port, "/missing");
+    assert(strstr(r4.c_str(), "404 NOT FOUND") != NULL, "GET /missing must return 404");
+
+    t.join();
+    println "All extended server checks passed!";
+}
