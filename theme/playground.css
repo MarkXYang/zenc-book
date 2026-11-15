@@ -68,6 +68,16 @@
     font-weight: 600;
 }
 
+html.light .zenc-output-status-ok,
+html.rust .zenc-output-status-ok {
+    color: #2e7d32;
+}
+
+html.light .zenc-output-status-err,
+html.rust .zenc-output-status-err {
+    color: #c62828;
+}
+
 .zenc-output-close {
     background: transparent;
     border: none;

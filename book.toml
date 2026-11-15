@@ -6,7 +6,7 @@ title = "The Zen C Programming Language"
 
 [output.html]
 git-repository-url = "https://github.com/zenc-lang/zenc"
-default-theme = "navy"
+default-theme = "light"
 preferred-dark-theme = "navy"
 additional-css = ["theme/line-numbers.css", "theme/playground.css"]
 additional-js = ["theme/line-numbers.js", "theme/playground.js"]
