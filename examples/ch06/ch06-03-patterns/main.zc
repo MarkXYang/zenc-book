@@ -1,0 +1,45 @@
+// File: examples/ch06/ch06-03-patterns/main.zc
+
+struct Point {
+    x: int;
+    y: int;
+}
+
+enum Packet {
+    Ping,
+    Data(string),
+    Coords(Point),
+}
+
+fn describe_packet(pkt: Packet*) -> string {
+    match *pkt {
+        Packet::Ping() => return "ping",
+        Packet::Data(ref text) => {
+            println "Inspecting borrowed payload: {*text}";
+            return "data";
+        },
+        Packet::Coords(pt) => {
+            let Point { x, y } = pt;
+            println "Packet coords: ({x}, {y})";
+            return "coords";
+        },
+    }
+    return "unknown";
+}
+
+fn main() {
+    let p1 = Packet::Ping();
+    let p2 = Packet::Data("hello-zen");
+    let p3 = Packet::Coords(Point { x: 10, y: 20 });
+
+    assert(describe_packet(&p1) == "ping", "expected ping");
+    assert(describe_packet(&p2) == "data", "expected data");
+    assert(describe_packet(&p3) == "coords", "expected coords");
+
+    // Destructuring a struct directly in a let binding
+    let origin = Point { x: 3, y: 4 };
+    let Point { x, y } = origin;
+    assert(x + y == 7, "destructured sum must be 7");
+
+    println "All pattern matching checks passed!";
+}

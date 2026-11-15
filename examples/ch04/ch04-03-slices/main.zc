@@ -1,0 +1,40 @@
+// File: examples/ch04/ch04-03-slices/main.zc
+
+import "std/slice.zc"
+
+fn sum_slice(items: Slice<int>) -> int {
+    let total = 0;
+    for x in items {
+        total += x;
+    }
+    return total;
+}
+
+fn find_max(items: Slice<int>) -> int {
+    assert(items.len > 0, "slice must be non-empty");
+    let best = items.data[0];
+    for x in items {
+        if x > best {
+            best = x;
+        }
+    }
+    return best;
+}
+
+fn main() {
+    let scores: int[5] = [10, 25, 15, 40, 30];
+
+    // Non-owning views over the stack array (zero heap allocation)
+    let all = Slice<int>::from_array(&scores[0], 5);
+    let middle = Slice<int>::new(&scores[1], 3);
+
+    println "all.len = {all.len}, sum = {sum_slice(all)}";
+    println "middle.len = {middle.len}, sum = {sum_slice(middle)}";
+    println "max in middle = {find_max(middle)}";
+
+    assert(sum_slice(all) == 120, "sum of all must be 120");
+    assert(sum_slice(middle) == 80, "sum of middle must be 80");
+    assert(find_max(middle) == 40, "max in middle must be 40");
+
+    println "All slice checks passed!";
+}

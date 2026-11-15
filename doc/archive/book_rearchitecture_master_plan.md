@@ -1,3 +1,5 @@
+> **Historical Note (Archived):** This document was an early planning artifact from the initial book draft and has been superseded by the current 21-chapter book structure.
+
 # The Zen C Programming Language — Master Book Architecture & Migration Plan
 
 This document serves as the authoritative architectural blueprint and migration specification for rewriting and restructuring **The Zen C Programming Language** tutorial book ([`book/`](file:///home/mark/code/zenc-app/book)).

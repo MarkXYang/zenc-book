@@ -71,8 +71,17 @@ A module can re-export another module or submodule using `export import`:
 ```zenc
 // network/mod.zc
 export import "./packet.zc" as packet;
+export import "./socket.zc" as socket;
 ```
 
-Now, any consumer that imports `network` can also access `packet` through the `network` namespace!
+Now, any consumer that imports `network` can also access `packet` and `socket` through the `network` namespace without needing to know the internal file layout of `network/`.
+
+### Designing Clean Module Boundaries
+
+When structuring directory modules in a multi-file Zen C application:
+
+1. **Keep `mod.zc` as a facade**: Re-export only the public types and entry points your callers need, while keeping helper utilities in private submodules.
+2. **Use relative paths inside a package**: Inside `network/mod.zc`, write `import "./packet.zc"` rather than hardcoding paths from the repository root so the directory module stays self-contained.
+3. **Avoid re-exporting C headers globally**: Keep `include <...>` statements inside the `.zc` files that actually wrap those C APIs.
 
 ---

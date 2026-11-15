@@ -262,39 +262,7 @@ For multi-directory projects, place a `zenc.server.json` file at the root of you
 
 ### One-Click Debugging in VS Code (`GDB` / `LLDB`)
 
-Because `zc` emits `#line` directives pointing directly to your `.zc` files, you can set breakpoints inside `.zc` source files in VS Code using **CodeLLDB** or Microsoft's **C/C++** extension:
-
-**`.vscode/tasks.json`**:
-```json
-{
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Zen C: Build Debug",
-      "type": "shell",
-      "command": "zc",
-      "args": ["build", "${file}", "-ggdb", "-O0", "-o", "${fileDirname}/app"],
-      "group": { "kind": "build", "isDefault": true }
-    }
-  ]
-}
-```
-
-**`.vscode/launch.json`**:
-```json
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Zen C: Debug (LLDB)",
-      "type": "lldb",
-      "request": "launch",
-      "program": "${fileDirname}/app",
-      "preLaunchTask": "Zen C: Build Debug"
-    }
-  ]
-}
-```
+Because `zc` emits `#line` directives pointing directly to your `.zc` files, you can set breakpoints and step through Zen C source lines in VS Code using **CodeLLDB** or Microsoft's **C/C++** extension. For the complete `.vscode/tasks.json` and `.vscode/launch.json` configuration, see [Section 11.3: Debugging Zen C Programs](ch11-03-debugging.md).
 
 ---
 

@@ -1,3 +1,5 @@
+> **Historical Note (Archived):** This document was an early planning artifact from the initial book draft and has been superseded by the current 21-chapter book structure.
+
 # Zen C Book — Chapter Architecture Review
 
 Scope: `/home/mark/code/zenc-app/book` (mdBook). Status today: Ch 0–8 are written (~210 KB). Ch 9–20 are only title stubs.
