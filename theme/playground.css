@@ -1,0 +1,90 @@
+/* Zen C mdBook Playground UI */
+.zenc-run-btn,
+.zenc-edit-btn {
+    cursor: pointer;
+    font-size: 0.78rem;
+    padding: 3px 8px;
+    margin-left: 4px;
+    border-radius: 4px;
+    border: 1px solid var(--theme-popup-border, #3b4252);
+    background: var(--theme-popup-bg, #1f2430);
+    color: var(--fg, #e5e9f0);
+    opacity: 0.85;
+    transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.zenc-run-btn:hover,
+.zenc-edit-btn:hover {
+    opacity: 1;
+    background: var(--quote-bg, #2e3440);
+}
+
+.zenc-run-btn:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.zenc-editor {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: var(--mono-font, monospace);
+    font-size: 0.875em;
+    line-height: 1.5;
+    padding: 12px;
+    border: 1px solid var(--theme-popup-border, #3b4252);
+    border-radius: 4px;
+    background: var(--quote-bg, #161923);
+    color: var(--fg, #e5e9f0);
+    resize: vertical;
+    tab-size: 4;
+}
+
+.zenc-output-wrap {
+    margin-top: -8px;
+    margin-bottom: 16px;
+    border: 1px solid var(--theme-popup-border, #3b4252);
+    border-radius: 4px;
+    background: var(--quote-bg, #11151c);
+    overflow: hidden;
+}
+
+.zenc-output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    border-bottom: 1px solid var(--theme-popup-border, #3b4252);
+    color: var(--fg, #d8dee9);
+}
+
+.zenc-output-status-ok {
+    color: #a3be8c;
+    font-weight: 600;
+}
+
+.zenc-output-status-err {
+    color: #bf616a;
+    font-weight: 600;
+}
+
+.zenc-output-close {
+    background: transparent;
+    border: none;
+    color: var(--fg, #d8dee9);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0 4px;
+}
+
+.zenc-output-body {
+    margin: 0;
+    padding: 10px 12px;
+    font-family: var(--mono-font, monospace);
+    font-size: 0.84em;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--fg, #e5e9f0);
+    background: transparent;
+}
