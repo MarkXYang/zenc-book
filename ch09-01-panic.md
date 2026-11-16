@@ -18,19 +18,18 @@ There are two primary ways a panic is triggered in Zen C:
 
 To abort your program explicitly, invoke `panic` with an explanation string:
 
-**Listing 9-1: `list9-1.zc`**
-
+**Listing 9-1**
 ```zenc
- 1 | fn main() {
- 2 |     println "Starting application initialization...";
- 3 | 
- 4 |     let critical_config_loaded = false;
- 5 |     if !critical_config_loaded {
- 6 |         panic("Configuration file missing or corrupted! Cannot continue.");
- 7 |     }
- 8 | 
- 9 |     println "This line will never be reached.";
-10 | }
+fn main() {
+    println "Starting application initialization...";
+
+    let critical_config_loaded = false;
+    if !critical_config_loaded {
+        panic("Configuration file missing or corrupted! Cannot continue.");
+    }
+
+    println "This line will never be reached.";
+}
 ```
 
 Running this program with `zc run`:

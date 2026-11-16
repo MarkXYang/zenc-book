@@ -66,20 +66,19 @@ let y: const int = 10;
 
 ## Putting It All Together
 
-**Listing 3-1: `list3-1.zc`**
-
+**Listing 3-1**
 ```zenc
- 1 | fn main() {
- 2 |     def PI = 3.14159265;
- 3 |     let x = 10;
- 4 |     x = 20;
- 5 |     let count = 42;
- 6 |     let price = 19.99;
- 7 |     let message = "Hello";
- 8 |     let y: const int = 10;
- 9 |
-10 |     println "PI: {PI}, x: {x}, count: {count}, price: {price}, message: {message}, y: {y}";
-11 | }
+fn main() {
+    def PI = 3.14159265;
+    let x = 10;
+    x = 20;
+    let count = 42;
+    let price = 19.99;
+    let message = "Hello";
+    let y: const int = 10;
+
+    println "PI: {PI}, x: {x}, count: {count}, price: {price}, message: {message}, y: {y}";
+}
 ```
 
 Output:

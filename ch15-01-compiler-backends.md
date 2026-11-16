@@ -1,4 +1,4 @@
-# 15.1 Configuring Compiler Backends
+# Configuring Compiler Backends
 
 `zc` does not generate machine code itself. After transpiling your program to C, it invokes a **backend C compiler**. Because the generated C is portable GNU C11, you can choose from several compilers — and pass them the same flags you would in a C project.
 
@@ -120,7 +120,7 @@ Two features make directives especially useful for cross-platform code:
 
 Listing 15-1 combines build directives, `-D` macros, and a `raw` C block that checks the predefined macros of whichever compiler is building it. Build it with different backends and flags to watch the output change.
 
-**Listing 15-1: `list15-1.zc` — Detecting the backend compiler, OS, and build flags**
+**Listing 15-1: Detecting the backend compiler, OS, and build flags**
 
 ```zenc
 // File: examples/ch15/ch15-01-compiler-backends/main.zc

@@ -1,4 +1,4 @@
-# Chapter 20: Systems and Safety-Critical Programming
+# Systems and Safety-Critical Programming
 
 Zen C was engineered from day one for systems-level development: OS kernels, bare-metal bootloaders, embedded microcontrollers, high-throughput financial engines, graphics pipelines, and safety-critical avionics or automotive control units.
 

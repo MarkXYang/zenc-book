@@ -1,4 +1,4 @@
-# 15.2 检查生成的 C 代码与名称修饰
+# 查看生成的 C 代码与名称修饰
 
 作为一门系统级编程语言，Zen C 最大的优势之一在于其产生的中间表示是**人类可读的 GNU C11**。每当你想要验证高级特性如何降级（lower）为 C、诊断链接器错误、在 `gdb` 或 `lldb` 中设置断点，或者从现有的 C/C++ 项目中调用 Zen C 函数时，都可以直接检查生成的 C 代码。
 
@@ -68,9 +68,9 @@ Zen C 为你提供了两种检查生成 C 代码的方法：
 
 ## 4. 深入剖析：检查 `shapes.c` 中的符号
 
-让我们观察每条名称修饰规则的实际效果。示例 15-2 定义了一个 trait（`Shape`）、一个带有 `scale` 和 `_grow` 方法的具体结构体（`Square`）、一个泛型结构体（`Boxed<T>`）、一个泛型函数（`largest<T>`）以及一个顶层函数（`zc_area_sum`）：
+让我们观察每条名称修饰规则的实际效果。代码清单 15-2 定义了一个 trait（`Shape`）、一个带有 `scale` 和 `_grow` 方法的具体结构体（`Square`）、一个泛型结构体（`Boxed<T>`）、一个泛型函数（`largest<T>`）以及一个顶层函数（`zc_area_sum`）：
 
-**示例 15-2: `list15-2.zc` —— 结构体、trait、泛型与 C 符号修饰**
+**代码清单 15-2: 结构体、trait、泛型与 C 符号修饰**
 
 ```zenc
 // File: examples/ch15/ch15-02-generated-c/main.zc
@@ -230,7 +230,7 @@ $ ./caller
 | **Graphviz** | `--backend dot` | `.dot` | 可视化 AST 图形（`dot -Tpng out.dot -o ast.png`） |
 | **Common Lisp** | `--backend lisp` | `.lisp` | S 表达式转译（`sbcl --script`） |
 
-例如，要在终端中检查示例 15-2 经过类型检查的 AST：
+例如，要在终端中检查代码清单 15-2 经过类型检查的 AST：
 
 ```console
 $ zc transpile -q examples/ch15/ch15-02-generated-c/main.zc --backend ast-dump -o shapes.ast

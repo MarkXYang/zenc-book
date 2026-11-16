@@ -1,6 +1,32 @@
-# 打印与字符串插值
+# 注释、打印与字符串插值
 
-Zen C 提供了丰富的选项，用于向 stdout 和 stderr 输出内容、通过**字符串插值**在字符串中嵌入表达式、编写多行字符串以及处理交互式用户输入提示。
+本节介绍如何为代码添加注释、向 stdout 和 stderr 输出内容、通过**字符串插值**在字符串中嵌入表达式、编写多行字符串以及读取交互式用户输入。
+
+---
+
+## 注释
+
+Zen C 使用与 C 相同的注释语法，并额外提供一种文档注释形式：
+
+| 语法 | 种类 | 说明 |
+| :--- | :--- | :--- |
+| `// ...` | 行注释 | 直到行尾的内容都会被忽略。 |
+| `/* ... */` | 块注释 | 可以跨越多行。 |
+| `/// ...` | 文档注释 | 附加在紧随其后的声明上，由 `zc-doc` 收集。 |
+
+```zenc
+/// Returns the area of a width-by-height rectangle.
+fn area(width: int, height: int) -> int {
+    // Multiply the two sides.
+    return width * height; /* inline block comment */
+}
+
+fn main() {
+    println "Area: {area(3, 4)}"; // prints 12
+}
+```
+
+对该文件运行 `zc-doc` 会生成 Markdown 文档，其中 `area` 的签名上方包含 `///` 注释的文字。你将在[第 15 章](ch15-04-developer-tooling.md)中进一步了解 `zc-doc`。
 
 ---
 
@@ -15,16 +41,15 @@ Zen C 包含了用于将格式化文本打印到标准输出（`stdout`）或标
 | `eprint "..."` | `stderr` | 否 | 向 `stderr` 打印错误输出，不添加换行符。 |
 | `eprintln "..."` | `stderr` | **是** | 向 `stderr` 打印错误输出，自动在结尾添加换行符。 |
 
-**代码清单 3-22：`list3-22.zc`**
-
+**代码清单 3-5**
 ```zenc
- 1 | fn main() {
- 2 |     print "Hello ";
- 3 |     println "world!";
- 4 |
- 5 |     eprint "Warning: ";
- 6 |     eprintln "low disk space!";
- 7 | }
+fn main() {
+    print "Hello ";
+    println "world!";
+
+    eprint "Warning: ";
+    eprintln "low disk space!";
+}
 ```
 
 输出：
@@ -50,16 +75,15 @@ Zen C 允许直接将字符串字面量作为语句使用，以便进行快速�
 | `!"Err"` | `eprintln "Err"` | 向 `stderr` 打印**并**换行 |
 | `!"Err"..` | `eprint "Err"` | 向 `stderr` 打印**且不**换行 |
 
-**代码清单 3-23：`list3-23.zc`**
-
+**代码清单 3-6**
 ```zenc
- 1 | fn main() {
- 2 |     "Processing item"..; // Equivalent to print
- 3 |     " Done!";            // Equivalent to println
- 4 |
- 5 |     !"Critical Error!"..; // Equivalent to eprint
- 6 |     !" Details follow.";  // Equivalent to eprintln
- 7 | }
+fn main() {
+    "Processing item"..; // Equivalent to print
+    " Done!";            // Equivalent to println
+
+    !"Critical Error!"..; // Equivalent to eprint
+    !" Details follow.";  // Equivalent to eprintln
+}
 ```
 
 输出：
@@ -80,17 +104,16 @@ Critical Error! Details follow.
 
 在 Zen C 中，字符串插值是**隐式**的：任何包含 `{...}` 的字符串字面量都会自动转译为插值字符串。你也可以显式地给字符串加上 `f` 前缀（例如 `f"..."`）来强制采用格式化插值语义。
 
-**代码清单 3-24：`list3-24.zc`**
-
+**代码清单 3-7**
 ```zenc
- 1 | let count = 42;
- 2 | let name = "Zen C";
- 3 |
- 4 | // Implicit interpolation
- 5 | println "Project: {name}, Items: {count}";
- 6 |
- 7 | // Shorthand printing with interpolation
- 8 | "Project: {name}, Items: {count}";
+let count = 42;
+let name = "Zen C";
+
+// Implicit interpolation
+println "Project: {name}, Items: {count}";
+
+// Shorthand printing with interpolation
+"Project: {name}, Items: {count}";
 ```
 
 输出：
@@ -103,11 +126,10 @@ Project: Zen C, Items: 42
 
 若要在插值字符串中输出字面量 `{` 或 `}` 字符，只需双写花括号（`{{` 和 `}}`）：
 
-**代码清单 3-25：`list3-25.zc`**
-
+**代码清单 3-8**
 ```zenc
- 1 | let json = "JSON payload: {{\"status\": 200}}";
- 2 | println "{json}";
+let json = "JSON payload: {{\"status\": 200}}";
+println "{json}";
 ```
 
 输出：
@@ -172,17 +194,16 @@ Zen C 提供了使用 `?` 前缀运算符请求用户输入的简写语法。
 
 - `? "Enter age: " (age)`：打印提示字符串，并自动将用户输入直接扫描读取到 `age` 中。格式说明符会根据变量的类型自动推导。
 
-**代码清单 3-26：`list3-26.zc`**
-
+**代码清单 3-9**
 ```zenc
- 1 | fn main() {
- 2 |     let age: int;
- 3 |
- 4 |     // Prompts "How old are you? " and scans user input into `age`
- 5 |     ? "How old are you? " (age);
- 6 |
- 7 |     println "You are {age} years old.";
- 8 | }
+fn main() {
+    let age: int;
+
+    // Prompts "How old are you? " and scans user input into `age`
+    ? "How old are you? " (age);
+
+    println "You are {age} years old.";
+}
 ```
 
 输出（输入 `25` 时）：
@@ -193,14 +214,4 @@ You are 25 years old.
 
 ---
 
-## 第 3 章总结
-
-在第 3 章中，你已经掌握了 Zen C 的所有核心基础概念：
-- **变量与常量**（`def`、`let`、类型推导、`const`）。
-- **数据类型**（标量类型、C 互操作类型、任意位宽 `iN`/`uN`、字面量、固定大小数组 `T[N]`）。
-- **函数与 Lambda**（命名参数、`const` 参数、默认参数、闭包 `[=]`/`[&]`、原始指针 `fn*`、变长参数 `...`）。
-- **控制流**（`if`、`match` 模式匹配、`ref` 绑定、范围循环、枚举迭代、提前返回保护子句）。
-- **运算符**（运算符重载 `add`/`sub`/`get`/`set`、字符串相等规则、管道 `|>`、空值合并 `??`、安全导航 `?.`、自动解引用）。
-- **打印与字符串插值**（`print`/`println`/`eprint`/`eprintln`、字符串简写 `"Hz"`/`!"Err"`、隐式 `{}` 插值、原始字符串 `r"..."`、多行文本块 `"""`、输入提示符 `?`）。
-
-在**第 4 章**中，我们将探索 Zen C 的自动内存管理与资源清理：**Drop 与内存安全（RAII）**！
+接下来，让我们看看 Zen C 如何通过条件语句和循环控制程序的执行流程！

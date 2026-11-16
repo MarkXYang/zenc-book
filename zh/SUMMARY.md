@@ -20,7 +20,7 @@
 
 - [所有权、指针与资源清理](ch04-00-ownership-pointers-cleanup.md)
     - [栈、堆与移动语义](ch04-01-move-semantics.md)
-    - [借用指针](ch04-02-pointers.md)
+    - [指针作为借用](ch04-02-pointers.md)
     - [切片](ch04-03-slices.md)
     - [确定性清理：defer 与 Drop](ch04-04-cleanup.md)
 
@@ -49,11 +49,11 @@
     - [哈希映射与哈希集合](ch08-03-hash-maps.md)
 
 - [错误处理](ch09-00-error-handling.md)
-    - [使用 panic 处理不可恢复的错误](ch09-01-panic.md)
-    - [使用 Result 和 Option 处理可恢复的错误](ch09-02-option-and-result.md)
-    - [在错误路径上使用 defer 清理资源](ch09-03-defer-cleanup.md)
+    - [使用 panic 处理不可恢复错误](ch09-01-panic.md)
+    - [使用 Result 和 Option 处理可恢复错误](ch09-02-option-and-result.md)
+    - [使用 defer 进行错误路径清理](ch09-03-defer-cleanup.md)
     - [桥接 C 返回码与 errno](ch09-04-c-errors.md)
-    - [何时使用 panic](ch09-05-panic-guidelines.md)
+    - [要 panic 还是不要 panic](ch09-05-panic-guidelines.md)
 
 - [泛型、Trait 与运算符重载](ch10-00-generics-and-traits.md)
     - [泛型数据类型](ch10-01-generic-data-types.md)
@@ -86,7 +86,7 @@
     - [Lambda 表达式与闭包捕获](ch14-01-lambdas.md)
     - [原始函数指针 (fn*)](ch14-02-fn-pointers.md)
     - [使用迭代器处理元素序列](ch14-03-iterators.md)
-    - [性能比较：循环 vs 迭代器](ch14-04-performance.md)
+    - [性能对比：循环 vs 迭代器](ch14-04-performance.md)
 
 - [zc 工具链与编译器后端](ch15-00-toolchain.md)
     - [配置编译器后端](ch15-01-compiler-backends.md)
@@ -95,16 +95,16 @@
     - [开发者工具：zc-doc、zc-format、REPL 与 LSP](ch15-04-developer-tooling.md)
 
 - [高级内存管理](ch16-00-advanced-memory-management.md)
-    - [原始指针与不安全操作](ch16-01-raw-pointers.md)
-    - [Arena 内存分配器](ch16-02-arenas.md)
+    - [裸指针与不安全操作](ch16-01-raw-pointers.md)
+    - [Arena 分配器](ch16-02-arenas.md)
     - [底层结构体布局：位域、打包与对齐](ch16-03-struct-layout.md)
-    - [无标签联合体 (Untagged Unions)](ch16-04-unions.md)
+    - [无标签联合体](ch16-04-unions.md)
 
 - [并发编程](ch17-00-concurrency.md)
     - [使用线程同时运行代码](ch17-01-threads.md)
-    - [共享状态并发：Mutex 与原子操作](ch17-02-mutex-sync.md)
+    - [共享状态并发：互斥锁与原子操作](ch17-02-mutex-sync.md)
     - [使用队列进行消息传递](ch17-03-message-passing.md)
-    - [异步工作线程池](ch17-04-worker-pools.md)
+    - [工作池与任务分发](ch17-04-worker-pools.md)
 
 - [多态：组合与 Trait 对象](ch18-00-polymorphism.md)
     - [Zen C 的面向对象特性](ch18-01-oop-characteristics.md)
@@ -112,11 +112,11 @@
     - [C11 底层虚表 (Vtable) 机制](ch18-03-vtables-in-c.md)
     - [实现面向对象设计模式](ch18-04-oop-patterns.md)
 
-- [元编程与编译期求值](ch19-00-metaprogramming.md)
+- [元编程与编译期执行](ch19-00-metaprogramming.md)
     - [编译期执行 (comptime)](ch19-01-comptime.md)
     - [属性与智能 Derive](ch19-02-attributes-derives.md)
-    - [资源嵌入 (@embed) 与编译器插件](ch19-03-embed-plugins.md)
-    - [条件编译与泛型 C 宏](ch19-04-conditional-macros.md)
+    - [资源嵌入 (embed) 与编译器插件](ch19-03-embed-plugins.md)
+    - [条件编译与 C 宏](ch19-04-conditional-macros.md)
 
 - [系统编程与安全关键编程](ch20-00-systems.md)
     - [内联汇编与 volatile](ch20-01-inline-assembly.md)
@@ -135,9 +135,9 @@
 
 - [附录 A：关键字](appendix-01-keywords.md)
 - [附录 B：运算符与语法糖](appendix-02-operators.md)
-- [附录 C：Zen C 标准库全览](appendix-03-std-tour.md)
-- [附录 D：开发工具与编辑器](appendix-04-dev-tools.md)
+- [附录 C：Zen C 标准库全景导览](appendix-03-std-tour.md)
+- [附录 D：开发工具](appendix-04-dev-tools.md)
 - [附录 E：MISRA C 合规规则参考](appendix-05-misra-rules.md)
-- [附录 F：面向 C 与 Rust 程序员的 Zen C 速查表](appendix-06-cheatsheet.md)
-- [附录 G：诊断信息与编译器选项](appendix-07-diagnostics.md)
+- [附录 F：Zen C 快速参考速查表](appendix-06-cheatsheet.md)
+- [附录 G：编译器诊断与错误排查指南](appendix-07-diagnostics.md)
 - [附录 H：迁移旧版 Zen C 代码](appendix-08-migration.md)

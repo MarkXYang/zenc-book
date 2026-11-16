@@ -1,4 +1,4 @@
-# Asset Embedding (`embed`) & Compiler Plugins
+# Asset Embedding (`embed`) and Compiler Plugins
 
 Systems tools frequently need to ship static assets—SQL schemas, shaders, HTML templates, or version banners—inside a single self-contained binary. Zen C supports this directly in the language with `embed`, and also lets you extend the transpiler itself with native compiler plugins.
 

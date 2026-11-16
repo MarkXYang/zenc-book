@@ -79,8 +79,7 @@ An instance of `Result<T>` contains either:
 
 Let's write a function that validates and parses port strings:
 
-**Listing 9-2: `list9-2.zc`**
-
+**Listing 9-2**
 ```zenc
 import "std/result.zc"
 

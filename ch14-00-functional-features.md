@@ -1,4 +1,4 @@
-# Chapter 14: Functional Features: Closures and Iterators
+# Functional Features: Closures and Iterators
 
 Functional programming—passing functions as values, capturing lexical state in anonymous closures, and transforming sequences of data through declarative iterator pipelines—is often associated with garbage-collected languages. Historically, systems programmers writing C had to choose between expressive higher-order abstractions and raw hardware predictability.
 

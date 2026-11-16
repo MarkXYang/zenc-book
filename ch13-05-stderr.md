@@ -1,4 +1,4 @@
-# 13.5 Writing Error Messages to Standard Error
+# Writing Error Messages to Standard Error
 
 At the moment, our `main.zc` writes all of its output—both matching lines from `poem.txt` and error messages when arguments or files are invalid—to the terminal using `println`.
 
@@ -47,7 +47,7 @@ Both `eprintln "Problem parsing arguments: {config_res.err}";` and its concise s
 
 Let's update `main.zc` so that argument-parsing errors and file I/O errors are printed with `eprintln` before returning exit code `1`:
 
-**Listing 13-5: `list13-5.zc` — Final `main.zc` writing diagnostics to `stderr`**
+**Listing 13-5: Final `main.zc` writing diagnostics to `stderr`**
 
 ```zenc
 // File: examples/ch13/ch13-05-stderr/main.zc

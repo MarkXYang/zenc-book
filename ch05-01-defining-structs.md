@@ -105,23 +105,22 @@ u.active = true;
 
 To access values stored in a struct, use **dot notation** (`.`):
 
-**Listing 5-1: `list5-1.zc`**
-
+**Listing 5-1**
 ```zenc
- 1 | let user1 = User {
- 2 |     username: "mark",
- 3 |     email: "mark@example.com",
- 4 |     sign_in_count: 1,
- 5 |     active: true,
- 6 | };
- 7 |
- 8 | println "User: {user1.username}, Logins: {user1.sign_in_count}";
- 9 |
-10 | // Update fields on a mutable instance declared with 'let':
-11 | user1.email = "mark.new@example.com";
-12 | user1.sign_in_count = user1.sign_in_count + 1;
-13 |
-14 | println "Updated email: {user1.email}";
+let user1 = User {
+    username: "mark",
+    email: "mark@example.com",
+    sign_in_count: 1,
+    active: true,
+};
+
+println "User: {user1.username}, Logins: {user1.sign_in_count}";
+
+// Update fields on a mutable instance declared with 'let':
+user1.email = "mark.new@example.com";
+user1.sign_in_count = user1.sign_in_count + 1;
+
+println "Updated email: {user1.email}";
 ```
 
 Output:
@@ -153,15 +152,14 @@ Zen C supports **pattern-based destructuring** on struct variables. This lets yo
 
 When the local variable names match the struct field names:
 
-**Listing 5-2: `list5-2.zc`**
-
+**Listing 5-2**
 ```zenc
- 1 | let p = Point { x: 10, y: 20 };
- 2 |
- 3 | // Unpacks p.x into 'x', and p.y into 'y'
- 4 | let Point { x, y } = p;
- 5 |
- 6 | println "x = {x}, y = {y}";
+let p = Point { x: 10, y: 20 };
+
+// Unpacks p.x into 'x', and p.y into 'y'
+let Point { x, y } = p;
+
+println "x = {x}, y = {y}";
 ```
 
 Output:
@@ -173,12 +171,11 @@ x = 10, y = 20
 
 If you want to assign fields to variables with different names, specify `field_name: new_variable_name`:
 
-**Listing 5-3: `list5-3.zc`**
-
+**Listing 5-3**
 ```zenc
- 1 | let Point { x: pos_x, y: pos_y } = p;
- 2 |
- 3 | println "pos_x = {pos_x}, pos_y = {pos_y}";
+let Point { x: pos_x, y: pos_y } = p;
+
+println "pos_x = {pos_x}, pos_y = {pos_y}";
 ```
 
 Output:

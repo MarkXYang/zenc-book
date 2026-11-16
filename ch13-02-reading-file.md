@@ -1,4 +1,4 @@
-# 13.2 Reading a File
+# Reading a File
 
 Now that `zgrep` knows which query string and file path to use, our next step is to open the target file and read its contents into memory.
 
@@ -54,7 +54,7 @@ Let's update `main.zc` to import `std/fs.zc`, read the target file with `File::r
 
 For this initial prototype, we will unwrap the `Result<String>` using `.expect("Should have been able to read the file")` (in the next section, we will replace `.expect(...)` with graceful `Result` error propagation):
 
-**Listing 13-2: `list13-2.zc` — Reading the contents of `poem.txt` into a `String`**
+**Listing 13-2: Reading the contents of `poem.txt` into a `String`**
 
 ```zenc
 // File: examples/ch13/ch13-02-reading-file/main.zc

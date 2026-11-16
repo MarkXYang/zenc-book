@@ -1,4 +1,4 @@
-# 15.2 Inspecting Generated C and Name Mangling
+# Inspecting Generated C and Name Mangling
 
 One of Zen C's greatest advantages as a systems programming language is that its intermediate representation is **human-readable GNU C11**. Whenever you want to verify how a high-level feature lowers to C, diagnose a linker error, set a breakpoint in `gdb` or `lldb`, or call a Zen C function from an existing C/C++ project, you can inspect the generated C directly.
 
@@ -70,7 +70,7 @@ Notice `Square___grow` in the table above. Why does it have **three** underscore
 
 Let's see every mangling rule in action. Listing 15-2 defines a trait (`Shape`), a concrete struct (`Square`) with both `scale` and `_grow` methods, a generic struct (`Boxed<T>`), a generic function (`largest<T>`), and a top-level function (`zc_area_sum`):
 
-**Listing 15-2: `list15-2.zc` — Structs, traits, generics, and C symbol mangling**
+**Listing 15-2: Structs, traits, generics, and C symbol mangling**
 
 ```zenc
 // File: examples/ch15/ch15-02-generated-c/main.zc

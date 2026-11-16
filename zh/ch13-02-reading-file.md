@@ -1,4 +1,4 @@
-# 13.2 读取文件
+# 读取文件
 
 现在 `zgrep` 已经知道要使用哪个查询字符串和文件路径，接下来的步骤是打开目标文件并将其内容读取到内存中。
 
@@ -54,7 +54,7 @@ Zen C 的标准文件系统模块（`import "std/fs.zc"`）将这一切封装在
 
 对于这个初始原型，我们将使用 `.expect("Should have been able to read the file")` 解包 `Result<String>`（在下一节中，我们将用优雅的 `Result` 错误传播替换 `.expect(...)`）：
 
-**示例 13-2: `list13-2.zc` —— 将 `poem.txt` 的内容读取到 `String` 中**
+**代码清单 13-2: 将 `poem.txt` 的内容读取到 `String` 中**
 
 ```zenc
 // File: examples/ch13/ch13-02-reading-file/main.zc
@@ -126,7 +126,7 @@ I'm nobody! Who are you?
 
 ## 4. 自动内存与句柄清理（`Drop`）
 
-请注意在示例 13-2 中*没有*出现什么：
+请注意在代码清单 13-2 中*没有*出现什么：
 - 没有手动调用 `fclose(fp)`。在 `File::read_all` 内部，`File` 句柄在读取完毕后立即关闭；即便直接使用 `File::open`，`std/fs.zc` 也定义了：
   ```zenc
   impl Drop for File {

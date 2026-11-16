@@ -1,4 +1,4 @@
-# 14.3 Processing Items with Iterators
+# Processing Items with Iterators
 
 The **iterator pattern** allows you to perform a task on a sequence of items in turn without manually managing loop indices, bounds checks, or termination conditions.
 
@@ -145,7 +145,7 @@ for n in Fibonacci::new(8) {
 
 Here is a complete runnable program (`examples/ch14/ch14-03-iterators/main.zc`) combining `VecIter<T>` combinators (`filter`, `fold`, `find`, `any`, `all`), reference iteration (`&scores`), and our custom `Fibonacci` iterator:
 
-**Listing 14-3: `list14-3.zc` — `VecIter<T>` combinators and a custom `Fibonacci` iterator**
+**Listing 14-3: `VecIter<T>` combinators and a custom `Fibonacci` iterator**
 
 ```zenc
 // File: examples/ch14/ch14-03-iterators/main.zc

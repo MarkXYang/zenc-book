@@ -1,4 +1,4 @@
-# 17.2 Shared-State Concurrency: Mutex and Atomics
+# Shared-State Concurrency: Mutex and Atomics
 
 In [Section 17.1](ch17-01-threads.md), each worker thread wrote to its own separate `WorkerTask` slot, so no two threads ever modified the same memory address. In many systems, however—such as shared bank ledgers, connection pools, telemetry counters, or in-memory caches—multiple threads must read and update **shared state** concurrently.
 

@@ -1,4 +1,4 @@
-# 20.4 Polyglot Interoperability: C++, Objective-C, and CUDA
+# Polyglot Interoperability: C++, Objective-C, and CUDA
 
 Many systems projects do not exist in isolation. You may need to integrate Zen C algorithms into an existing **C++** game engine, call into Apple **Objective-C** Cocoa frameworks, or offload heavy data processing to an **NVIDIA CUDA** GPU accelerator.
 
@@ -67,7 +67,7 @@ On macOS and iOS, system APIs (Foundation, AppKit, UIKit) are written in Objecti
 
 Listing 20-4 defines a 3D vector geometry struct and method, a null pointer check, and verification logic that compiles and runs cleanly across standard Zen C, C++17, and CUDA modes.
 
-**Listing 20-4**: `list20-4.zc` — Polyglot interoperability (`examples/ch20/ch20-04-cpp-objc-cuda/main.zc`)
+**Listing 20-4**: Polyglot interoperability (`examples/ch20/ch20-04-cpp-objc-cuda/main.zc`)
 
 ```zenc
 // File: examples/ch20/ch20-04-cpp-objc-cuda/main.zc

@@ -1,4 +1,4 @@
-# 14.1 Lambda 与闭包捕获
+# Lambda 表达式与闭包捕获
 
 **Lambda**（或**闭包**，closure）是一个可以绑定到变量或作为参数直接传递给其他函数的匿名函数。与普通的顶层 `fn` 声明不同，闭包可以从定义它的词法作用域中**捕获**变量。
 
@@ -103,7 +103,7 @@ let result = apply_twice([=] x -> x + base, 10); // (10 + 4) + 4 = 18
 
 以下是一个完整的示例（`examples/ch14/ch14-01-lambdas/main.zc`），演示了箭头和块 lambda、按值快照（`[=]`）、高阶闭包参数（`fn(int) -> int`）以及引用修改（`[&]` 与 `fn[&]`）：
 
-**示例 14-1: `list14-1.zc` —— Lambda、闭包捕获模式与高阶函数**
+**代码清单 14-1: Lambda、闭包捕获模式与高阶函数**
 
 ```zenc
 // File: examples/ch14/ch14-01-lambdas/main.zc

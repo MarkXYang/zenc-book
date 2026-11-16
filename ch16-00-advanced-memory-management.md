@@ -1,6 +1,6 @@
-# Chapter 16: Advanced Memory Management
+# Advanced Memory Management
 
-In [Chapter 4](ch04-00-understanding-ownership.md), we explored Zen C's foundational memory model: values live on the stack by default, non-`Copy` resource types enforce single-owner move semantics, `defer` statements guarantee scope-exit cleanup, and implementing the `Drop` trait automates deterministic Resource Acquisition Is Initialization (RAII). For the vast majority of application code—manipulating `String` buffers, growing `Vec<T>` collections, or managing file handles—those high-level abstractions give you memory safety without manual bookkeeping or garbage collection pauses.
+In [Chapter 4](ch04-00-ownership-pointers-cleanup.md), we explored Zen C's foundational memory model: values live on the stack by default, non-`Copy` resource types enforce single-owner move semantics, `defer` statements guarantee scope-exit cleanup, and implementing the `Drop` trait automates deterministic Resource Acquisition Is Initialization (RAII). For the vast majority of application code—manipulating `String` buffers, growing `Vec<T>` collections, or managing file handles—those high-level abstractions give you memory safety without manual bookkeeping or garbage collection pauses.
 
 Systems programming, however, frequently requires stepping beneath high-level containers to take direct, byte-level control over how data is allocated, addressed, aligned, and represented in RAM:
 

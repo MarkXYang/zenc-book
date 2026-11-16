@@ -12,8 +12,7 @@ Zen C 允许你为自定义 `struct` 类型**重载运算符**，只需在 `impl
 
 要重载二元 `+`、`-`、`*`、`/` 或一元 `-`，请在结构体上实现 `add`、`sub`、`mul`、`div` 或 `neg`：
 
-**代码清单 10-12: `list10-12.zc`**
-
+**代码清单 10-12**
 ```zenc
 @derive(Copy)
 struct Vec2 {
@@ -95,8 +94,7 @@ println "Updated position: {pos}"; // (12, 17)
 
 你可以重载相等性（`eq`、`neq`）和关系比较（`lt`、`gt`、`le`、`ge`）以自然地比较结构体：
 
-**代码清单 10-13: `list10-13.zc`**
-
+**代码清单 10-13**
 ```zenc
 @derive(Copy)
 struct Version {
@@ -158,8 +156,7 @@ Zen C 支持重载数组下标表示法，用于**一维**和**多维**索引：
 
 让我们实现一个 3×3 矩阵，它支持自然的 2D 索引 `mat[row, col]` 用于读取和写入：
 
-**代码清单 10-14: `list10-14.zc`**
-
+**代码清单 10-14**
 ```zenc
 struct Matrix3x3 {
     data: int[9];

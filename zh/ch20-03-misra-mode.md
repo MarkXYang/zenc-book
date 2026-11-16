@@ -1,4 +1,4 @@
-# 20.3 MISRA C:2012 合规模式
+# MISRA C:2012 合规模式
 
 在汽车（ISO 26262）、航空航天（DO-178C）、医疗设备（IEC 62304）和铁路系统中，软件必须遵循严格的编码规范，旨在防止未定义行为、运行时歧义以及不可追溯的控制流。
 
@@ -78,7 +78,7 @@ static ZC_FUNC bool is_big(int32_t n) {
 
 代码清单 20-3 演示了一个干净且严格遵循 MISRA C:2012 准则的安全关键数值截断和校验和例程。
 
-**代码清单 20-3**：`list20-3.zc` —— 符合 MISRA 规范的数值例程（`examples/ch20/ch20-03-misra-mode/main.zc`）
+**代码清单 20-3**：符合 MISRA 规范的数值例程（`examples/ch20/ch20-03-misra-mode/main.zc`）
 
 ```zenc
 // File: examples/ch20/ch20-03-misra-mode/main.zc

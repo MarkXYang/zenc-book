@@ -1,4 +1,4 @@
-# Chapter 18: Polymorphism: Composition and Trait Objects
+# Polymorphism: Composition and Trait Objects
 
 **Polymorphism**—the ability to write code that operates on values of multiple different types through a shared interface—is one of the foundational ideas in software architecture.
 

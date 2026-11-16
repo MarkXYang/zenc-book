@@ -1,4 +1,4 @@
-# 16.3 Struct Layout, Padding, and Alignment (`@packed`, `@align`)
+# Low-Level Struct Layout: Bitfields, Packing, and Alignment
 
 When you declare a `struct` in Zen C, its fields are laid out in memory in the exact order you write them, following the target platform's C Application Binary Interface (ABI). However, `sizeof(MyStruct)` is often larger than the sum of its individual field sizes.
 

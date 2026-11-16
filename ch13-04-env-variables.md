@@ -1,4 +1,4 @@
-# 13.4 Working with Environment Variables
+# Working with Environment Variables
 
 Command-line tools often let users configure persistent preferences—such as color themes, verbosity levels, or case sensitivity—via **environment variables** so they don't have to pass the same flag on every invocation.
 
@@ -145,7 +145,7 @@ fn run(config: Config) -> Result<int> {
 
 Here is the updated `examples/ch13/ch13-04-env-variables/zgrep.zc` module, including a third unit test that verifies `Env::set`, `Env::get`, and `Env::unset` in isolation:
 
-**Listing 13-4: `list13-4.zc` — `zgrep.zc` with `IGNORE_CASE` environment variable support**
+**Listing 13-4: `zgrep.zc` with `IGNORE_CASE` environment variable support**
 
 ```zenc
 // File: examples/ch13/ch13-04-env-variables/zgrep.zc

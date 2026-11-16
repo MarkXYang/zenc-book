@@ -37,18 +37,17 @@ zc run my_program.zc
 
 `std/math.zc` 模块提供数学常数以及标准三角函数、指数和取整函数。函数组织在 `Math` 命名空间结构体下：
 
-**代码清单 7-12：`list7-12.zc`**
-
+**代码清单 C-1**
 ```zenc
- 1 | import "std/math.zc";
- 2 |
- 3 | fn main() {
- 4 |     let radius = 5.0;
- 5 |     let area = Math::PI() * Math::pow(radius, 2.0);
- 6 |     let hypotenuse = Math::sqrt(3.0 * 3.0 + 4.0 * 4.0);
- 7 |
- 8 |     println "Area: {area}, Hypotenuse: {hypotenuse}";
- 9 | }
+import "std/math.zc";
+
+fn main() {
+    let radius = 5.0;
+    let area = Math::PI() * Math::pow(radius, 2.0);
+    let hypotenuse = Math::sqrt(3.0 * 3.0 + 4.0 * 4.0);
+
+    println "Area: {area}, Hypotenuse: {hypotenuse}";
+}
 ```
 
 输出：
@@ -87,17 +86,16 @@ Zen C 提供了惯用集合类型，它们通过自动清理机制（`Drop`）�
 
 `std/path.zc` 模块提供跨平台的文件路径操作：
 
-**代码清单 7-13：`list7-13.zc`**
-
+**代码清单 C-2**
 ```zenc
- 1 | import "std/path.zc";
- 2 |
- 3 | fn main() {
- 4 |     let p = Path::new("/var/log");
- 5 |     let full = p.join("app.log");
- 6 |
- 7 |     println "Path: {full.c_str()}";
- 8 | }
+import "std/path.zc";
+
+fn main() {
+    let p = Path::new("/var/log");
+    let full = p.join("app.log");
+
+    println "Path: {full.c_str()}";
+}
 ```
 
 输出：
@@ -109,19 +107,18 @@ Path: /var/log/app.log
 
 `std/fs.zc` 模块提供高层文件读写实用工具：
 
-**代码清单 7-14：`list7-14.zc`**
-
+**代码清单 C-3**
 ```zenc
- 1 | import "std/fs.zc";
- 2 |
- 3 | fn main() {
- 4 |     // Reading an entire file into a String
- 5 |     let result = File::read_all("config.txt");
- 6 |     if result.is_ok() {
- 7 |         let content = result.unwrap();
- 8 |         println "Config content: {content.c_str()}";
- 9 |     }
-10 | }
+import "std/fs.zc";
+
+fn main() {
+    // Reading an entire file into a String
+    let result = File::read_all("config.txt");
+    if result.is_ok() {
+        let content = result.unwrap();
+        println "Config content: {content.c_str()}";
+    }
+}
 ```
 
 输出（假定 `config.txt` 包含 `server_port=8080`）：
@@ -137,19 +134,18 @@ Config content: server_port=8080
 
 `std/time.zc` 模块提供高精度时间戳、耗时间隔测量与线程休眠功能：
 
-**代码清单 7-15：`list7-15.zc`**
-
+**代码清单 C-4**
 ```zenc
- 1 | import "std/time.zc";
- 2 |
- 3 | fn main() {
- 4 |     let start = Time::now(); // Milliseconds timestamp
- 5 |
- 6 |     Time::sleep_ms(50);      // Sleep for 50 ms
- 7 |
- 8 |     let elapsed = Time::now() - start;
- 9 |     println "Elapsed: {elapsed} ms";
-10 | }
+import "std/time.zc";
+
+fn main() {
+    let start = Time::now(); // Milliseconds timestamp
+
+    Time::sleep_ms(50);      // Sleep for 50 ms
+
+    let elapsed = Time::now() - start;
+    println "Elapsed: {elapsed} ms";
+}
 ```
 
 输出：
@@ -161,22 +157,21 @@ Elapsed: 50 ms
 
 `std/env.zc` 模块提供对进程环境变量和命令行参数的访问：
 
-**代码清单 7-16：`list7-16.zc`**
-
+**代码清单 C-5**
 ```zenc
- 1 | import "std/env.zc";
- 2 |
- 3 | fn main() {
- 4 |     // Env::get returns Option<string>
- 5 |     let user = Env::get("USER").unwrap_or("guest");
- 6 |     println "Logged in as: {user}";
- 7 |
- 8 |     // Or inspect explicitly using is_some()
- 9 |     let user_opt = Env::get("USER");
-10 |     if user_opt.is_some() {
-11 |         println "Found user: {user_opt.unwrap()}";
-12 |     }
-13 | }
+import "std/env.zc";
+
+fn main() {
+    // Env::get returns Option<string>
+    let user = Env::get("USER").unwrap_or("guest");
+    println "Logged in as: {user}";
+
+    // Or inspect explicitly using is_some()
+    let user_opt = Env::get("USER");
+    if user_opt.is_some() {
+        println "Found user: {user_opt.unwrap()}";
+    }
+}
 ```
 
 输出：
@@ -187,7 +182,7 @@ Found user: mark
 
 其他系统模块包括：
 - **`std/process.zc`**：创建子进程、检查退出状态与信号处理。
-- **`std/thread.zc` 与 `std/sync.zc`**：原生操作系统线程、互斥锁与同步屏障（在[第 16 章：并发](ch16-00-concurrency.md)中讨论）。
+- **`std/thread.zc` 与 `std/sync.zc`**：原生操作系统线程、互斥锁与同步屏障（在[第 17 章：并发](ch17-00-concurrency.md)中讨论）。
 
 ---
 
@@ -199,38 +194,37 @@ Zen C 提供了强大的内置文本操作、数据格式序列化与密码学�
 
 `std/json.zc` 实现了完整的 DOM 风格 JSON 解析器与构建器，支持对象、数组、字符串、数字、布尔值和 null：
 
-**代码清单 7-17：`list7-17.zc`**
-
+**代码清单 C-6**
 ```zenc
- 1 | import "std/json.zc";
- 2 |
- 3 | fn main() {
- 4 |     // 1. Building a JSON object dynamically
- 5 |     let obj = JsonValue::object();
- 6 |     obj.set("name", JsonValue::string("Zen C"));
- 7 |     obj.set("version", JsonValue::number(1.0));
- 8 |     obj.set("active", JsonValue::bool(true));
- 9 |
-10 |     // Access fields safely with Option extractors
-11 |     let name = obj.get_string("name").unwrap_or("unknown");
-12 |     let version = obj.get_int("version").unwrap_or(0);
-13 |     println "JSON object: {name}, version {version}";
-14 |
-15 |     // Serialize directly to a JSON string
-16 |     let serialized = obj.to_string();
-17 |     println "Serialized: {serialized}";
-18 |
-19 |     // 2. Parsing raw JSON
-20 |     let raw = "[\"apple\", \"banana\", \"cherry\"]";
-21 |     let res = JsonValue::parse(raw);
-22 |     if res.is_ok() {
-23 |         let arr = res.unwrap();
-24 |         println "Parsed array with {arr.length()} elements";
-25 |         let first = arr.at(0).unwrap();
-26 |         println "First item: {first.as_string().unwrap_or(\"none\")}";
-27 |         dealloc<JsonValue>(arr);
-28 |     }
-29 | }
+import "std/json.zc";
+
+fn main() {
+    // 1. Building a JSON object dynamically
+    let obj = JsonValue::object();
+    obj.set("name", JsonValue::string("Zen C"));
+    obj.set("version", JsonValue::number(1.0));
+    obj.set("active", JsonValue::bool(true));
+
+    // Access fields safely with Option extractors
+    let name = obj.get_string("name").unwrap_or("unknown");
+    let version = obj.get_int("version").unwrap_or(0);
+    println "JSON object: {name}, version {version}";
+
+    // Serialize directly to a JSON string
+    let serialized = obj.to_string();
+    println "Serialized: {serialized}";
+
+    // 2. Parsing raw JSON
+    let raw = "[\"apple\", \"banana\", \"cherry\"]";
+    let res = JsonValue::parse(raw);
+    if res.is_ok() {
+        let arr = res.unwrap();
+        println "Parsed array with {arr.length()} elements";
+        let first = arr.at(0).unwrap();
+        println "First item: {first.as_string().unwrap_or(\"none\")}";
+        dealloc<JsonValue>(arr);
+    }
+}
 ```
 
 输出：
@@ -245,28 +239,27 @@ First item: apple
 
 Zen C 通过 `rune` 原生类型原生处理 Unicode 码点，`std/utf8.zc` 提供了字符分类、验证和编码工具：
 
-**代码清单 7-18：`list7-18.zc`**
-
+**代码清单 C-7**
 ```zenc
- 1 | import "std/utf8.zc";
- 2 |
- 3 | fn main() {
- 4 |     let text = "Hello, 🚀 Zen C!";
- 5 |
- 6 |     // Validate whether a byte stream is well-formed UTF-8
- 7 |     let is_valid = Utf8::is_valid(text, strlen(text));
- 8 |     println "Is valid UTF-8: {is_valid}";
- 9 |
-10 |     // Calculate byte length of a single Unicode code point
-11 |     let r: rune = '🚀';
-12 |     println "Rune '🚀' byte length: {Utf8::rune_len(r)} bytes";
-13 |
-14 |     // Encode a rune into a raw byte buffer
-15 |     let buf: char[5];
-16 |     let written = Utf8::encode(r, buf);
-17 |     buf[written] = 0;
-18 |     println "Encoded {written} bytes into buffer";
-19 | }
+import "std/utf8.zc";
+
+fn main() {
+    let text = "Hello, 🚀 Zen C!";
+
+    // Validate whether a byte stream is well-formed UTF-8
+    let is_valid = Utf8::is_valid(text, strlen(text));
+    println "Is valid UTF-8: {is_valid}";
+
+    // Calculate byte length of a single Unicode code point
+    let r: rune = '🚀';
+    println "Rune '🚀' byte length: {Utf8::rune_len(r)} bytes";
+
+    // Encode a rune into a raw byte buffer
+    let buf: char[5];
+    let written = Utf8::encode(r, buf);
+    buf[written] = 0;
+    println "Encoded {written} bytes into buffer";
+}
 ```
 
 输出：
@@ -280,27 +273,26 @@ Encoded 4 bytes into buffer
 
 Zen C 中的正则表达式由高性能的 TRE 正则表达式引擎提供支持，提供 POSIX 扩展正则表达式功能：
 
-**代码清单 7-19：`list7-19.zc`**
-
+**代码清单 C-8**
 ```zenc
- 1 | import "std/regex.zc";
- 2 |
- 3 | fn main() {
- 4 |     // Compile a regular expression pattern
- 5 |     let re = Regex::compile("[0-9]+");
- 6 |     let text = "Order ID: 12345";
- 7 |
- 8 |     // Fast boolean match check
- 9 |     let matches = re.is_match(text);
-10 |     println "Contains digits: {matches}";
-11 |
-12 |     // Extract match coordinates and text
-13 |     let m_opt = re.find(text);
-14 |     if m_opt.is_some() {
-15 |         let m = m_opt.unwrap();
-16 |         println "Matched: '{m.as_string()}' at offset {m.start}";
-17 |     }
-18 | }
+import "std/regex.zc";
+
+fn main() {
+    // Compile a regular expression pattern
+    let re = Regex::compile("[0-9]+");
+    let text = "Order ID: 12345";
+
+    // Fast boolean match check
+    let matches = re.is_match(text);
+    println "Contains digits: {matches}";
+
+    // Extract match coordinates and text
+    let m_opt = re.find(text);
+    if m_opt.is_some() {
+        let m = m_opt.unwrap();
+        println "Matched: '{m.as_string()}' at offset {m.start}";
+    }
+}
 ```
 
 输出：
@@ -316,24 +308,23 @@ Matched: '12345' at offset 10
 
 标准库在 `std/encoding/` 下包含用于 Base64 和十六进制转换的专用模块：
 
-**代码清单 7-20：`list7-20.zc`**
-
+**代码清单 C-9**
 ```zenc
- 1 | import "std/encoding/base64.zc";
- 2 | import "std/encoding/hex.zc";
- 3 |
- 4 | fn main() {
- 5 |     let message = "Hello, Zen C!";
- 6 |     let len = strlen(message);
- 7 |
- 8 |     // 1. Base64 encoding
- 9 |     let b64 = Base64::encode((u8*)message, len);
-10 |     println "Base64: {b64.c_str()}"; // "SGVsbG8sIFplbiBDIQ=="
-11 |
-12 |     // 2. Hexadecimal encoding
-13 |     let hex = Hex::encode((u8*)message, len);
-14 |     println "Hex:    {hex.c_str()}"; // "48656c6c6f2c205a656e204321"
-15 | }
+import "std/encoding/base64.zc";
+import "std/encoding/hex.zc";
+
+fn main() {
+    let message = "Hello, Zen C!";
+    let len = strlen(message);
+
+    // 1. Base64 encoding
+    let b64 = Base64::encode((u8*)message, len);
+    println "Base64: {b64.c_str()}"; // "SGVsbG8sIFplbiBDIQ=="
+
+    // 2. Hexadecimal encoding
+    let hex = Hex::encode((u8*)message, len);
+    println "Hex:    {hex.c_str()}"; // "48656c6c6f2c205a656e204321"
+}
 ```
 
 输出：
@@ -346,18 +337,17 @@ Hex:    48656c6c6f2c205a656e204321
 
 `std/crypto/sha256.zc` 提供了符合 FIPS 180-4 规范的 SHA-256 计算：
 
-**代码清单 7-21：`list7-21.zc`**
-
+**代码清单 C-10**
 ```zenc
- 1 | import "std/crypto/sha256.zc";
- 2 |
- 3 | fn main() {
- 4 |     let payload = "Hello, Zen C!";
- 5 |
- 6 |     // Generate SHA-256 hex digest
- 7 |     let digest = Sha256::hash(payload);
- 8 |     println "SHA-256 digest: {digest.c_str()}";
- 9 | }
+import "std/crypto/sha256.zc";
+
+fn main() {
+    let payload = "Hello, Zen C!";
+
+    // Generate SHA-256 hex digest
+    let digest = Sha256::hash(payload);
+    println "SHA-256 digest: {digest.c_str()}";
+}
 ```
 
 输出：

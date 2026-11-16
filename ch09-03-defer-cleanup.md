@@ -44,8 +44,7 @@ In Zen C, you solve this problem with **`defer`** (first introduced in [Chapter 
 
 Statements scheduled with `defer` are guaranteed to execute whenever the enclosing scope exits, whether by completing normally or by returning early due to an error.
 
-**Listing 9-3: `list9-3.zc`**
-
+**Listing 9-3**
 ```zenc
 include <stdio.h>
 import "std/result.zc"

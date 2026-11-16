@@ -1,4 +1,4 @@
-# 16.2 Arenas and Custom Allocators
+# Arena Allocators
 
 Allocating individual objects on the heap with `alloc<T>` and `dealloc<T>` works well when each object has an independent, unpredictable lifetime. However, many real-world systems allocate hundreds or thousands of small objects that **all live and die together**:
 

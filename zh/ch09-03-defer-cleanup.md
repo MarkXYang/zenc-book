@@ -44,8 +44,7 @@ cleanup:
 
 使用 `defer` 调度的语句保证在所在作用域退出时执行，无论是正常完成还是由于错误提前返回。
 
-**代码清单 9-3: `list9-3.zc`**
-
+**代码清单 9-3**
 ```zenc
 include <stdio.h>
 import "std/result.zc"

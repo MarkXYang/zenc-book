@@ -1,4 +1,4 @@
-# 14.2 Raw Function Pointers (`fn*`)
+# Raw Function Pointers (`fn*`)
 
 In [Section 14.1](ch14-01-lambdas.md), we saw that Zen C closures (`fn(T) -> R`) carry an environment pointer (`void* ctx`) so they can capture local variables. However, two common systems programming scenarios require a **stateless, single-word machine code pointer** without an environment struct:
 
@@ -105,7 +105,7 @@ fn cmp_ints_asc(a: const void*, b: const void*) -> c_int {
 
 Here is the complete program (`examples/ch14/ch14-02-fn-pointers/main.zc`) combining a `fn*` struct dispatch table, a function returning `fn*`, a double function pointer (`fn**`), and C's `qsort`:
 
-**Listing 14-2: `list14-2.zc` — Dispatch tables, higher-order `fn*`, and C `qsort` interop**
+**Listing 14-2: Dispatch tables, higher-order `fn*`, and C `qsort` interop**
 
 ```zenc
 // File: examples/ch14/ch14-02-fn-pointers/main.zc

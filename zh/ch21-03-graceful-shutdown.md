@@ -1,4 +1,4 @@
-# 21.3 平滑关闭与资源清理
+# 优雅停机与资源清理
 
 在生产系统中，服务器在滚动更新、配置重新加载或收到操作系统终止信号（`SIGINT`、`SIGTERM`）时，必须能够平滑且干净地关闭。
 
@@ -68,7 +68,7 @@ impl Drop for TcpListener {
 
 代码清单 21-3 将监听器、有界任务队列、工作线程以及线程安全的事务计数器封装到一个高内聚的 `GracefulServer` 结构体中。
 
-**代码清单 21-3**：`list21-3.zc` —— 平滑关闭与资源清理（`examples/ch21/ch21-03-graceful-shutdown/main.zc`）
+**代码清单 21-3**：平滑关闭与资源清理（`examples/ch21/ch21-03-graceful-shutdown/main.zc`）
 
 ```zenc
 // File: examples/ch21/ch21-03-graceful-shutdown/main.zc

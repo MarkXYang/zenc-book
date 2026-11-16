@@ -1,4 +1,4 @@
-# 21.1 Building a Single-Threaded Web Server
+# Building a Single-Threaded Web Server
 
 Before adding thread pools and concurrency, we begin by building a working **single-threaded HTTP/1.1 server**.
 
@@ -102,7 +102,7 @@ fn handle_connection(stream: TcpStream) {
 
 Listing 21-1 implements the single-threaded server loop and includes a self-testing client harness that validates both `200 OK` and `404 NOT FOUND` responses.
 
-**Listing 21-1**: `list21-1.zc` — Single-threaded HTTP server (`examples/ch21/ch21-01-single-threaded/main.zc`)
+**Listing 21-1**: Single-threaded HTTP server (`examples/ch21/ch21-01-single-threaded/main.zc`)
 
 ```zenc
 // File: examples/ch21/ch21-01-single-threaded/main.zc

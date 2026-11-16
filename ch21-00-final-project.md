@@ -1,4 +1,4 @@
-# Chapter 21: Final Project: Building a Multithreaded Web Server
+# Final Project: Building a Multithreaded Web Server
 
 Throughout this book, you have journeyed across the entire landscape of the Zen C programming language:
 - **Fundamentals**: Memory safety without a garbage collector, pointers as borrows, copy and move semantics, and RAII cleanup (`defer` and `Drop`).

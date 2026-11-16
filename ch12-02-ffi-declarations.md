@@ -1,4 +1,4 @@
-# 12.2 Explicit FFI Declarations
+# Explicit FFI Declarations
 
 While `import "header.h" as alias` is convenient for quick calls, production systems code often benefits from **explicit FFI declarations**. Declaring C functions, opaque handles, and external globals explicitly in Zen C gives the compiler full type information for argument validation, return-type inference, and IDE autocompletion—even without parsing a `.h` file.
 

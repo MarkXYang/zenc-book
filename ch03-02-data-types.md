@@ -76,17 +76,16 @@ Zen C provides first-class support for Unicode scalar values via the `rune` type
 | `'🚀'` | `rune` | Multi-byte Unicode emoji / character |
 | `'\u{2764}'` | `rune` | Hexadecimal Unicode escape sequence |
 
-**Listing 3-2: `list3-2.zc`**
-
+**Listing 3-2**
 ```zenc
- 1 | import "std/string.zc";
- 2 |
- 3 | fn main() {
- 4 |     let c: char = 'a';
- 5 |     let emoji: rune = '🚀';
- 6 |
- 7 |     println "Char: {c}, Emoji: {emoji}";
- 8 | }
+import "std/string.zc";
+
+fn main() {
+    let c: char = 'a';
+    let emoji: rune = '🚀';
+
+    println "Char: {c}, Emoji: {emoji}";
+}
 ```
 
 Output:
@@ -110,16 +109,15 @@ Char: a, Emoji: 🚀
 
 An **array** is a fixed-length contiguous sequence of elements of the same type:
 
-**Listing 3-3: `list3-3.zc`**
-
+**Listing 3-3**
 ```zenc
- 1 | fn main() {
- 2 |     let numbers: i32[5] = [10, 20, 30, 40, 50];
- 3 |     let first = numbers[0]; // 10
- 4 |     numbers[0] = 99;        // Mutate first element
- 5 |
- 6 |     println "First: {first}, Updated: {numbers[0]}";
- 7 | }
+fn main() {
+    let numbers: i32[5] = [10, 20, 30, 40, 50];
+    let first = numbers[0]; // 10
+    numbers[0] = 99;        // Mutate first element
+
+    println "First: {first}, Updated: {numbers[0]}";
+}
 ```
 
 Output:
@@ -127,4 +125,4 @@ Output:
 First: 10, Updated: 99
 ```
 
-Next, let's explore functions and lambdas in Zen C!
+Next, let's explore functions in Zen C!

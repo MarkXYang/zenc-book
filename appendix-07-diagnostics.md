@@ -1,4 +1,4 @@
-# Appendix G: Compiler Diagnostics & Error Guide
+# Appendix G: Compiler Diagnostics and Error Guide
 
 Zen C emits structured, span-highlighted diagnostics with contextual `help:` hints. Passing `--json` outputs machine-readable JSON diagnostics for editors and CI scripts.
 

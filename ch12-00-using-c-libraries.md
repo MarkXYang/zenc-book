@@ -1,4 +1,4 @@
-# Chapter 12: Using C Libraries (FFI & Interoperability)
+# Using C Libraries
 
 Most modern systems languages treat C interoperability as a **Foreign Function Interface (FFI)**—a boundary across which data structures must be converted, strings copied or marshaled, headers translated by external code-generation tools (like `bindgen` or `cgo`), and build scripts configured in a separate language.
 

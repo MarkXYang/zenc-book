@@ -1,4 +1,4 @@
-# 18.4 Implementing an Object-Oriented Design Pattern
+# Implementing an Object-Oriented Design Pattern
 
 The **State Pattern** is a classic object-oriented design pattern in which an object's external behavior changes dynamically as its internal state transitions. Rather than scattering `if` / `else` or `match` checks across every method of a `Post` struct, each state is represented by its own struct implementing a shared `PostState` trait, and `Post` delegates state-dependent queries directly to `self.state`.
 

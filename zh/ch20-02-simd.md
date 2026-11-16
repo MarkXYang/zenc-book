@@ -1,4 +1,4 @@
-# 20.2 原生 SIMD 向量化
+# 原生 SIMD 向量化
 
 单指令多数据（**SIMD**）指令能够在 CPU 向量寄存器内打包的多个数据通道（lanes）上，同时执行相同的算术或逻辑运算。
 
@@ -80,7 +80,7 @@ typedef float f32x4 __attribute__((vector_size(16)));
 
 代码清单 20-2 演示了 128 位浮点向量、整数位掩码以及 256 位 AVX 向量的使用。
 
-**代码清单 20-2**：`list20-2.zc` —— SIMD 向量操作（`examples/ch20/ch20-02-simd/main.zc`）
+**代码清单 20-2**：SIMD 向量操作（`examples/ch20/ch20-02-simd/main.zc`）
 
 ```zenc
 // File: examples/ch20/ch20-02-simd/main.zc

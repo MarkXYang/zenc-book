@@ -31,8 +31,7 @@ fn max_f64(a: f64, b: f64) -> f64 {
 
 要对函数进行类型参数化，请在函数名后紧跟尖括号（`<T>`）放置类型参数名：
 
-**代码清单 10-1: `list10-1.zc`**
-
+**代码清单 10-1**
 ```zenc
 fn max_val<T>(a: T, b: T) -> T {
     if a > b {
@@ -101,8 +100,7 @@ struct Pair<T> {
 
 如果你希望字段保存不同的泛型类型，可以声明多个以逗号分隔的类型参数，例如 `<K, V>`：
 
-**代码清单 10-2: `list10-2.zc`**
-
+**代码清单 10-2**
 ```zenc
 struct Pair<T> {
     first: T;
@@ -144,8 +142,7 @@ Setting: max_connections = 512
 
 正如我们在 `Option<T>` 和 `Result<T>` 中看到的那样，枚举也可以接受泛型类型参数以保存任意类型的有效载荷：
 
-**代码清单 10-3: `list10-3.zc`**
-
+**代码清单 10-3**
 ```zenc
 enum Maybe<T> {
     Just(T),
@@ -182,8 +179,7 @@ b is Nothing
 
 你可以在 `impl` 头部指定类型参数，从而在泛型结构体和枚举上实现方法。Zen C 同时支持 `impl Pair<T>` 和 `impl<T> Pair<T>` 语法：
 
-**代码清单 10-4: `list10-4.zc`**
-
+**代码清单 10-4**
 ```zenc
 struct Pair<T> {
     first: T;

@@ -91,8 +91,7 @@ trait Iterable<T> {
 
 让我们构建一个自定义的 `Countdown` 迭代器，使其原生支持 Zen C 的 `for .. in` 循环：
 
-**代码清单 10-8: `list10-8.zc`**
-
+**代码清单 10-8**
 ```zenc
 import "std/option.zc"
 
@@ -170,8 +169,7 @@ Zen C 的字符串插值（`println "Value: {x}"`）开箱即用地支持所有�
 
 只需在结构体上实现 `fn to_string(self) -> char*` 即可！每当编译器在字符串插值表达式中看到结构体实例时，它都会自动调用 `.to_string()`：
 
-**代码清单 10-9: `list10-9.zc`**
-
+**代码清单 10-9**
 ```zenc
 struct Color {
     r: int;
@@ -218,8 +216,7 @@ Selected theme color: rgb(255, 128, 0)
 
 你可以在 `struct` 或 `enum` 上方的单个 `@derive(...)` 属性中组合多个 derive trait：
 
-**代码清单 10-10: `list10-10.zc`**
-
+**代码清单 10-10**
 ```zenc
 @derive(Copy, Clone, Eq, Debug)
 struct Point {
@@ -255,8 +252,7 @@ Debug output: Point { ... }
 
 当使用 `std/json.zc` 构建 Web 服务、CLI 工具或配置加载器时，`@derive(ToJson, FromJson)` 消除了手动进行 JSON 字段映射的工作：
 
-**代码清单 10-11: `list10-11.zc`**
-
+**代码清单 10-11**
 ```zenc
 import "std/json.zc"
 

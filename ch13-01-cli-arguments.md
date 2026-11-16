@@ -1,4 +1,4 @@
-# 13.1 Accepting Command Line Arguments
+# Accepting Command Line Arguments
 
 The first task for `zgrep` is to accept two command-line arguments from the user:
 1. The **query string** to search for.
@@ -40,7 +40,7 @@ Let's start by writing a short program that iterates over `0..argc` and prints e
 
 Because Zen C's `string` type is a direct alias for `char*`, indexing `argv[i]` yields a value that can be bound directly to a `string` variable and interpolated into `println`:
 
-**Listing 13-1: `list13-1.zc` — Inspecting `argc` and `argv` and extracting `query` and `file_path`**
+**Listing 13-1: Inspecting `argc` and `argv` and extracting `query` and `file_path`**
 
 ```zenc
 // File: examples/ch13/ch13-01-cli-arguments/main.zc

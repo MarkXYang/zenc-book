@@ -1,4 +1,4 @@
-# 20.1 内联汇编与 Volatile
+# 内联汇编与 volatile
 
 在操作系统内核、设备驱动程序、实时控制循环以及对性能要求严苛的 DSP 例程中，软件往往需要执行无法通过高层语言的可移植结构来表示的特定 CPU 指令。
 
@@ -82,7 +82,7 @@ int32_t add_fast(int32_t a, int32_t b) {
 
 代码清单 20-1 演示了基础 pause 指令、volatile 内存屏障、扩展输入/输出操作数绑定以及变量就地修改。
 
-**代码清单 20-1**：`list20-1.zc` —— 内联汇编与 volatile 屏障（`examples/ch20/ch20-01-inline-assembly/main.zc`）
+**代码清单 20-1**：内联汇编与 volatile 屏障（`examples/ch20/ch20-01-inline-assembly/main.zc`）
 
 ```zenc
 // File: examples/ch20/ch20-01-inline-assembly/main.zc

@@ -76,17 +76,16 @@ Zen C 通过 `rune` 类型为 Unicode 标量值提供了一流支持。一个 `r
 | `'🚀'` | `rune` | 多字节 Unicode Emoji / 字符 |
 | `'\u{2764}'` | `rune` | 十六进制 Unicode 转义序列 |
 
-**代码清单 3-2：`list3-2.zc`**
-
+**代码清单 3-2**
 ```zenc
- 1 | import "std/string.zc";
- 2 |
- 3 | fn main() {
- 4 |     let c: char = 'a';
- 5 |     let emoji: rune = '🚀';
- 6 |
- 7 |     println "Char: {c}, Emoji: {emoji}";
- 8 | }
+import "std/string.zc";
+
+fn main() {
+    let c: char = 'a';
+    let emoji: rune = '🚀';
+
+    println "Char: {c}, Emoji: {emoji}";
+}
 ```
 
 输出：
@@ -110,16 +109,15 @@ Char: a, Emoji: 🚀
 
 **数组**是相同类型元素的固定长度连续序列：
 
-**代码清单 3-3：`list3-3.zc`**
-
+**代码清单 3-3**
 ```zenc
- 1 | fn main() {
- 2 |     let numbers: i32[5] = [10, 20, 30, 40, 50];
- 3 |     let first = numbers[0]; // 10
- 4 |     numbers[0] = 99;        // Mutate first element
- 5 |
- 6 |     println "First: {first}, Updated: {numbers[0]}";
- 7 | }
+fn main() {
+    let numbers: i32[5] = [10, 20, 30, 40, 50];
+    let first = numbers[0]; // 10
+    numbers[0] = 99;        // Mutate first element
+
+    println "First: {first}, Updated: {numbers[0]}";
+}
 ```
 
 输出：
@@ -127,4 +125,4 @@ Char: a, Emoji: 🚀
 First: 10, Updated: 99
 ```
 
-接下来，让我们探索 Zen C 中的函数与 Lambda！
+接下来，让我们探索 Zen C 中的函数！

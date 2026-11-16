@@ -34,30 +34,29 @@ In Zen C, you can define custom behavior for operators on custom `struct` types 
 
 By implementing `fn add(self, other: Point) -> Point` on a struct, you can use the standard `+` operator directly on instances:
 
-**Listing 3-16: `list3-16.zc`**
-
+**Listing B-1**
 ```zenc
- 1 | struct Point {
- 2 |     x: int;
- 3 |     y: int;
- 4 | }
- 5 |
- 6 | impl Point {
- 7 |     fn add(self, other: Point) -> Point {
- 8 |         return Point {
- 9 |             x: self.x + other.x,
-10 |             y: self.y + other.y,
-11 |         };
-12 |     }
-13 | }
-14 |
-15 | fn main() {
-16 |     let p1 = Point { x: 1, y: 2 };
-17 |     let p2 = Point { x: 3, y: 4 };
-18 |
-19 |     let p3 = p1 + p2; // Automatically desugars to p1.add(p2)
-20 |     println "p3 = ({p3.x}, {p3.y})";
-21 | }
+struct Point {
+    x: int;
+    y: int;
+}
+
+impl Point {
+    fn add(self, other: Point) -> Point {
+        return Point {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        };
+    }
+}
+
+fn main() {
+    let p1 = Point { x: 1, y: 2 };
+    let p2 = Point { x: 3, y: 4 };
+
+    let p3 = p1 + p2; // Automatically desugars to p1.add(p2)
+    println "p3 = ({p3.x}, {p3.y})";
+}
 ```
 
 Output:
@@ -69,31 +68,30 @@ p3 = (4, 6)
 
 Zen C allows overloading multi-dimensional indexing `a[i, j]`, which desugars to `get(a, i, j)`:
 
-**Listing 3-17: `list3-17.zc`**
-
+**Listing B-2**
 ```zenc
- 1 | struct Matrix {
- 2 |     data: int[9];
- 3 | }
- 4 |
- 5 | impl Matrix {
- 6 |     fn get(self, row: int, col: int) -> int {
- 7 |         return self.data[row * 3 + col];
- 8 |     }
- 9 | }
-10 |
-11 | fn main() {
-12 |     let m = Matrix {
-13 |         data: [
-14 |             1, 0, 0,
-15 |             0, 1, 0,
-16 |             0, 0, 1,
-17 |         ],
-18 |     };
-19 |
-20 |     let val = m[1, 2]; // Automatically desugars to Matrix.get(m, 1, 2)
-21 |     println "Value at [1, 2]: {val}";
-22 | }
+struct Matrix {
+    data: int[9];
+}
+
+impl Matrix {
+    fn get(self, row: int, col: int) -> int {
+        return self.data[row * 3 + col];
+    }
+}
+
+fn main() {
+    let m = Matrix {
+        data: [
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1,
+        ],
+    };
+
+    let val = m[1, 2]; // Automatically desugars to Matrix.get(m, 1, 2)
+    println "Value at [1, 2]: {val}";
+}
 ```
 
 Output:
@@ -147,24 +145,23 @@ Zen C includes modern built-in syntactic sugar operators that streamline code re
 
 The pipeline operator passes the left-hand expression as the first parameter to the right-hand function. You can chain multiple function calls together in a clean, readable left-to-right flow:
 
-**Listing 3-18: `list3-18.zc`**
-
+**Listing B-3**
 ```zenc
- 1 | fn add_bonus(score: int, bonus: int) -> int {
- 2 |     return score + bonus;
- 3 | }
- 4 |
- 5 | fn multiply_by(score: int, factor: int) -> int {
- 6 |     return score * factor;
- 7 | }
- 8 |
- 9 | fn main() {
-10 |     // 50 |> add_bonus(10) desugars to add_bonus(50, 10) -> 60
-11 |     // 60 |> multiply_by(2) desugars to multiply_by(60, 2) -> 120
-12 |     let final_score = 50 |> add_bonus(10) |> multiply_by(2);
-13 |
-14 |     println "Final Score: {final_score}";
-15 | }
+fn add_bonus(score: int, bonus: int) -> int {
+    return score + bonus;
+}
+
+fn multiply_by(score: int, factor: int) -> int {
+    return score * factor;
+}
+
+fn main() {
+    // 50 |> add_bonus(10) desugars to add_bonus(50, 10) -> 60
+    // 60 |> multiply_by(2) desugars to multiply_by(60, 2) -> 120
+    let final_score = 50 |> add_bonus(10) |> multiply_by(2);
+
+    println "Final Score: {final_score}";
+}
 ```
 
 Output:
@@ -176,22 +173,21 @@ Final Score: 120
 
 The null coalescing operator checks if a pointer expression is `NULL`. If it is `NULL`, it evaluates and returns the right-hand fallback expression:
 
-**Listing 3-19: `list3-19.zc`**
-
+**Listing B-4**
 ```zenc
- 1 | struct Profile {
- 2 |     username: string;
- 3 | }
- 4 |
- 5 | fn main() {
- 6 |     let active_profile: Profile* = 0; // NULL pointer
- 7 |     let default_profile = Profile { username: "GuestUser" };
- 8 |
- 9 |     // Evaluates to &default_profile because active_profile is NULL
-10 |     let user_ptr = active_profile ?? &default_profile;
-11 |
-12 |     println "Username: {user_ptr.username}";
-13 | }
+struct Profile {
+    username: string;
+}
+
+fn main() {
+    let active_profile: Profile* = 0; // NULL pointer
+    let default_profile = Profile { username: "GuestUser" };
+
+    // Evaluates to &default_profile because active_profile is NULL
+    let user_ptr = active_profile ?? &default_profile;
+
+    println "Username: {user_ptr.username}";
+}
 ```
 
 Output:
@@ -203,21 +199,20 @@ Username: GuestUser
 
 The null assignment operator assigns a value to a pointer variable only if that pointer is currently `NULL`:
 
-**Listing 3-20: `list3-20.zc`**
-
+**Listing B-5**
 ```zenc
- 1 | struct Config {
- 2 |     port: int;
- 3 | }
- 4 |
- 5 | fn main() {
- 6 |     let fallback = Config { port: 8080 };
- 7 |     let app_cfg: Config* = 0; // Currently NULL
- 8 |
- 9 |     app_cfg ??= &fallback; // Assigns fallback because app_cfg was NULL
-10 |
-11 |     println "Server Port: {app_cfg.port}";
-12 | }
+struct Config {
+    port: int;
+}
+
+fn main() {
+    let fallback = Config { port: 8080 };
+    let app_cfg: Config* = 0; // Currently NULL
+
+    app_cfg ??= &fallback; // Assigns fallback because app_cfg was NULL
+
+    println "Server Port: {app_cfg.port}";
+}
 ```
 
 Output:
@@ -256,31 +251,30 @@ fn read_config_file(path: string) -> Result<Config, string> {
 
 In standard C, accessing a pointer field requires verbose arrow syntax (`ptr->field`) or dereferencing (`(*ptr).field`). In Zen C, pointer field access (`ptr.field`) and method calls (`ptr.method()`) **automatically dereference** the pointer:
 
-**Listing 3-21: `list3-21.zc`**
-
+**Listing B-6**
 ```zenc
- 1 | struct Node {
- 2 |     value: int;
- 3 | }
- 4 |
- 5 | impl Node {
- 6 |     fn display(self) {
- 7 |         println "Node value: {self.value}";
- 8 |     }
- 9 | }
-10 |
-11 | fn process_node(ptr: Node*) {
-12 |     // Automatically dereferences pointer (equivalent to (*ptr).value)
-13 |     println "Value: {ptr.value}";
-14 |
-15 |     // Automatically dereferences for method calls
-16 |     ptr.display();
-17 | }
-18 |
-19 | fn main() {
-20 |     let n = Node { value: 42 };
-21 |     process_node(&n);
-22 | }
+struct Node {
+    value: int;
+}
+
+impl Node {
+    fn display(self) {
+        println "Node value: {self.value}";
+    }
+}
+
+fn process_node(ptr: Node*) {
+    // Automatically dereferences pointer (equivalent to (*ptr).value)
+    println "Value: {ptr.value}";
+
+    // Automatically dereferences for method calls
+    ptr.display();
+}
+
+fn main() {
+    let n = Node { value: 42 };
+    process_node(&n);
+}
 ```
 
 Output:
@@ -288,16 +282,3 @@ Output:
 Value: 42
 Node value: 42
 ```
-
----
-
-## Summary of Chapter 3
-
-In Chapter 3, you mastered all the core foundational concepts of Zen C:
-- **Variables & Constants** (`def`, `let`, type inference, `const`).
-- **Data Types** (scalar types, C interop types, arbitrary bit-width `iN`/`uN`, literals, fixed-size arrays `T[N]`).
-- **Functions & Lambdas** (named arguments, `const` args, defaults, closures `[=]`/`[&]`, raw pointers `fn*`, variadics `...`).
-- **Control Flow** (`if`, `match` pattern matching, `ref` binding, range loops, enumerated iteration, early-return guard clauses).
-- **Operators** (operator overloading `add`/`sub`/`get`/`set`, string equality rules, pipeline `|>`, null coalescing `??`, null assignment `??=`, safe navigation `?.`, try `?`, auto-dereference).
-
-In **Chapter 4**, we will dive into Zen C's automatic resource management: **Drop and Memory Safety (RAII)**!

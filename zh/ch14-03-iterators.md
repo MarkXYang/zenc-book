@@ -1,4 +1,4 @@
-# 14.3 使用迭代器处理元素
+# 使用迭代器处理元素序列
 
 **迭代器模式（iterator pattern）**允许你依次对序列中的各项执行任务，而无需手动管理循环索引、边界检查或终止条件。
 
@@ -145,7 +145,7 @@ for n in Fibonacci::new(8) {
 
 以下是结合了 `VecIter<T>` 组合器（`filter`、`fold`、`find`、`any`、`all`）、引用迭代（`&scores`）以及我们的自定义 `Fibonacci` 迭代器的完整可运行程序（`examples/ch14/ch14-03-iterators/main.zc`）：
 
-**示例 14-3: `list14-3.zc` —— `VecIter<T>` 组合器与自定义 `Fibonacci` 迭代器**
+**代码清单 14-3: `VecIter<T>` 组合器与自定义 `Fibonacci` 迭代器**
 
 ```zenc
 // File: examples/ch14/ch14-03-iterators/main.zc

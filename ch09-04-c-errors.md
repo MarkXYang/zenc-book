@@ -19,8 +19,7 @@ If `fopen` fails, it returns `NULL` and sets `errno` to indicate the error reaso
 
 In Zen C, we can write a clean, safe wrapper:
 
-**Listing 9-4: `list9-4.zc`**
-
+**Listing 9-4**
 ```zenc
 include <errno.h>
 include <string.h>

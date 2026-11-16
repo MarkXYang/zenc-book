@@ -1,4 +1,4 @@
-# 17.3 通过队列进行消息传递
+# 使用队列进行消息传递
 
 相比于共享内存加锁，一种广受欢迎的替代方案是**消息传递（message passing）**，经典并发名言对此进行了生动的概括：
 
@@ -78,9 +78,9 @@ fn close(self) {
 
 ## 4. 完整示例：带有背压的生产者-消费者工作池
 
-示例 17-3 构建了一个 8 槽位的有界 `JobChannel`，创建了 3 个消费者工作线程，从主生产者线程发送 20 条 `Job` 消息（每当有 8 个任务在途时自动触发 `not_full` 背压），关闭通道，并验证全部 20 个任务都被恰好处理了一次。
+代码清单 17-3 构建了一个 8 槽位的有界 `JobChannel`，创建了 3 个消费者工作线程，从主生产者线程发送 20 条 `Job` 消息（每当有 8 个任务在途时自动触发 `not_full` 背压），关闭通道，并验证全部 20 个任务都被恰好处理了一次。
 
-**示例 17-3**：有界消息传递通道与工作池（`examples/ch17/ch17-03-message-passing/main.zc`）
+**代码清单 17-3**：有界消息传递通道与工作池（`examples/ch17/ch17-03-message-passing/main.zc`）
 
 ```zenc
 // File: examples/ch17/ch17-03-message-passing/main.zc
@@ -237,7 +237,7 @@ fn main() {
 }
 ```
 
-使用 `zc run -q` 运行并验证示例 17-3：
+使用 `zc run -q` 运行并验证代码清单 17-3：
 
 ```text
 $ zc run -q examples/ch17/ch17-03-message-passing/main.zc

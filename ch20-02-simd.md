@@ -1,4 +1,4 @@
-# 20.2 Native SIMD Vectorization
+# Native SIMD Vectorization
 
 Single Instruction, Multiple Data (**SIMD**) instructions execute the same arithmetic or logical operation simultaneously across multiple data lanes packed inside CPU vector registers.
 
@@ -80,7 +80,7 @@ Because the C compiler backend understands native vector extensions, an expressi
 
 Listing 20-2 exercises 128-bit float vectors, integer bitwise masking, and 256-bit AVX vectors.
 
-**Listing 20-2**: `list20-2.zc` — SIMD vector operations (`examples/ch20/ch20-02-simd/main.zc`)
+**Listing 20-2**: SIMD vector operations (`examples/ch20/ch20-02-simd/main.zc`)
 
 ```zenc
 // File: examples/ch20/ch20-02-simd/main.zc

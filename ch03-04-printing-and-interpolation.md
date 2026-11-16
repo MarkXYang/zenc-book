@@ -1,6 +1,32 @@
-# Printing and String Interpolation
+# Comments, Printing and String Interpolation
 
-Zen C provides rich options for printing output to stdout and stderr, embedding expressions into strings via **string interpolation**, writing multiline strings, and handling interactive user input prompts.
+This section covers how to annotate code with comments, print output to stdout and stderr, embed expressions into strings via **string interpolation**, write multiline strings, and read interactive user input.
+
+---
+
+## Comments
+
+Zen C uses the same comment syntax as C, plus a documentation comment form:
+
+| Syntax | Kind | Description |
+| :--- | :--- | :--- |
+| `// ...` | Line comment | Ignored until the end of the line. |
+| `/* ... */` | Block comment | Can span several lines. |
+| `/// ...` | Documentation comment | Attached to the next declaration; collected by `zc-doc`. |
+
+```zenc
+/// Returns the area of a width-by-height rectangle.
+fn area(width: int, height: int) -> int {
+    // Multiply the two sides.
+    return width * height; /* inline block comment */
+}
+
+fn main() {
+    println "Area: {area(3, 4)}"; // prints 12
+}
+```
+
+Running `zc-doc` on this file produces Markdown that includes the `///` text above the signature of `area`. You will see more of `zc-doc` in [Chapter 15](ch15-04-developer-tooling.md).
 
 ---
 
@@ -15,16 +41,15 @@ Zen C includes built-in keywords for printing formatted text to standard output 
 | `eprint "..."` | `stderr` | No | Prints error output to `stderr` without adding a newline. |
 | `eprintln "..."` | `stderr` | **Yes** | Prints error output to `stderr` **with** an automatic trailing newline. |
 
-**Listing 3-22: `list3-22.zc`**
-
+**Listing 3-5**
 ```zenc
- 1 | fn main() {
- 2 |     print "Hello ";
- 3 |     println "world!";
- 4 |
- 5 |     eprint "Warning: ";
- 6 |     eprintln "low disk space!";
- 7 | }
+fn main() {
+    print "Hello ";
+    println "world!";
+
+    eprint "Warning: ";
+    eprintln "low disk space!";
+}
 ```
 
 Output:
@@ -50,16 +75,15 @@ Zen C allows string literals to be used directly as statements for rapid, concis
 | `!"Err"` | `eprintln "Err"` | Prints to `stderr` **with** newline |
 | `!"Err"..` | `eprint "Err"` | Prints to `stderr` **without** newline |
 
-**Listing 3-23: `list3-23.zc`**
-
+**Listing 3-6**
 ```zenc
- 1 | fn main() {
- 2 |     "Processing item"..; // Equivalent to print
- 3 |     " Done!";            // Equivalent to println
- 4 |
- 5 |     !"Critical Error!"..; // Equivalent to eprint
- 6 |     !" Details follow.";  // Equivalent to eprintln
- 7 | }
+fn main() {
+    "Processing item"..; // Equivalent to print
+    " Done!";            // Equivalent to println
+
+    !"Critical Error!"..; // Equivalent to eprint
+    !" Details follow.";  // Equivalent to eprintln
+}
 ```
 
 Output:
@@ -80,17 +104,16 @@ You can embed variables and expressions directly into string literals using `{}`
 
 In Zen C, string interpolation is **implicit**: any string literal containing `{...}` automatically transpiles into an interpolated string. You can also explicitly prefix a string with `f` (e.g., `f"..."`) to force format interpolation semantics.
 
-**Listing 3-24: `list3-24.zc`**
-
+**Listing 3-7**
 ```zenc
- 1 | let count = 42;
- 2 | let name = "Zen C";
- 3 |
- 4 | // Implicit interpolation
- 5 | println "Project: {name}, Items: {count}";
- 6 |
- 7 | // Shorthand printing with interpolation
- 8 | "Project: {name}, Items: {count}";
+let count = 42;
+let name = "Zen C";
+
+// Implicit interpolation
+println "Project: {name}, Items: {count}";
+
+// Shorthand printing with interpolation
+"Project: {name}, Items: {count}";
 ```
 
 Output:
@@ -103,11 +126,10 @@ Project: Zen C, Items: 42
 
 To produce literal `{` or `}` characters inside an interpolated string, double the braces (`{{` and `}}`):
 
-**Listing 3-25: `list3-25.zc`**
-
+**Listing 3-8**
 ```zenc
- 1 | let json = "JSON payload: {{\"status\": 200}}";
- 2 | println "{json}";
+let json = "JSON payload: {{\"status\": 200}}";
+println "{json}";
 ```
 
 Output:
@@ -172,17 +194,16 @@ Zen C provides a shorthand syntax for asking user input using the `?` prefix ope
 
 - `? "Enter age: " (age)`: Prints the prompt string and automatically scans the user input directly into `age`. Format specifiers are inferred based on the variable's type.
 
-**Listing 3-26: `list3-26.zc`**
-
+**Listing 3-9**
 ```zenc
- 1 | fn main() {
- 2 |     let age: int;
- 3 |
- 4 |     // Prompts "How old are you? " and scans user input into `age`
- 5 |     ? "How old are you? " (age);
- 6 |
- 7 |     println "You are {age} years old.";
- 8 | }
+fn main() {
+    let age: int;
+
+    // Prompts "How old are you? " and scans user input into `age`
+    ? "How old are you? " (age);
+
+    println "You are {age} years old.";
+}
 ```
 
 Output (with input `25`):
@@ -193,14 +214,4 @@ You are 25 years old.
 
 ---
 
-## Summary of Chapter 3
-
-In Chapter 3, you mastered all the core foundational concepts of Zen C:
-- **Variables & Constants** (`def`, `let`, type inference, `const`).
-- **Data Types** (scalar types, C interop types, arbitrary bit-width `iN`/`uN`, literals, fixed-size arrays `T[N]`).
-- **Functions & Lambdas** (named arguments, `const` args, defaults, closures `[=]`/`[&]`, raw pointers `fn*`, variadics `...`).
-- **Control Flow** (`if`, `match` pattern matching, `ref` binding, range loops, enumerated iteration, early-return guard clauses).
-- **Operators** (operator overloading `add`/`sub`/`get`/`set`, string equality rules, pipeline `|>`, null coalescing `??`, safe navigation `?.`, auto-dereference).
-- **Printing and String Interpolation** (`print`/`println`/`eprint`/`eprintln`, string shorthands `"Hz"`/`!"Err"`, implicit `{}` interpolation, raw strings `r"..."`, multiline blocks `"""`, input prompts `?`).
-
-In **Chapter 4**, we will explore Zen C's automatic memory management and resource cleanup: **Drop and Memory Safety (RAII)**!
+Next, let's look at how Zen C controls the flow of execution with conditionals and loops!

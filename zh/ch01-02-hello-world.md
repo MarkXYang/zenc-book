@@ -21,12 +21,11 @@ cd hello_world
 
 在编辑器中打开 `main.zc` 并输入以下代码：
 
-**代码清单 1-1：`list1-1.zc`**
-
+**代码清单 1-1**
 ```zenc
- 1 | fn main() {
- 2 |     println "Hello, world!";
- 3 | }
+fn main() {
+    println "Hello, world!";
+}
 ```
 
 保存该文件。

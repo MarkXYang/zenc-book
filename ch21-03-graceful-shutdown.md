@@ -1,4 +1,4 @@
-# 21.3 Graceful Shutdown and Cleanup
+# Graceful Shutdown and Cleanup
 
 In production systems, servers must shut down cleanly during rolling updates, configuration reloads, or when receiving OS termination signals (`SIGINT`, `SIGTERM`).
 
@@ -68,7 +68,7 @@ When a worker completes `handle_connection(stream)` or when the listener exits s
 
 Listing 21-3 encapsulates the listener, bounded task queue, worker threads, and thread-safe transaction counters into a cohesive `GracefulServer` struct.
 
-**Listing 21-3**: `list21-3.zc` — Graceful shutdown and cleanup (`examples/ch21/ch21-03-graceful-shutdown/main.zc`)
+**Listing 21-3**: Graceful shutdown and cleanup (`examples/ch21/ch21-03-graceful-shutdown/main.zc`)
 
 ```zenc
 // File: examples/ch21/ch21-03-graceful-shutdown/main.zc

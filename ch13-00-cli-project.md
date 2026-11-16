@@ -1,4 +1,4 @@
-# Chapter 13: An I/O Project: Building `zgrep`
+# An I/O Project: Building `zgrep`
 
 Over the first twelve chapters, we have toured the core foundations of Zen C—ownership, pointers, structs, enums, modules, dynamic collections (`Vec<T>`, `String`), recoverable error handling (`Result<T>`, `Option<T>`, `?`), generics, automated `test` blocks, and zero-overhead C interoperability.
 

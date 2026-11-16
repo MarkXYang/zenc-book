@@ -105,23 +105,22 @@ u.active = true;
 
 要访问保存在结构体中的值，请使用**点号标记法（dot notation）**（`.`）：
 
-**代码清单 5-1：`list5-1.zc`**
-
+**代码清单 5-1**
 ```zenc
- 1 | let user1 = User {
- 2 |     username: "mark",
- 3 |     email: "mark@example.com",
- 4 |     sign_in_count: 1,
- 5 |     active: true,
- 6 | };
- 7 |
- 8 | println "User: {user1.username}, Logins: {user1.sign_in_count}";
- 9 |
-10 | // Update fields on a mutable instance declared with 'let':
-11 | user1.email = "mark.new@example.com";
-12 | user1.sign_in_count = user1.sign_in_count + 1;
-13 |
-14 | println "Updated email: {user1.email}";
+let user1 = User {
+    username: "mark",
+    email: "mark@example.com",
+    sign_in_count: 1,
+    active: true,
+};
+
+println "User: {user1.username}, Logins: {user1.sign_in_count}";
+
+// Update fields on a mutable instance declared with 'let':
+user1.email = "mark.new@example.com";
+user1.sign_in_count = user1.sign_in_count + 1;
+
+println "Updated email: {user1.email}";
 ```
 
 输出：
@@ -153,15 +152,14 @@ Zen C 支持对结构体变量进行**基于模式的解构**。这允许你在�
 
 当局部变量名称与结构体字段名称相同时：
 
-**代码清单 5-2：`list5-2.zc`**
-
+**代码清单 5-2**
 ```zenc
- 1 | let p = Point { x: 10, y: 20 };
- 2 |
- 3 | // Unpacks p.x into 'x', and p.y into 'y'
- 4 | let Point { x, y } = p;
- 5 |
- 6 | println "x = {x}, y = {y}";
+let p = Point { x: 10, y: 20 };
+
+// Unpacks p.x into 'x', and p.y into 'y'
+let Point { x, y } = p;
+
+println "x = {x}, y = {y}";
 ```
 
 输出：
@@ -173,12 +171,11 @@ x = 10, y = 20
 
 如果你希望将字段赋值给具有不同名称的变量，请指定 `field_name: new_variable_name`：
 
-**代码清单 5-3：`list5-3.zc`**
-
+**代码清单 5-3**
 ```zenc
- 1 | let Point { x: pos_x, y: pos_y } = p;
- 2 |
- 3 | println "pos_x = {pos_x}, pos_y = {pos_y}";
+let Point { x: pos_x, y: pos_y } = p;
+
+println "pos_x = {pos_x}, pos_y = {pos_y}";
 ```
 
 输出：

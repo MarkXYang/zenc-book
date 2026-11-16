@@ -1,4 +1,4 @@
-# 13.3 Refactoring to Improve Modularity and Error Handling
+# Refactoring to Improve Modularity and Error Handling
 
 Before we add the line-searching algorithm and environment variable support, let's refactor our prototype into a clean, modular, and testable architecture. We will make four concrete improvements:
 

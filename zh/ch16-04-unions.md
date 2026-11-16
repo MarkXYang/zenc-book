@@ -1,4 +1,4 @@
-# 16.4 无标签联合体与位操作
+# 无标签联合体
 
 在 `struct` 中，每个字段都占据其独有的字节偏移量，结构体的大小至少等于其所有字段大小的总和。与此相反，在**无标签 `union`** 中，**每个字段都起始于字节偏移量 `0`，并共享完全相同的内存块**。
 
@@ -61,7 +61,7 @@ let mantissa: u32   = fb.bits & 0x7FFFFF;         // 0x600000 (1.75 * 2^1 = 3.5)
 
 ## 3. 无标签 `union` 与带标签 `enum` 的对比
 
-在[第 6 章](ch06-00-enums-and-pattern-matching.md)中，你学习了 Zen C 的高级 `enum` 和类型（sum types），它们可以携带变体载荷并通过 `match` 进行穷尽性检查。在内部，带有载荷的 Zen C `enum` 是一个**由编译器管理的带标签联合体**：它在各变体载荷联合体的旁边存储一个整数判别标签（discriminant tag），并且只有在标签匹配时才允许你读取某个变体的数据。
+在[第 6 章](ch06-00-enums.md)中，你学习了 Zen C 的高级 `enum` 和类型（sum types），它们可以携带变体载荷并通过 `match` 进行穷尽性检查。在内部，带有载荷的 Zen C `enum` 是一个**由编译器管理的带标签联合体**：它在各变体载荷联合体的旁边存储一个整数判别标签（discriminant tag），并且只有在标签匹配时才允许你读取某个变体的数据。
 
 为什么 Zen C 还要提供底层的无标签 `union` 类型呢？
 
@@ -102,9 +102,9 @@ struct HardwareEvent {
 
 ## 4. 完整示例：字节覆盖、IEEE 754 位检查与硬件事件
 
-示例 16-4 展示了这三种模式：在 `IpAddress4` 中将四个 IPv4 字节与紧凑的 `u32` 覆盖，通过 `FloatBits` 提取 `-3.5f` 的 IEEE 754 符号、指数和尾数位，以及分发一个包含 `EventPayload` 联合体的 C 兼容 `HardwareEvent` 结构体。
+代码清单 16-4 展示了这三种模式：在 `IpAddress4` 中将四个 IPv4 字节与紧凑的 `u32` 覆盖，通过 `FloatBits` 提取 `-3.5f` 的 IEEE 754 符号、指数和尾数位，以及分发一个包含 `EventPayload` 联合体的 C 兼容 `HardwareEvent` 结构体。
 
-**示例 16-4**：无标签联合体与位操作（`examples/ch16/ch16-04-unions/main.zc`）
+**代码清单 16-4**：无标签联合体与位操作（`examples/ch16/ch16-04-unions/main.zc`）
 
 ```zenc
 // File: examples/ch16/ch16-04-unions/main.zc
@@ -179,7 +179,7 @@ fn main() {
 }
 ```
 
-使用 `zc run -q` 运行并验证示例 16-4：
+使用 `zc run -q` 运行并验证代码清单 16-4：
 
 ```text
 $ zc run -q examples/ch16/ch16-04-unions/main.zc

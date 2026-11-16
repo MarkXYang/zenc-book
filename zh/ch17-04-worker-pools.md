@@ -1,8 +1,8 @@
-# 17.4 异步工作池与任务分发
+# 工作池与任务分发
 
 在前面的小节中，我们探讨了原生线程创建（`Thread::spawn`）、基于锁的同步（`Mutex`、`CondVar`）以及点对点消息传递。在诸如网络服务器、游戏引擎、后台构建系统以及数据库查询引擎等现实系统级软件中，为每一个微任务都创建一个全新的 OS 线程会带来过高的操作系统开销。
 
-取而代之的是，生产环境系统通常使用**异步工作池**（通常称为线程池）：一组在后台持续运行的固定持久工作线程，从共享的并发任务队列中消费任务，并将结果发布回收集器中。
+取而代之的是，生产环境系统通常使用**工作池**（通常称为线程池）：一组在后台持续运行的固定持久工作线程，从共享的并发任务队列中消费任务，并将结果发布回收集器中。
 
 在本节中，我们将在 Zen C 中构建一个可复用的有界 **`ThreadPool`**，并深入探讨为什么 Zen C 倾向于使用显式的 1:1 OS 工作池，而非复杂的 `async`/`await` 状态机运行时。
 
@@ -169,11 +169,11 @@ fn worker_loop(queue: TaskQueue*, agg: ResultAggregator*) {
 
 ---
 
-## 5. 完整的可运行示例：示例 17-4
+## 5. 完整的可运行示例：代码清单 17-4
 
-示例 17-4 将我们的 `TaskQueue`、`ThreadPool` 和 `ResultAggregator` 组合成一个完整的可运行程序，该程序初始化一个包含 4 个工作线程的线程池，异步分发 8 个任务，并安全地等待所有任务完成。
+代码清单 17-4 将我们的 `TaskQueue`、`ThreadPool` 和 `ResultAggregator` 组合成一个完整的可运行程序，该程序初始化一个包含 4 个工作线程的线程池，异步分发 8 个任务，并安全地等待所有任务完成。
 
-**示例 17-4**：`list17-4.zc` —— 异步线程池与任务队列（`examples/ch17/ch17-04-worker-pools/main.zc`）
+**代码清单 17-4**：异步线程池与任务队列（`examples/ch17/ch17-04-worker-pools/main.zc`）
 
 ```zenc
 // File: examples/ch17/ch17-04-worker-pools/main.zc
@@ -394,7 +394,7 @@ fn main() {
 }
 ```
 
-使用 `zc run -q` 运行并验证示例 17-4：
+使用 `zc run -q` 运行并验证代码清单 17-4：
 
 ```console
 $ zc run -q examples/ch17/ch17-04-worker-pools/main.zc
@@ -412,6 +412,6 @@ Total computed sum: 2560
 - **1:1 OS 线程（`std/thread.zc`）**：使用 `Thread::spawn(fn[=]() { ... })` 创建原生线程，使用 `thread.join()` 汇合工作线程句柄，以及对工作负载进行分区以实现无锁的 Fork-Join 并行计算。
 - **共享状态同步（`std/sync.zc`）**：使用 `Mutex` 和 `RwLock` 保护多字段临界区，使用 `Once` 跨竞争线程执行一次性初始化设置，使用 `Barrier` 和 `Semaphore` 协调阶段，以及使用 `__atomic_fetch_add` 执行无锁原子自增。
 - **消息传递通道**：将固定容量环形缓冲区与 `Mutex` 及双 `CondVar` 变量（`not_empty` 与 `not_full`）相结合，构建零内存分配、感知背压的生产者-消费者通道。
-- **异步工作池**：将持久 OS 线程组织为一个带有界 `TaskQueue` 的可复用 `ThreadPool`，防止无休止地创建线程并提供可预测的内存占用。
+- **工作池**：将持久 OS 线程组织为一个带有界 `TaskQueue` 的可复用 `ThreadPool`，防止无休止地创建线程并提供可预测的内存占用。
 
 接下来，在**[第 18 章：多态：组合与 Trait 对象](ch18-00-polymorphism.md)**中，我们将研究 Zen C 如何通过胖指针（fat pointer）和 C11 虚方法表（`VTable`）实现运行时多态与动态分发。

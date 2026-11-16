@@ -1,4 +1,4 @@
-# 16.4 Untagged Unions and Bit Manipulation
+# Untagged Unions
 
 In a `struct`, every field occupies its own distinct byte offset, and the size of the struct is at least the sum of all its fields. In an **untagged `union`**, by contrast, **every field starts at byte offset `0` and shares the exact same block of memory**.
 
@@ -61,7 +61,7 @@ let mantissa: u32   = fb.bits & 0x7FFFFF;         // 0x600000 (1.75 * 2^1 = 3.5)
 
 ## 3. Untagged `union` vs. Tagged `enum`
 
-In [Chapter 6](ch06-00-enums-and-pattern-matching.md), you learned about Zen C's high-level `enum` sum types, which can carry variant payloads and are checked exhaustively by `match`. Internally, a Zen C `enum` with payloads is a **compiler-managed tagged union**: it stores an integer discriminant tag alongside a union of the variant payloads, and refuses to let you read a variant's data unless the tag matches.
+In [Chapter 6](ch06-00-enums.md), you learned about Zen C's high-level `enum` sum types, which can carry variant payloads and are checked exhaustively by `match`. Internally, a Zen C `enum` with payloads is a **compiler-managed tagged union**: it stores an integer discriminant tag alongside a union of the variant payloads, and refuses to let you read a variant's data unless the tag matches.
 
 Why does Zen C also provide raw untagged `union` types?
 

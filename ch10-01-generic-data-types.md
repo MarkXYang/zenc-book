@@ -31,8 +31,7 @@ Both functions have the exact same body; only the parameter and return types dif
 
 To parameterize a function over a type, place the type parameter name inside angle brackets (`<T>`) immediately after the function name:
 
-**Listing 10-1: `list10-1.zc`**
-
+**Listing 10-1**
 ```zenc
 fn max_val<T>(a: T, b: T) -> T {
     if a > b {
@@ -101,8 +100,7 @@ Because `first` and `second` both have type `T`, instantiating `Pair<int>` requi
 
 If you want fields to hold different generic types, you can declare multiple comma-separated type parameters, such as `<K, V>`:
 
-**Listing 10-2: `list10-2.zc`**
-
+**Listing 10-2**
 ```zenc
 struct Pair<T> {
     first: T;
@@ -144,8 +142,7 @@ You can use up to 8 generic type parameters in a definition, though in practice 
 
 As we saw with `Option<T>` and `Result<T>`, enums can also take generic type parameters to hold payloads of any type:
 
-**Listing 10-3: `list10-3.zc`**
-
+**Listing 10-3**
 ```zenc
 enum Maybe<T> {
     Just(T),
@@ -182,8 +179,7 @@ When `Maybe<int>` is instantiated, the compiler generates a specialized tagged u
 
 You can implement methods on generic structs and enums by specifying the type parameter in the `impl` header. Zen C supports both `impl Pair<T>` and `impl<T> Pair<T>` syntax:
 
-**Listing 10-4: `list10-4.zc`**
-
+**Listing 10-4**
 ```zenc
 struct Pair<T> {
     first: T;

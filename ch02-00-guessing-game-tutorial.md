@@ -31,19 +31,18 @@ touch main.zc
 
 Let's start by prompting the user for input and echoing the input back to the screen. Open `main.zc` and add the following code:
 
-**Listing 2-1: `list2-1.zc`**
-
+**Listing 2-1**
 ```zenc
- 1 | fn main() {
- 2 |     println "=== Guess the Number! ===";
- 3 |
- 4 |     print "Please input your guess: ";
- 5 |
- 6 |     let guess: int = 0;
- 7 |     scanf("%d", &guess);
- 8 |
- 9 |     println "You guessed: {guess}";
-10 | }
+fn main() {
+    println "=== Guess the Number! ===";
+
+    print "Please input your guess: ";
+
+    let guess: int = 0;
+    scanf("%d", &guess);
+
+    println "You guessed: {guess}";
+}
 ```
 
 ### Explaining the Code Line by Line
@@ -83,25 +82,24 @@ Next, we need to generate a random secret number between 1 and 100 so that the g
 
 Update `main.zc` to seed the random number generator and produce a secret integer:
 
-**Listing 2-2: `list2-2.zc`**
-
+**Listing 2-2**
 ```zenc
- 1 | include <time.h>
- 2 |
- 3 | fn main() {
- 4 |     println "=== Guess the Number! ===";
- 5 |
- 6 |     // Seed the random number generator with current Unix time
- 7 |     srand(time(0));
- 8 |     let secret_number = (rand() % 100) + 1;
- 9 |
-10 |     print "Please input your guess: ";
-11 |
-12 |     let guess: int = 0;
-13 |     scanf("%d", &guess);
-14 |
-15 |     println "You guessed: {guess}";
-16 | }
+include <time.h>
+
+fn main() {
+    println "=== Guess the Number! ===";
+
+    // Seed the random number generator with current Unix time
+    srand(time(0));
+    let secret_number = (rand() % 100) + 1;
+
+    print "Please input your guess: ";
+
+    let guess: int = 0;
+    scanf("%d", &guess);
+
+    println "You guessed: {guess}";
+}
 ```
 
 ### Understanding Type Inference (`let`)
@@ -125,32 +123,31 @@ Now that we have both a user guess and a secret number, we can compare them usin
 
 Update `main.zc`:
 
-**Listing 2-3: `list2-3.zc`**
-
+**Listing 2-3**
 ```zenc
- 1 | include <time.h>
- 2 |
- 3 | fn main() {
- 4 |     println "=== Guess the Number! ===";
- 5 |
- 6 |     srand(time(0));
- 7 |     let secret_number = (rand() % 100) + 1;
- 8 |
- 9 |     print "Please input your guess: ";
-10 |
-11 |     let guess: int = 0;
-12 |     scanf("%d", &guess);
-13 |
-14 |     println "You guessed: {guess}";
-15 |
-16 |     if guess < secret_number {
-17 |         println "Too small!";
-18 |     } else if guess > secret_number {
-19 |         println "Too big!";
-20 |     } else {
-21 |         println "You win!";
-22 |     }
-23 | }
+include <time.h>
+
+fn main() {
+    println "=== Guess the Number! ===";
+
+    srand(time(0));
+    let secret_number = (rand() % 100) + 1;
+
+    print "Please input your guess: ";
+
+    let guess: int = 0;
+    scanf("%d", &guess);
+
+    println "You guessed: {guess}";
+
+    if guess < secret_number {
+        println "Too small!";
+    } else if guess > secret_number {
+        println "Too big!";
+    } else {
+        println "You win!";
+    }
+}
 ```
 
 Output:
@@ -175,39 +172,38 @@ Currently, the game exits after taking only a single guess. To allow the player 
 
 Update `main.zc` to include a `loop` block and `break` statements:
 
-**Listing 2-4: `list2-4.zc`**
-
+**Listing 2-4**
 ```zenc
- 1 | include <time.h>
- 2 |
- 3 | fn main() {
- 4 |     println "=== Guess the Number! ===";
- 5 |
- 6 |     // Seed the random number generator
- 7 |     srand(time(0));
- 8 |     let secret_number = (rand() % 100) + 1;
- 9 |
-10 |     loop {
-11 |         print "Please input your guess: ";
-12 |
-13 |         let guess: int = 0;
-14 |         if scanf("%d", &guess) != 1 {
-15 |             println "Please enter a valid integer!";
-16 |             break;
-17 |         }
-18 |
-19 |         println "You guessed: {guess}";
-20 |
-21 |         if guess < secret_number {
-22 |             println "Too small!";
-23 |         } else if guess > secret_number {
-24 |             println "Too big!";
-25 |         } else {
-26 |             println "You win! You guessed the secret number!";
-27 |             break; // Exit the loop on victory
-28 |         }
-29 |     }
-30 | }
+include <time.h>
+
+fn main() {
+    println "=== Guess the Number! ===";
+
+    // Seed the random number generator
+    srand(time(0));
+    let secret_number = (rand() % 100) + 1;
+
+    loop {
+        print "Please input your guess: ";
+
+        let guess: int = 0;
+        if scanf("%d", &guess) != 1 {
+            println "Please enter a valid integer!";
+            break;
+        }
+
+        println "You guessed: {guess}";
+
+        if guess < secret_number {
+            println "Too small!";
+        } else if guess > secret_number {
+            println "Too big!";
+        } else {
+            println "You win! You guessed the secret number!";
+            break; // Exit the loop on victory
+        }
+    }
+}
 ```
 
 ### Explaining the Loop Control Flow
@@ -222,39 +218,38 @@ Update `main.zc` to include a `loop` block and `break` statements:
 
 Here is the complete, working code for your Zen C Guessing Game:
 
-**Listing 2-5: `list2-5.zc`**
-
+**Listing 2-5**
 ```zenc
- 1 | include <time.h>
- 2 |
- 3 | fn main() {
- 4 |     println "=== Guess the Number! ===";
- 5 |
- 6 |     // Seed the random number generator
- 7 |     srand(time(0));
- 8 |     let secret_number = (rand() % 100) + 1;
- 9 |
-10 |     loop {
-11 |         print "Please input your guess: ";
-12 |
-13 |         let guess: int = 0;
-14 |         if scanf("%d", &guess) != 1 {
-15 |             println "Please enter a valid integer!";
-16 |             break;
-17 |         }
-18 |
-19 |         println "You guessed: {guess}";
-20 |
-21 |         if guess < secret_number {
-22 |             println "Too small!";
-23 |         } else if guess > secret_number {
-24 |             println "Too big!";
-25 |         } else {
-26 |             println "You win! You guessed the secret number!";
-27 |             break;
-28 |         }
-29 |     }
-30 | }
+include <time.h>
+
+fn main() {
+    println "=== Guess the Number! ===";
+
+    // Seed the random number generator
+    srand(time(0));
+    let secret_number = (rand() % 100) + 1;
+
+    loop {
+        print "Please input your guess: ";
+
+        let guess: int = 0;
+        if scanf("%d", &guess) != 1 {
+            println "Please enter a valid integer!";
+            break;
+        }
+
+        println "You guessed: {guess}";
+
+        if guess < secret_number {
+            println "Too small!";
+        } else if guess > secret_number {
+            println "Too big!";
+        } else {
+            println "You win! You guessed the secret number!";
+            break;
+        }
+    }
+}
 ```
 
 ---

@@ -12,29 +12,28 @@ Zen C supports two forms of struct reuse:
 
 When you write `use Type;` without a field name, Zen C **flattens** all the fields of the target type into the outer struct. Furthermore, all methods defined on the embedded type are automatically inherited by the outer struct!
 
-**Listing 5-4: `list5-4.zc`**
-
+**Listing 5-8**
 ```zenc
- 1 | struct Entity {
- 2 |     id: int;
- 3 | }
- 4 |
- 5 | struct Player {
- 6 |     // Mixin (Unnamed): Flattens fields
- 7 |     use Entity;  // Adds 'id' to Player directly
- 8 |     name: string;
- 9 | }
-10 |
-11 | fn main() {
-12 |     // When initializing, provide the flattened fields directly:
-13 |     let player = Player {
-14 |         id: 1,
-15 |         name: "Hero",
-16 |     };
-17 |
-18 |     // Direct access to mixed-in fields:
-19 |     println "Player ID: {player.id}, Name: {player.name}";
-20 | }
+struct Entity {
+    id: int;
+}
+
+struct Player {
+    // Mixin (Unnamed): Flattens fields
+    use Entity;  // Adds 'id' to Player directly
+    name: string;
+}
+
+fn main() {
+    // When initializing, provide the flattened fields directly:
+    let player = Player {
+        id: 1,
+        name: "Hero",
+    };
+
+    // Direct access to mixed-in fields:
+    println "Player ID: {player.id}, Name: {player.name}";
+}
 ```
 
 Output:
@@ -43,29 +42,28 @@ Player ID: 1, Name: Hero
 ```
 
 > [!NOTE]
-> **Mixin Method Forwarding**: If `Entity` implements methods (such as `id_string()`), `player.id_string()` can be called directly on `Player` instances! We will explore this in detail in [Section 5.2](ch05-02-method-syntax.md).
+> **Mixin Method Forwarding**: If `Entity` implements methods (such as `id_string()`), `player.id_string()` can be called directly on `Player` instances! This works because `use` forwards the embedded struct's methods, which you learned to define in [Method Syntax](ch05-03-method-syntax.md).
 
 ### 2. Named Composition (`use name: Type;`)
 
 Named composition embeds the component as a nested field. It is accessed via `outer.field_name`:
 
-**Listing 5-5: `list5-5.zc`**
-
+**Listing 5-9**
 ```zenc
- 1 | struct Match {
- 2 |     // Composition (Named): Nests fields
- 3 |     use p1: Player; // Accessed via match.p1
- 4 |     use p2: Player; // Accessed via match.p2
- 5 | }
- 6 |
- 7 | fn main() {
- 8 |     let m = Match {
- 9 |         p1: Player { id: 1, name: "Alice" },
-10 |         p2: Player { id: 2, name: "Bob" },
-11 |     };
-12 |
-13 |     println "Match: {m.p1.name} (id {m.p1.id}) vs {m.p2.name} (id {m.p2.id})";
-14 | }
+struct Match {
+    // Composition (Named): Nests fields
+    use p1: Player; // Accessed via match.p1
+    use p2: Player; // Accessed via match.p2
+}
+
+fn main() {
+    let m = Match {
+        p1: Player { id: 1, name: "Alice" },
+        p2: Player { id: 2, name: "Bob" },
+    };
+
+    println "Match: {m.p1.name} (id {m.p1.id}) vs {m.p2.name} (id {m.p2.id})";
+}
 ```
 
 Output:
@@ -79,35 +77,34 @@ Match: Alice (id 1) vs Bob (id 2)
 
 In [Section 5.1](ch05-01-defining-structs.md), we learned that structs can embed other structs using the `use` keyword. When a struct embeds another type via a mixin, all methods defined on the embedded type are **automatically available** on instances of the outer struct:
 
-**Listing 5-14: `list5-14.zc`**
-
+**Listing 5-10**
 ```zenc
- 1 | struct Rectangle {
- 2 |     width: int;
- 3 |     height: int;
- 4 | }
- 5 |
- 6 | impl Rectangle {
- 7 |     fn area(const self) -> int {
- 8 |         return self.width * self.height;
- 9 |     }
-10 | }
-11 |
-12 | struct Window {
-13 |     use Rectangle; // Mixin: flattens fields and inherits Rectangle methods!
-14 |     title: string;
-15 | }
-16 |
-17 | fn main() {
-18 |     let win = Window {
-19 |         width: 800,
-20 |         height: 600,
-21 |         title: "Main Application",
-22 |     };
-23 |
-24 |     // area() is inherited directly from Rectangle!
-25 |     println "Window '{win.title}' area: {win.area()} px";
-26 | }
+struct Rectangle {
+    width: int;
+    height: int;
+}
+
+impl Rectangle {
+    fn area(const self) -> int {
+        return self.width * self.height;
+    }
+}
+
+struct Window {
+    use Rectangle; // Mixin: flattens fields and inherits Rectangle methods!
+    title: string;
+}
+
+fn main() {
+    let win = Window {
+        width: 800,
+        height: 600,
+        title: "Main Application",
+    };
+
+    // area() is inherited directly from Rectangle!
+    println "Window '{win.title}' area: {win.area()} px";
+}
 ```
 
 Output:

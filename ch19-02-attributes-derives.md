@@ -1,4 +1,4 @@
-# Attributes and `@derive`
+# Attributes and Smart Derives
 
 Attributes in Zen C attach metadata to structs, enums, functions, and fields using `@name` or `@name(args)` syntax. They control C-level memory layout, optimizer hints, startup hooks, and automatic trait implementations.
 

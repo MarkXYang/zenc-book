@@ -1,4 +1,4 @@
-# Traits：定义共享行为
+# Trait：定义共享行为
 
 **Trait**（特征）用于告知 Zen C 编译器某个特定类型所拥有且可与其他类型共享的功能。Trait 允许我们以抽象的方式定义共享行为：它们的作用类似于 Go 或 Java 中的接口（interface），或是 Rust 中的 trait，指定了一组实现类型必须提供的方法签名。
 
@@ -55,8 +55,7 @@ impl <TraitName> for <StructName> {
 
 让我们在两种不同的媒体类型 `NewsArticle` 和 `Tweet` 上实现 `Summary` trait：
 
-**代码清单 10-5: `list10-5.zc`**
-
+**代码清单 10-5**
 ```zenc
 trait Summary {
     fn summarize(self) -> string;
@@ -110,6 +109,17 @@ New tweet:   @zenc_lang: Zero-cost abstractions that compile to clean C11!
 
 在具体实例上直接调用 trait 方法（`article.summarize()`）会在编译期静态解析为 `NewsArticle__Summary__summarize(&article)`。
 
+> [!WARNING]
+> **返回的插值字符串是临时的。** `return "@{self.username}: {self.content}";` 会在一个属于该行代码的静态缓冲区中构建文本，并返回指向该缓冲区的 `string`（`char*`）。下一次调用同一方法时会覆盖该缓冲区：
+>
+> ```zenc
+> let a = tweet1.summarize();
+> let b = tweet2.summarize();
+> println "{a} | {b}";   // prints tweet2's summary twice
+> ```
+>
+> 像 `println "{tweet.summarize()}"` 这样立即使用结果是安全的。如果需要保留文本，请改为返回拥有所有权的 `String`：将签名改为 `-> String`，并写成 `return String::from("@{self.username}: {self.content}");`。`String` 会通过 `Drop` 释放其内存。你将在[第 8 章](ch08-02-strings.md)中进一步了解 `String`。
+
 > [!NOTE]
 > **防止反向 `impl` 语法的编译器保护**：
 > 来自其他语言的开发者有时会误写为 `impl Struct for Trait` 而不是 `impl Trait for Struct`。如果你颠倒了顺序，`zc` 会立即捕获该错误并给出清晰的诊断：
@@ -126,8 +136,7 @@ New tweet:   @zenc_lang: Zero-cost abstractions that compile to clean C11!
 
 在 Zen C 中，你可以直接使用 trait 名称作为参数类型（`item: Summary`）。当你传递指向实现 `Summary` 的任何结构体的指针（例如 `&article` 或 `&tweet`）时，编译器会自动将其打包为 **trait 对象**：
 
-**代码清单 10-6: `list10-6.zc`**
-
+**代码清单 10-6**
 ```zenc
 trait Summary {
     fn summarize(self) -> string;
@@ -251,8 +260,7 @@ impl Drop for Box {
 
 Zen C 提供了两种编写多态函数的不同方式，各自适用于不同的系统工程需求：
 
-**代码清单 10-7: `list10-7.zc`**
-
+**代码清单 10-7**
 ```zenc
 struct Circle {
     radius: f64;

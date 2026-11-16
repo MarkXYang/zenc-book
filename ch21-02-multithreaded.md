@@ -1,4 +1,4 @@
-# 21.2 Turning Our Single-Threaded Server into a Multithreaded Server
+# Turning Our Single-Threaded Server into a Multithreaded Server
 
 In [Section 21.1](ch21-01-single-threaded.md), we identified the primary flaw of our single-threaded web server: if one request is slow (such as a slow disk read, database query, or slow client connection), all other incoming requests stall behind it.
 
@@ -65,7 +65,7 @@ Now, even if one request hits a slow endpoint (like `/sleep`), other worker thre
 
 Listing 21-2 implements our multithreaded web server with a 4-worker thread pool, demonstrating that a slow `/sleep` request does not block concurrent responses.
 
-**Listing 21-2**: `list21-2.zc` — Multithreaded web server with worker thread pool (`examples/ch21/ch21-02-multithreaded/main.zc`)
+**Listing 21-2**: Multithreaded web server with worker thread pool (`examples/ch21/ch21-02-multithreaded/main.zc`)
 
 ```zenc
 // File: examples/ch21/ch21-02-multithreaded/main.zc

@@ -1,4 +1,4 @@
-# 16.2 Arena 与自定义分配器
+# Arena 分配器
 
 当每个对象具有独立且不可预测的生命周期时，使用 `alloc<T>` 和 `dealloc<T>` 在堆上分配单个对象非常合适。然而，许多现实系统会分配成百上千个**生命周期完全同步**的小对象：
 
@@ -92,9 +92,9 @@ arena.restore(mark);
 
 ## 4. 完整示例：Arena 分配的表达式树与检查点
 
-示例 16-2 在一个 4 KB 的 `Arena` 内部构建了一个 `(10 + 20) * 3` 的表达式树。每个 `AstNode` 结构体及其标签字符串（`arena.dup_str`）都通过线性推进分配紧挨着存放在同一个连续缓冲区中。随后，它在调用 `arena.save()` 后分配了一个临时的 128 整数暂存表，使用 `arena.restore(mark)` 回收暂存空间的同时验证 AST 依然有效，最后使用 `arena.reset()` 重置整个 arena。
+代码清单 16-2 在一个 4 KB 的 `Arena` 内部构建了一个 `(10 + 20) * 3` 的表达式树。每个 `AstNode` 结构体及其标签字符串（`arena.dup_str`）都通过线性推进分配紧挨着存放在同一个连续缓冲区中。随后，它在调用 `arena.save()` 后分配了一个临时的 128 整数暂存表，使用 `arena.restore(mark)` 回收暂存空间的同时验证 AST 依然有效，最后使用 `arena.reset()` 重置整个 arena。
 
-**示例 16-2**：区域分配、字符串复制与检查点机制（`examples/ch16/ch16-02-arenas/main.zc`）
+**代码清单 16-2**：区域分配、字符串复制与检查点机制（`examples/ch16/ch16-02-arenas/main.zc`）
 
 ```zenc
 // File: examples/ch16/ch16-02-arenas/main.zc
@@ -181,7 +181,7 @@ fn main() {
 }
 ```
 
-使用 `zc run -q` 运行并验证示例 16-2：
+使用 `zc run -q` 运行并验证代码清单 16-2：
 
 ```text
 $ zc run -q examples/ch16/ch16-02-arenas/main.zc

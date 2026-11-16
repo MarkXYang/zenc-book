@@ -39,21 +39,20 @@ fn user_get_name(u: User) -> string {
 
 Now, in `main.zc`:
 
-**Listing 7-8: `list7-8.zc`**
-
+**Listing 7-8**
 ```zenc
- 1 | // main.zc
- 2 | import "user.zc" as user;
- 3 |
- 4 | fn main() {
- 5 |     let u = user::user_new(101, "Alice", "secret_hash_987");
- 6 |
- 7 |     // OK: Accessing data through public API
- 8 |     println "User ID: {user::user_get_id(u)}, Name: {user::user_get_name(u)}";
- 9 |
-10 |     // COMPILE ERROR: Cannot access private field 'password_hash' of opaque struct
-11 |     // println "Hash: {u.password_hash}";
-12 | }
+// main.zc
+import "user.zc" as user;
+
+fn main() {
+    let u = user::user_new(101, "Alice", "secret_hash_987");
+
+    // OK: Accessing data through public API
+    println "User ID: {user::user_get_id(u)}, Name: {user::user_get_name(u)}";
+
+    // COMPILE ERROR: Cannot access private field 'password_hash' of opaque struct
+    // println "Hash: {u.password_hash}";
+}
 ```
 
 Output:
@@ -102,24 +101,23 @@ fn account_id_to_int(aid: AccountID) -> int {
 
 Outside of `types.zc`:
 
-**Listing 7-9: `list7-9.zc`**
-
+**Listing 7-9**
 ```zenc
- 1 | // main.zc
- 2 | import "types.zc";
- 3 |
- 4 | fn main() {
- 5 |     let uid: UserID = make_user_id(101);
- 6 |     let aid: AccountID = make_account_id(5001);
- 7 |
- 8 |     println "Domain types: UserID = {user_id_to_int(uid)}, AccountID = {account_id_to_int(aid)}";
- 9 |
-10 |     // COMPILE ERROR: Type validation failed. Expected 'int32_t', but got 'UserID'
-11 |     // let raw_int: int = uid;
-12 |
-13 |     // COMPILE ERROR: Cannot assign AccountID to UserID!
-14 |     // let wrong: UserID = aid;
-15 | }
+// main.zc
+import "types.zc";
+
+fn main() {
+    let uid: UserID = make_user_id(101);
+    let aid: AccountID = make_account_id(5001);
+
+    println "Domain types: UserID = {user_id_to_int(uid)}, AccountID = {account_id_to_int(aid)}";
+
+    // COMPILE ERROR: Type validation failed. Expected 'int32_t', but got 'UserID'
+    // let raw_int: int = uid;
+
+    // COMPILE ERROR: Cannot assign AccountID to UserID!
+    // let wrong: UserID = aid;
+}
 ```
 
 Output:

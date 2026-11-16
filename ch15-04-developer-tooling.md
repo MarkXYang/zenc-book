@@ -1,4 +1,4 @@
-# 15.4 Developer Tooling: `zc-doc`, `zc-format`, REPL, and LSP
+# Developer Tooling: `zc-doc`, `zc-format`, REPL, and LSP
 
 A productive systems language needs more than just a compiler. Zen C ships with an integrated suite of developer tools that share the compiler's own lexer, parser, and type checker:
 
@@ -53,7 +53,7 @@ $ zc check --json bad.zc
 
 Let's examine Listing 15-4, a documented `TempLog` module that we can run through `zc-doc`, `zc-format`, and `zc check`:
 
-**Listing 15-4: `list15-4.zc` — A documented temperature-logging module**
+**Listing 15-4: A documented temperature-logging module**
 
 ```zenc
 // File: examples/ch15/ch15-04-developer-tooling/main.zc

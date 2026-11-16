@@ -1,6 +1,6 @@
-# Functions and Lambdas
+# Functions
 
-Functions are the fundamental building blocks of executable code in Zen C. Zen C provides modern function syntax, named arguments, read-only parameters, default arguments, closures (lambdas), C-compatible raw function pointers (`fn*`), and native C variadic functions.
+Functions are the fundamental building blocks of executable code in Zen C. This section covers function syntax, named arguments, read-only parameters, and default arguments. Closures, raw function pointers (`fn*`), and C variadic functions come later in the book.
 
 ---
 
@@ -46,35 +46,34 @@ This guarantees at compile-time that the function will not mutate the passed arg
 
 Functions can define default values for trailing parameters. Default values can be literals, expressions evaluated at the call site, or complex initializers like struct constructors:
 
-**Listing 3-4: `list3-4.zc`**
-
+**Listing 3-4**
 ```zenc
- 1 | // 1. Literal default value
- 2 | fn increment(val: int, amount: int = 1) -> int {
- 3 |     return val + amount;
- 4 | }
- 5 |
- 6 | // 2. Expression default value (evaluated at call site)
- 7 | fn offset(val: int, pad: int = 10 * 2) -> int {
- 8 |     return val + pad;
- 9 | }
-10 |
-11 | // 3. Struct default value
-12 | struct Config {
-13 |     debug: bool;
-14 | }
-15 |
-16 | fn init_app(cfg: Config = Config { debug: true }) {
-17 |     if cfg.debug {
-18 |         println "Debug Mode Enabled";
-19 |     }
-20 | }
-21 |
-22 | fn main() {
-23 |     println "{increment(10)}";  // Uses amount = 1 -> 11
-24 |     println "{offset(5)}";     // Uses pad = 20 -> 25
-25 |     init_app();               // Uses default Config struct -> Prints "Debug Mode Enabled"
-26 | }
+// 1. Literal default value
+fn increment(val: int, amount: int = 1) -> int {
+    return val + amount;
+}
+
+// 2. Expression default value (evaluated at call site)
+fn offset(val: int, pad: int = 10 * 2) -> int {
+    return val + pad;
+}
+
+// 3. Struct default value
+struct Config {
+    debug: bool;
+}
+
+fn init_app(cfg: Config = Config { debug: true }) {
+    if cfg.debug {
+        println "Debug Mode Enabled";
+    }
+}
+
+fn main() {
+    println "{increment(10)}";  // Uses amount = 1 -> 11
+    println "{offset(5)}";     // Uses pad = 20 -> 25
+    init_app();               // Uses default Config struct -> Prints "Debug Mode Enabled"
+}
 ```
 
 Output:

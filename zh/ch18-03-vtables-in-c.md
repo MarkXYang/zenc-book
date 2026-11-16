@@ -1,4 +1,4 @@
-# 18.3 C11 底层虚表（Vtable）机制
+# C11 底层虚表（Vtable）机制
 
 Zen C 是如何在纯 C11 中实现动态分发，而无需任何 C++ 运行时库（`libstdc++`）或隐藏的每对象 `vptr` 头部开销的？
 
@@ -80,11 +80,11 @@ Shape s_c1 = (Shape){
 
 ## 3. 完整示例：在运行时验证结构体大小与虚表共享
 
-示例 18-3 在运行中的 Zen C 代码中验证了这两项架构保证：
+代码清单 18-3 在运行中的 Zen C 代码中验证了这两项架构保证：
 1. `sizeof(Circle)` 为 **4 字节**，`sizeof(Rectangle)` 为 **8 字节**（具体结构体上零 `vptr` 开销），而 `sizeof(Shape)` 为 **16 字节**（两个 8 字节指针）。
 2. 通过检查 `s_c1`、`s_c2` 和 `s_r1` 的原始 `{ self_ptr, vtable_ptr }` 字，我们验证了 `s_c1` 和 `s_c2` 指向不同的 `.self` 地址（`&c1` 与 `&c2`），同时共享**完全相同**的静态 `Circle__Shape__VTable` 地址，而 `s_r1` 则指向 `Rectangle__Shape__VTable`。
 
-**示例 18-3**：检查胖指针布局与虚表共享（`examples/ch18/ch18-03-vtables-in-c/main.zc`）
+**代码清单 18-3**：检查胖指针布局与虚表共享（`examples/ch18/ch18-03-vtables-in-c/main.zc`）
 
 ```zenc
 // File: examples/ch18/ch18-03-vtables-in-c/main.zc
@@ -172,7 +172,7 @@ fn main() {
 }
 ```
 
-使用 `zc run -q` 运行并验证示例 18-3：
+使用 `zc run -q` 运行并验证代码清单 18-3：
 
 ```text
 $ zc run -q examples/ch18/ch18-03-vtables-in-c/main.zc

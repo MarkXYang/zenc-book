@@ -1,4 +1,4 @@
-# Method Syntax and impl Blocks
+# Method Syntax
 
 *Methods* are similar to functions: they are declared with the `fn` keyword, accept parameters, return values, and contain code that runs when called. However, methods differ from regular functions in two key ways:
 
@@ -11,27 +11,26 @@
 
 Let's start with a `Rectangle` struct and define an `area` method to calculate its surface area:
 
-**Listing 5-9: `list5-9.zc`**
-
+**Listing 5-4**
 ```zenc
- 1 | struct Rectangle {
- 2 |     width: int;
- 3 |     height: int;
- 4 | }
- 5 |
- 6 | // Attach methods to Rectangle inside an impl block
- 7 | impl Rectangle {
- 8 |     fn area(const self) -> int {
- 9 |         return self.width * self.height;
-10 |     }
-11 | }
-12 |
-13 | fn main() {
-14 |     let rect = Rectangle { width: 30, height: 50 };
-15 |
-16 |     // Call the method using dot notation:
-17 |     println "The area of the rectangle is {rect.area()} square pixels.";
-18 | }
+struct Rectangle {
+    width: int;
+    height: int;
+}
+
+// Attach methods to Rectangle inside an impl block
+impl Rectangle {
+    fn area(const self) -> int {
+        return self.width * self.height;
+    }
+}
+
+fn main() {
+    let rect = Rectangle { width: 30, height: 50 };
+
+    // Call the method using dot notation:
+    println "The area of the rectangle is {rect.area()} square pixels.";
+}
 ```
 
 Output:
@@ -74,32 +73,31 @@ The compiler guarantees that code inside a `const self` method cannot accidental
 
 When a method needs to modify struct fields, use `self`:
 
-**Listing 5-10: `list5-10.zc`**
-
+**Listing 5-5**
 ```zenc
- 1 | struct Rectangle {
- 2 |     width: int;
- 3 |     height: int;
- 4 | }
- 5 |
- 6 | impl Rectangle {
- 7 |     fn scale(self, factor: int) {
- 8 |         self.width = self.width * factor;
- 9 |         self.height = self.height * factor;
-10 |     }
-11 |
-12 |     fn translate(self, dw: int, dh: int) {
-13 |         self.width = self.width + dw;
-14 |         self.height = self.height + dh;
-15 |     }
-16 | }
-17 |
-18 | fn main() {
-19 |     let rect = Rectangle { width: 10, height: 20 };
-20 |     rect.scale(2);
-21 |
-22 |     println "Scaled: {rect.width}x{rect.height}";
-23 | }
+struct Rectangle {
+    width: int;
+    height: int;
+}
+
+impl Rectangle {
+    fn scale(self, factor: int) {
+        self.width = self.width * factor;
+        self.height = self.height * factor;
+    }
+
+    fn translate(self, dw: int, dh: int) {
+        self.width = self.width + dw;
+        self.height = self.height + dh;
+    }
+}
+
+fn main() {
+    let rect = Rectangle { width: 10, height: 20 };
+    rect.scale(2);
+
+    println "Scaled: {rect.width}x{rect.height}";
+}
 ```
 
 Output:
@@ -185,36 +183,35 @@ impl Rectangle {
 
 To call an associated function that doesn't take `self`, use the double colon (`::`) namespace operator on the struct name:
 
-**Listing 5-11: `list5-11.zc`**
-
+**Listing 5-6**
 ```zenc
- 1 | struct Rectangle {
- 2 |     width: int;
- 3 |     height: int;
- 4 | }
- 5 |
- 6 | impl Rectangle {
- 7 |     // Static method (constructor convention using -> Self)
- 8 |     fn new(width: int, height: int) -> Self {
- 9 |         return Rectangle {
-10 |             width: width,
-11 |             height: height,
-12 |         };
-13 |     }
-14 |
-15 |     // Specialized constructor: creates a square
-16 |     fn square(size: int) -> Self {
-17 |         return Rectangle::new(size, size);
-18 |     }
-19 | }
-20 |
-21 | fn main() {
-22 |     let r1 = Rectangle::new(30, 50);
-23 |     let sq = Rectangle::square(25);
-24 |
-25 |     println "Rectangle: {r1.width}x{r1.height}";
-26 |     println "Square: {sq.width}x{sq.height}";
-27 | }
+struct Rectangle {
+    width: int;
+    height: int;
+}
+
+impl Rectangle {
+    // Static method (constructor convention using -> Self)
+    fn new(width: int, height: int) -> Self {
+        return Rectangle {
+            width: width,
+            height: height,
+        };
+    }
+
+    // Specialized constructor: creates a square
+    fn square(size: int) -> Self {
+        return Rectangle::new(size, size);
+    }
+}
+
+fn main() {
+    let r1 = Rectangle::new(30, 50);
+    let sq = Rectangle::square(25);
+
+    println "Rectangle: {r1.width}x{r1.height}";
+    println "Square: {sq.width}x{sq.height}";
+}
 ```
 
 Output:
@@ -280,29 +277,28 @@ Zen C allows you to define methods on primitive scalar types (like `int`, `bool`
 
 Because primitive values are passed by pointer to methods (`int* self`), dereferencing `*self` retrieves the underlying scalar value:
 
-**Listing 5-15: `list5-15.zc`**
-
+**Listing 5-7**
 ```zenc
- 1 | impl int {
- 2 |     fn abs(self) -> int {
- 3 |         return *self < 0 ? -(*self) : *self;
- 4 |     }
- 5 |
- 6 |     fn square(self) -> int {
- 7 |         return (*self) * (*self);
- 8 |     }
- 9 | }
-10 |
-11 | fn main() {
-12 |     let x = -10;
-13 |     let y = x.abs(); // 10
-14 |
-15 |     // Calling methods on numeric literals directly (wrap in parentheses):
-16 |     let z = (-5).abs(); // 5
-17 |     let sq = (8).square(); // 64
-18 |
-19 |     println "abs(-10) = {y}, abs(-5) = {z}, 8^2 = {sq}";
-20 | }
+impl int {
+    fn abs(self) -> int {
+        return *self < 0 ? -(*self) : *self;
+    }
+
+    fn square(self) -> int {
+        return (*self) * (*self);
+    }
+}
+
+fn main() {
+    let x = -10;
+    let y = x.abs(); // 10
+
+    // Calling methods on numeric literals directly (wrap in parentheses):
+    let z = (-5).abs(); // 5
+    let sq = (8).square(); // 64
+
+    println "abs(-10) = {y}, abs(-5) = {z}, 8^2 = {sq}";
+}
 ```
 
 Output:

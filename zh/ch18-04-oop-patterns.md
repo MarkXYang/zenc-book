@@ -1,4 +1,4 @@
-# 18.4 实现面向对象设计模式
+# 实现面向对象设计模式
 
 **状态模式（State Pattern）**是一种经典的面向对象设计模式，其中对象的外部行为会随着其内部状态的转变而动态变化。无需在 `Post` 结构体的每个方法中到处散落 `if` / `else` 或 `match` 检查，而是让每个状态由其自己的实现了共享 `PostState` trait 的结构体来表示，`Post` 则将依赖于状态的查询直接委托给 `self.state`。
 
@@ -51,9 +51,9 @@ impl Post {
 
 ## 2. 完整示例：基于 Trait 对象的 `Post` 状态模式
 
-示例 18-4 在 `DraftState`、`PendingReviewState` 和 `PublishedState` 上实现了 `PostState`，并引导一个 `Post` 实例完整走过所有三个生命周期阶段。
+代码清单 18-4 在 `DraftState`、`PendingReviewState` 和 `PublishedState` 上实现了 `PostState`，并引导一个 `Post` 实例完整走过所有三个生命周期阶段。
 
-**示例 18-4**：使用 `PostState` trait 对象实现状态模式（`examples/ch18/ch18-04-oop-patterns/main.zc`）
+**代码清单 18-4**：使用 `PostState` trait 对象实现状态模式（`examples/ch18/ch18-04-oop-patterns/main.zc`）
 
 ```zenc
 // File: examples/ch18/ch18-04-oop-patterns/main.zc
@@ -192,7 +192,7 @@ fn main() {
 }
 ```
 
-使用 `zc run -q` 运行并验证示例 18-4：
+使用 `zc run -q` 运行并验证代码清单 18-4：
 
 ```text
 $ zc run -q examples/ch18/ch18-04-oop-patterns/main.zc

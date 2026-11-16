@@ -1,4 +1,4 @@
-# 12.4 Linking and Build Directives
+# Linking and Build Directives
 
 In traditional C projects, importing a header file is only half the battle—you also have to maintain a separate `Makefile`, `CMakeLists.txt`, or `meson.build` file to pass include directories (`-I`), library search paths (`-L`), linker libraries (`-l`), and preprocessor macros (`-D`) to the compiler.
 

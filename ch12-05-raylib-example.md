@@ -1,4 +1,4 @@
-# 12.5 Hands-on Example: Raylib Graphics Window
+# Hands-on Example: Raylib Graphics Window
 
 To bring together everything in Chapter 12—C header imports, value-passed C structs, `@ctype` string parameters, `defer` resource cleanup, and cross-platform `//>` build directives—let's build a real-time 2D graphics and physics loop using **[Raylib](https://www.raylib.com/)**.
 

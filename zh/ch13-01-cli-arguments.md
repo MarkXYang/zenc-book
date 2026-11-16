@@ -1,4 +1,4 @@
-# 13.1 接收命令行参数
+# 接收命令行参数
 
 `zgrep` 的首要任务是接收用户传入的两个命令行参数：
 1. 要搜索的**查询字符串（query string）**。
@@ -40,7 +40,7 @@ fn main(argc: int, argv: char**) -> int {
 
 由于 Zen C 的 `string` 类型是 `char*` 的直接别名，对 `argv[i]` 进行索引会产生一个可以直接绑定到 `string` 变量并通过 `println` 进行插值的值：
 
-**示例 13-1: `list13-1.zc` —— 检查 `argc` 和 `argv` 并提取 `query` 和 `file_path`**
+**代码清单 13-1: 检查 `argc` 和 `argv` 并提取 `query` 和 `file_path`**
 
 ```zenc
 // File: examples/ch13/ch13-01-cli-arguments/main.zc
@@ -113,7 +113,7 @@ In file:       'poem.txt'
 
 ## 4. 借用的 `string` 指针与拥有的 `Vec<String>`
 
-注意在示例 13-1 中，`query = argv[1];` 和 `file_path = argv[2];` **没有**在堆上分配任何内存。
+注意在代码清单 13-1 中，`query = argv[1];` 和 `file_path = argv[2];` **没有**在堆上分配任何内存。
 
 在 C 和 Zen C 中，支撑 `argv[0..argc]` 的内存在操作系统的进程启动帧中拥有所有权，并在 `main()` 的整个执行期间保持有效。因此，将 `argv[1]` 和 `argv[2]` 作为 `string`（`char*`）指针借用是完全安全的，且具有零堆分配成本。
 

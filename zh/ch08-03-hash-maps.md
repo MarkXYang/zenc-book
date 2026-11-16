@@ -45,34 +45,33 @@ struct Map<V> {
 - **`remove(key)`**：移除键及其关联值，并释放存储的键字符串。
 - **`length()`**：返回当前存储在映射中的活动条目数。
 
-**代码清单 8-17: `list8-17.zc`**
-
+**代码清单 8-17**
 ```zenc
- 1 | import "std/map.zc";
- 2 |
- 3 | fn main() {
- 4 |     // 1. Create a map mapping string keys to integer values
- 5 |     let inventory = Map<int>::new();
- 6 |
- 7 |     // 2. Insert key-value pairs
- 8 |     inventory.put("apples", 50);
- 9 |     inventory.put("bananas", 30);
-10 |     inventory.put("oranges", 25);
-11 |
-12 |     println "Total products: {inventory.length()}";
-13 |     println "Has apples: {inventory.contains(\"apples\")}";
-14 |     println "Has grapes: {inventory.contains(\"grapes\")}";
-15 |
-16 |     // 3. Retrieve values safely using Option
-17 |     let apple_count = inventory.get("apples");
-18 |     if apple_count.is_some() {
-19 |         println "Apples in stock: {apple_count.unwrap()}";
-20 |     }
-21 |
-22 |     // 4. Remove an entry
-23 |     inventory.remove("bananas");
-24 |     println "After removing bananas: {inventory.length()} items";
-25 | }
+import "std/map.zc";
+
+fn main() {
+    // 1. Create a map mapping string keys to integer values
+    let inventory = Map<int>::new();
+
+    // 2. Insert key-value pairs
+    inventory.put("apples", 50);
+    inventory.put("bananas", 30);
+    inventory.put("oranges", 25);
+
+    println "Total products: {inventory.length()}";
+    println "Has apples: {inventory.contains(\"apples\")}";
+    println "Has grapes: {inventory.contains(\"grapes\")}";
+
+    // 3. Retrieve values safely using Option
+    let apple_count = inventory.get("apples");
+    if apple_count.is_some() {
+        println "Apples in stock: {apple_count.unwrap()}";
+    }
+
+    // 4. Remove an entry
+    inventory.remove("bananas");
+    println "After removing bananas: {inventory.length()} items";
+}
 ```
 
 输出：
@@ -97,22 +96,21 @@ struct MapEntry<V> {
 }
 ```
 
-**代码清单 8-18: `list8-18.zc`**
-
+**代码清单 8-18**
 ```zenc
- 1 | import "std/map.zc";
- 2 |
- 3 | fn main() {
- 4 |     let capitals = Map<char*>::new();
- 5 |     capitals.put("France", "Paris");
- 6 |     capitals.put("Japan", "Tokyo");
- 7 |     capitals.put("Canada", "Ottawa");
- 8 |
- 9 |     println "--- Country Capitals ---";
-10 |     for entry in capitals {
-11 |         println "{entry.key} -> {entry.val}";
-12 |     }
-13 | }
+import "std/map.zc";
+
+fn main() {
+    let capitals = Map<char*>::new();
+    capitals.put("France", "Paris");
+    capitals.put("Japan", "Tokyo");
+    capitals.put("Canada", "Ottawa");
+
+    println "--- Country Capitals ---";
+    for entry in capitals {
+        println "{entry.key} -> {entry.val}";
+    }
+}
 ```
 
 输出：
@@ -141,27 +139,26 @@ Canada -> Ottawa
 - **`length()`**：返回集合中唯一元素的数量。
 - **`clear()`**：清空所有元素但不释放内部容量。
 
-**代码清单 8-19: `list8-19.zc`**
-
+**代码清单 8-19**
 ```zenc
- 1 | import "std/set.zc";
- 2 |
- 3 | fn main() {
- 4 |     let visited_ports = Set<int>::new();
- 5 |     // 1. Add elements (duplicates return false)
- 6 |     println "Add 80: {visited_ports.add(80)}";
- 7 |     println "Add 443: {visited_ports.add(443)}";
- 8 |     println "Add 80 again: {visited_ports.add(80)}"; // duplicate!
- 9 |
-10 |     // 2. Query set size and membership
-11 |     println "Total unique ports: {visited_ports.length()}";
-12 |     println "Visited 443: {visited_ports.contains(443)}";
-13 |     println "Visited 8080: {visited_ports.contains(8080)}";
-14 |
-15 |     // 3. Remove an element
-16 |     visited_ports.remove(80);
-17 |     println "After remove(80), count: {visited_ports.length()}";
-18 | }
+import "std/set.zc";
+
+fn main() {
+    let visited_ports = Set<int>::new();
+    // 1. Add elements (duplicates return false)
+    println "Add 80: {visited_ports.add(80)}";
+    println "Add 443: {visited_ports.add(443)}";
+    println "Add 80 again: {visited_ports.add(80)}"; // duplicate!
+
+    // 2. Query set size and membership
+    println "Total unique ports: {visited_ports.length()}";
+    println "Visited 443: {visited_ports.contains(443)}";
+    println "Visited 8080: {visited_ports.contains(8080)}";
+
+    // 3. Remove an element
+    visited_ports.remove(80);
+    println "After remove(80), count: {visited_ports.length()}";
+}
 ```
 
 输出：
@@ -205,54 +202,53 @@ impl Drop for Set {
 
 这是一个演示字典查找、条目遍历和唯一 ID 跟踪的完整程序：
 
-**代码清单 8-20: `list8-20.zc`**
-
+**代码清单 8-20**
 ```zenc
- 1 | import "std/map.zc";
- 2 | import "std/set.zc";
- 3 |
- 4 | fn main() {
- 5 |     println "=== 1. Hash Map (Map<V>) Operations ===";
- 6 |     let scores = Map<int>::new();
- 7 |
- 8 |     scores.put("Alice", 95);
- 9 |     scores.put("Bob", 88);
-10 |     scores.put("Charlie", 92);
-11 |
-12 |     println "Total registered scores: {scores.length()}";
-13 |     println "Has score for 'Alice': {scores.contains(\"Alice\")}";
-14 |     println "Has score for 'Diana': {scores.contains(\"Diana\")}";
-15 |
-16 |     let alice_opt = scores.get("Alice");
-17 |     if alice_opt.is_some() {
-18 |         println "Alice's recorded score: {alice_opt.unwrap()}";
-19 |     }
-20 |
-21 |     println "\n--- Iterating Key-Value Entries ---";
-22 |     for entry in scores {
-23 |         println "Student: {entry.key}, Grade: {entry.val}";
-24 |     }
-25 |
-26 |     println "\n--- Removing Entries ---";
-27 |     scores.remove("Bob");
-28 |     println "Scores count after removing Bob: {scores.length()}";
-29 |     println "Has score for 'Bob': {scores.contains(\"Bob\")}";
-30 |
-31 |     println "\n=== 2. Hash Set (Set<T>) Operations ===";
-32 |     let registered_ids = Set<int>::new();
-33 |
-34 |     println "Adding ID 101: {registered_ids.add(101)}";
-35 |     println "Adding ID 202: {registered_ids.add(202)}";
-36 |     println "Adding duplicate ID 101: {registered_ids.add(101)}";
-37 |
-38 |     println "Total unique IDs in set: {registered_ids.length()}";
-39 |     println "Contains ID 101: {registered_ids.contains(101)}";
-40 |     println "Contains ID 303: {registered_ids.contains(303)}";
-41 |
-42 |     registered_ids.remove(202);
-43 |     println "After remove(202), set size: {registered_ids.length()}";
-44 |     println "Contains ID 202: {registered_ids.contains(202)}";
-45 | }
+import "std/map.zc";
+import "std/set.zc";
+
+fn main() {
+    println "=== 1. Hash Map (Map<V>) Operations ===";
+    let scores = Map<int>::new();
+
+    scores.put("Alice", 95);
+    scores.put("Bob", 88);
+    scores.put("Charlie", 92);
+
+    println "Total registered scores: {scores.length()}";
+    println "Has score for 'Alice': {scores.contains(\"Alice\")}";
+    println "Has score for 'Diana': {scores.contains(\"Diana\")}";
+
+    let alice_opt = scores.get("Alice");
+    if alice_opt.is_some() {
+        println "Alice's recorded score: {alice_opt.unwrap()}";
+    }
+
+    println "\n--- Iterating Key-Value Entries ---";
+    for entry in scores {
+        println "Student: {entry.key}, Grade: {entry.val}";
+    }
+
+    println "\n--- Removing Entries ---";
+    scores.remove("Bob");
+    println "Scores count after removing Bob: {scores.length()}";
+    println "Has score for 'Bob': {scores.contains(\"Bob\")}";
+
+    println "\n=== 2. Hash Set (Set<T>) Operations ===";
+    let registered_ids = Set<int>::new();
+
+    println "Adding ID 101: {registered_ids.add(101)}";
+    println "Adding ID 202: {registered_ids.add(202)}";
+    println "Adding duplicate ID 101: {registered_ids.add(101)}";
+
+    println "Total unique IDs in set: {registered_ids.length()}";
+    println "Contains ID 101: {registered_ids.contains(101)}";
+    println "Contains ID 303: {registered_ids.contains(303)}";
+
+    registered_ids.remove(202);
+    println "After remove(202), set size: {registered_ids.length()}";
+    println "Contains ID 202: {registered_ids.contains(202)}";
+}
 ```
 
 输出：
@@ -294,66 +290,65 @@ Contains ID 202: false
 
 以下程序解析文本文件，清洗并切分词汇，使用 `Map<int>` 统计词频，使用 `Vec<String>` 维护词元顺序，并使用 `Set<int>` 跟踪唯一的单词长度：
 
-**代码清单 8-21: `list8-21.zc`**
-
+**代码清单 8-21**
 ```zenc
- 1 | import "std/vec.zc";
- 2 | import "std/string.zc";
- 3 | import "std/map.zc";
- 4 | import "std/set.zc";
- 5 |
- 6 | fn main() {
- 7 |     println "=== Zen C Text Analyzer ===";
- 8 |
- 9 |     // 1. Load sample document into a dynamic String
-10 |     let document = String::from("zen-c is fast. zen-c is safe. modern zen-c combines speed with safety.");
-11 |     println "Input document: '{document.c_str()}'";
-12 |     println "Document length: {document.length()} bytes";
-13 |
-14 |     // 2. Normalize text and tokenize into words
-15 |     let sanitized = document.replace(".", "");
-16 |     let tokens = sanitized.split(' ');
-17 |     println "Total words extracted: {tokens.length()}";
-18 |
-19 |     // 3. Collect word frequencies using Map<int> and order unique words in Vec<String>
-20 |     let freq_map = Map<int>::new();
-21 |     let unique_words = Vec<String>::new();
-22 |
-23 |     for token in &tokens {
-24 |         let normalized = (*token).trim().to_lowercase();
-25 |         let word_key = normalized.c_str();
-26 |
-27 |         let count_opt = freq_map.get(word_key);
-28 |         if count_opt.is_some() {
-29 |             freq_map.put(word_key, count_opt.unwrap() + 1);
-30 |         } else {
-31 |             freq_map.put(word_key, 1);
-32 |             unique_words.push(normalized);
-33 |         }
-34 |     }
-35 |
-36 |     // 4. Track distinct word lengths using Set<int>
-37 |     let length_set = Set<int>::new();
-38 |     for entry in freq_map {
-39 |         let word_len: int = (int)strlen(entry.key);
-40 |         length_set.add(word_len);
-41 |     }
-42 |
-43 |     // 5. Report statistics
-44 |     println "\n--- Frequency Distribution ---";
-45 |     println "Distinct vocabulary size: {freq_map.length()} words";
-46 |     for entry in freq_map {
-47 |         println "  - '{entry.key}': {entry.val} occurrence(s)";
-48 |     }
-49 |
-50 |     println "\n--- Vocabulary Length Analysis ---";
-51 |     println "Unique word lengths observed: {length_set.length()}";
-52 |     println "Contains length 2: {length_set.contains(2)}";
-53 |     println "Contains length 5: {length_set.contains(5)}";
-54 |     println "Contains length 10: {length_set.contains(10)}";
-55 |
-56 |     println "\n=== Text Analysis Complete ===";
-57 | }
+import "std/vec.zc";
+import "std/string.zc";
+import "std/map.zc";
+import "std/set.zc";
+
+fn main() {
+    println "=== Zen C Text Analyzer ===";
+
+    // 1. Load sample document into a dynamic String
+    let document = String::from("zen-c is fast. zen-c is safe. modern zen-c combines speed with safety.");
+    println "Input document: '{document.c_str()}'";
+    println "Document length: {document.length()} bytes";
+
+    // 2. Normalize text and tokenize into words
+    let sanitized = document.replace(".", "");
+    let tokens = sanitized.split(' ');
+    println "Total words extracted: {tokens.length()}";
+
+    // 3. Collect word frequencies using Map<int> and order unique words in Vec<String>
+    let freq_map = Map<int>::new();
+    let unique_words = Vec<String>::new();
+
+    for token in &tokens {
+        let normalized = (*token).trim().to_lowercase();
+        let word_key = normalized.c_str();
+
+        let count_opt = freq_map.get(word_key);
+        if count_opt.is_some() {
+            freq_map.put(word_key, count_opt.unwrap() + 1);
+        } else {
+            freq_map.put(word_key, 1);
+            unique_words.push(normalized);
+        }
+    }
+
+    // 4. Track distinct word lengths using Set<int>
+    let length_set = Set<int>::new();
+    for entry in freq_map {
+        let word_len: int = (int)strlen(entry.key);
+        length_set.add(word_len);
+    }
+
+    // 5. Report statistics
+    println "\n--- Frequency Distribution ---";
+    println "Distinct vocabulary size: {freq_map.length()} words";
+    for entry in freq_map {
+        println "  - '{entry.key}': {entry.val} occurrence(s)";
+    }
+
+    println "\n--- Vocabulary Length Analysis ---";
+    println "Unique word lengths observed: {length_set.length()}";
+    println "Contains length 2: {length_set.contains(2)}";
+    println "Contains length 5: {length_set.contains(5)}";
+    println "Contains length 10: {length_set.contains(10)}";
+
+    println "\n=== Text Analysis Complete ===";
+}
 ```
 
 输出：

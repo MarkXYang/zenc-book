@@ -1,4 +1,4 @@
-# 20.1 Inline Assembly and Volatile
+# Inline Assembly and Volatile
 
 In operating system kernels, device drivers, real-time control loops, and performance-critical DSP routines, software frequently needs to execute specific CPU instructions that cannot be represented in portable high-level language constructs.
 
@@ -82,7 +82,7 @@ This design combines the safety of named variable binding with the raw speed and
 
 Listing 20-1 demonstrates basic pause instructions, volatile memory fences, extended input/output operand binding, and in-place variable modification.
 
-**Listing 20-1**: `list20-1.zc` — Inline assembly and volatile barriers (`examples/ch20/ch20-01-inline-assembly/main.zc`)
+**Listing 20-1**: Inline assembly and volatile barriers (`examples/ch20/ch20-01-inline-assembly/main.zc`)
 
 ```zenc
 // File: examples/ch20/ch20-01-inline-assembly/main.zc

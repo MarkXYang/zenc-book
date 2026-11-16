@@ -1,4 +1,4 @@
-# 17.3 Message Passing with Queues
+# Message Passing with Queues
 
 A popular alternative to shared-memory locking is **message passing**, summarized by the classic concurrency proverb:
 

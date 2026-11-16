@@ -1,4 +1,4 @@
-# 12.1 C Header Imports vs Includes
+# C Header Imports vs Includes
 
 When working with C libraries in Zen C, the first question is how to bring a `.h` header file into your program. Zen C provides two keywords for consuming C headers—`import` and `include`—each designed for a distinct workflow.
 

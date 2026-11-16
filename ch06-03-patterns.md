@@ -80,7 +80,7 @@ fn main() {
 }
 ```
 
-<span class="caption">Listing 6-4: Reference binding (`ref`) and struct destructuring across `match` and `let`</span>
+<span class="caption">Listing 6-9: Reference binding (`ref`) and struct destructuring across `match` and `let`</span>
 
 ## Exhaustiveness and Wildcards
 

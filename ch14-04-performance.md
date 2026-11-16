@@ -1,4 +1,4 @@
-# 14.4 Comparing Performance: Loops vs Iterators
+# Comparing Performance: Loops vs Iterators
 
 A natural question for any systems programmer is: **what is the runtime cost of using iterators and closures compared to a hand-written C index loop?**
 
@@ -15,7 +15,7 @@ Let's compare four ways to compute the exact same result—summing `val * 3` for
 3. **`sum_for_in_val`**: A value iterator loop (`for val in *v`) yielding `Option<int>` copies via `VecIter<int>`.
 4. **`sum_closure_forEach`**: A higher-order combinator (`(*v).iterator().forEach(fn[&](val: int) { ... })`) invoking a reference-capturing closure on each element.
 
-**Listing 14-4: `list14-4.zc` — Comparing four iteration strategies on `100,000` integers**
+**Listing 14-4: Comparing four iteration strategies on `100,000` integers**
 
 ```zenc
 // File: examples/ch14/ch14-04-performance/main.zc

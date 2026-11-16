@@ -1,4 +1,4 @@
-# 18.1 Zen C 的面向对象特性
+# Zen C 的面向对象特性
 
 Zen C 是一门面向对象编程语言吗？答案取决于你看重面向对象传统的哪些部分。在最初的构想以及《设计模式》（“四人帮 / Gang of Four”）的传统中，面向对象设计围绕三个核心理念展开：
 
@@ -55,9 +55,9 @@ Offset:  0..3     4..7     8..11       12..15          16..23
 
 ## 3. 完整示例：使用 `Transform2D` 与 `HealthPool` 的实体组合
 
-示例 18-1 构建了一个 `Player` 实体，在偏移量 `0` 处混入了 `Transform2D`（使 `Player` 直接继承 `.translate()` 和 `.manhattan_dist()`），并组合了一个强制维护 $0 \le \text{hp} \le \text{max\_hp}$ 不变式的 `HealthPool` 组件（`hero.health.apply_damage(...)`、`hero.health.heal(...)`）。
+代码清单 18-1 构建了一个 `Player` 实体，在偏移量 `0` 处混入了 `Transform2D`（使 `Player` 直接继承 `.translate()` 和 `.manhattan_dist()`），并组合了一个强制维护 $0 \le \text{hp} \le \text{max\_hp}$ 不变式的 `HealthPool` 组件（`hero.health.apply_damage(...)`、`hero.health.heal(...)`）。
 
-**示例 18-1**：结构体组合、方法转发与不变式封装（`examples/ch18/ch18-01-oop-characteristics/main.zc`）
+**代码清单 18-1**：结构体组合、方法转发与不变式封装（`examples/ch18/ch18-01-oop-characteristics/main.zc`）
 
 ```zenc
 // File: examples/ch18/ch18-01-oop-characteristics/main.zc
@@ -160,7 +160,7 @@ fn main() {
 }
 ```
 
-使用 `zc run -q` 运行并验证示例 18-1：
+使用 `zc run -q` 运行并验证代码清单 18-1：
 
 ```text
 $ zc run -q examples/ch18/ch18-01-oop-characteristics/main.zc

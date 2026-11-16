@@ -1,4 +1,4 @@
-# 16.3 结构体布局、填充与对齐（`@packed`、`@align`）
+# 底层结构体布局：位域、打包与对齐
 
 当你在 Zen C 中声明一个 `struct` 时，其字段会严格按照你编写的顺序在内存中排布，遵循目标平台的 C 应用程序二进制接口（ABI）。然而，`sizeof(MyStruct)` 往往大于其各个独立字段大小之和。
 
@@ -129,9 +129,9 @@ struct CacheAlignedCounter {
 
 ## 5. 完整示例：检查大小、位域与缓存对齐
 
-示例 16-3 对比了 `UnpackedHeader`（24 字节）、`ReorderedHeader`（16 字节）和 `PackedHeader`（11 字节）的内存占用，将五个硬件标志打包进 1 字节的 `StatusRegister`，并验证 `CacheAlignedCounter` 对齐在 64 字节边界上。
+代码清单 16-3 对比了 `UnpackedHeader`（24 字节）、`ReorderedHeader`（16 字节）和 `PackedHeader`（11 字节）的内存占用，将五个硬件标志打包进 1 字节的 `StatusRegister`，并验证 `CacheAlignedCounter` 对齐在 64 字节边界上。
 
-**示例 16-3**：控制结构体填充、位域与对齐（`examples/ch16/ch16-03-struct-layout/main.zc`）
+**代码清单 16-3**：控制结构体填充、位域与对齐（`examples/ch16/ch16-03-struct-layout/main.zc`）
 
 ```zenc
 // File: examples/ch16/ch16-03-struct-layout/main.zc
@@ -214,7 +214,7 @@ fn main() {
 }
 ```
 
-使用 `zc run -q` 运行并验证示例 16-3：
+使用 `zc run -q` 运行并验证代码清单 16-3：
 
 ```text
 $ zc run -q examples/ch16/ch16-03-struct-layout/main.zc

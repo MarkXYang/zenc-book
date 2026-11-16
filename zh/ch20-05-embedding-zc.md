@@ -1,4 +1,4 @@
-# 20.5 在 C 程序中嵌入 Zen C
+# 在 C 程序中嵌入 Zen C
 
 在[第 12 章](ch12-00-using-c-libraries.md)中，我们探索了如何在 Zen C 中调用现有的 C 库。
 
@@ -63,7 +63,7 @@ gcc main.c -L. -lzenc_math -Wl,-rpath,. -o my_app
 
 ### 第 1 部分：Zen C 模块（`zenc_math.zc`）
 
-**代码清单 20-5A**：`list20-5.zc` —— 导出的 Zen C 数学库（`examples/ch20/ch20-05-embedding-zc/zenc_math.zc`）
+**代码清单 20-5A**：导出的 Zen C 数学库（`examples/ch20/ch20-05-embedding-zc/zenc_math.zc`）
 
 ```zenc
 // File: examples/ch20/ch20-05-embedding-zc/zenc_math.zc

@@ -1,4 +1,4 @@
-# 20.3 MISRA C:2012 Compliance Mode
+# MISRA C:2012 Compliance Mode
 
 In automotive (ISO 26262), aerospace (DO-178C), medical devices (IEC 62304), and railway systems, software must adhere to stringent coding standards designed to prevent undefined behavior, run-time ambiguities, and untraceable control flow.
 
@@ -78,7 +78,7 @@ static ZC_FUNC bool is_big(int32_t n) {
 
 Listing 20-3 demonstrates a clean, safety-critical numerical clamping and checksum routine that adheres strictly to MISRA C:2012 guidelines.
 
-**Listing 20-3**: `list20-3.zc` — MISRA-compliant numerical routines (`examples/ch20/ch20-03-misra-mode/main.zc`)
+**Listing 20-3**: MISRA-compliant numerical routines (`examples/ch20/ch20-03-misra-mode/main.zc`)
 
 ```zenc
 // File: examples/ch20/ch20-03-misra-mode/main.zc

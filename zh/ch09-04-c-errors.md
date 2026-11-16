@@ -19,8 +19,7 @@ FILE *fopen(const char *pathname, const char *mode);
 
 在 Zen C 中，我们可以编写一个干净、安全的外层包装：
 
-**代码清单 9-4: `list9-4.zc`**
-
+**代码清单 9-4**
 ```zenc
 include <errno.h>
 include <string.h>

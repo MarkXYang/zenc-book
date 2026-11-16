@@ -91,8 +91,7 @@ When the compiler encounters `for item in expr`, it looks for:
 
 Let's build a custom `Countdown` iterator that works natively with Zen C's `for .. in` loop:
 
-**Listing 10-8: `list10-8.zc`**
-
+**Listing 10-8**
 ```zenc
 import "std/option.zc"
 
@@ -170,8 +169,7 @@ Zen C's string interpolation (`println "Value: {x}"`) works out of the box for a
 
 Simply implement `fn to_string(self) -> char*` on your struct! Whenever the compiler sees a struct instance inside a string interpolation expression, it automatically calls `.to_string()`:
 
-**Listing 10-9: `list10-9.zc`**
-
+**Listing 10-9**
 ```zenc
 struct Color {
     r: int;
@@ -218,8 +216,7 @@ Writing manual `Copy`, `Clone`, `eq`, `to_string`, and JSON serialization implem
 
 You can combine multiple derive traits in a single `@derive(...)` attribute above a `struct` or `enum`:
 
-**Listing 10-10: `list10-10.zc`**
-
+**Listing 10-10**
 ```zenc
 @derive(Copy, Clone, Eq, Debug)
 struct Point {
@@ -255,8 +252,7 @@ Debug output: Point { ... }
 
 When building web services, CLI tools, or configuration loaders with `std/json.zc`, `@derive(ToJson, FromJson)` eliminates manual JSON field mapping:
 
-**Listing 10-11: `list10-11.zc`**
-
+**Listing 10-11**
 ```zenc
 import "std/json.zc"
 

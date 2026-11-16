@@ -1,8 +1,14 @@
 // File: examples/ch19/ch19-04-conditional-macros/main.zc
 //> define: ENABLE_METRICS
 
-#define BUFFER_CAP 64
-#define SQUARE(x) ((x) * (x))
+include <limits.h>
+
+def BUFFER_CAP = 64;
+
+@inline
+fn square(x: int) -> int {
+    return x * x;
+}
 
 @cfg(ENABLE_METRICS)
 fn report_mode() {
@@ -18,15 +24,16 @@ fn main() {
     println "Testing Conditional Compilation & C Macros...";
     report_mode();
 
-    #ifdef ENABLE_METRICS
-    println "Preprocessor #ifdef ENABLE_METRICS is active";
-    #endif
-
     let cap = BUFFER_CAP;
-    let sq = SQUARE(5);
-    println "BUFFER_CAP = {cap}, SQUARE(5) = {sq}";
+    let sq = square(5);
+    println "BUFFER_CAP = {cap}, square(5) = {sq}";
     assert(cap == 64, "BUFFER_CAP must be 64");
-    assert(sq == 25, "SQUARE(5) must be 25");
+    assert(sq == 25, "square(5) must be 25");
+
+    // INT_MAX is a macro defined by the C header <limits.h>
+    let max: int = INT_MAX;
+    println "INT_MAX = {max}";
+    assert(max > 0, "INT_MAX must be positive");
 
     println "All conditional & macro checks passed!";
 }

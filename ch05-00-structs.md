@@ -1,4 +1,4 @@
-# Using Structs to Structure Data
+# Structs and Composition
 
 A *struct*, or structure, is a custom compound data type that allows you to package together and name multiple related values into a single meaningful unit. If you are familiar with traditional C, structs in Zen C fulfill the same foundational role of defining structured data in memory. However, Zen C modernizes structs by pairing high-performance, predictable C11 memory layouts with ergonomic features familiar from modern languages:
 

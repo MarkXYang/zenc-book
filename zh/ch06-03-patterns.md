@@ -80,7 +80,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代码清单 6-4：跨 `match` 和 `let` 的引用绑定（`ref`）与结构体解构</span>
+<span class="caption">代码清单 6-9：跨 `match` 和 `let` 的引用绑定（`ref`）与结构体解构</span>
 
 ## 穷尽性与通配符
 

@@ -1,4 +1,4 @@
-# 所有权与栈和堆
+# 栈、堆与移动语义
 
 Zen C 将管理底层资源（例如堆指针、文件描述符或实现了 `Drop` 的结构体）的类型视为**资源（Resources）**。为了在没有垃圾回收开销的前提下保证内存安全，Zen C 在编译期强制执行严格的**资源语义（Resource Semantics）**。
 
@@ -61,31 +61,30 @@ let b = a; // Ownership moved to 'b'. 'a' is now invalid.
 
 将资源变量传递给函数遵循与变量赋值完全相同的所有权规则：
 
-**代码清单 4-4：`list4-4.zc`**
-
+**代码清单 4-1**
 ```zenc
- 1 | struct CustomBuffer {
- 2 |     data: void*;
- 3 |     size: usize;
- 4 | }
- 5 |
- 6 | fn consume_buffer(buf: CustomBuffer) {
- 7 |     println "Consumed buffer of size {buf.size}";
- 8 | }
- 9 |
-10 | fn peek_buffer(buf: CustomBuffer*) {
-11 |     println "Peeked buffer of size {buf.size}";
-12 | }
-13 |
-14 | fn main() {
-15 |     let my_buf = CustomBuffer { data: malloc(50), size: 50 };
-16 |
-17 |     peek_buffer(&my_buf); // OK: borrowed reference, my_buf remains valid
-18 |
-19 |     consume_buffer(my_buf); // OK: moved into function
-20 |
-21 |     // peek_buffer(&my_buf); // Error: my_buf was moved above!
-22 | }
+struct CustomBuffer {
+    data: void*;
+    size: usize;
+}
+
+fn consume_buffer(buf: CustomBuffer) {
+    println "Consumed buffer of size {buf.size}";
+}
+
+fn peek_buffer(buf: CustomBuffer*) {
+    println "Peeked buffer of size {buf.size}";
+}
+
+fn main() {
+    let my_buf = CustomBuffer { data: malloc(50), size: 50 };
+
+    peek_buffer(&my_buf); // OK: borrowed reference, my_buf remains valid
+
+    consume_buffer(my_buf); // OK: moved into function
+
+    // peek_buffer(&my_buf); // Error: my_buf was moved above!
+}
 ```
 
 输出：
@@ -115,24 +114,23 @@ let b = a.clone(); // Explicit duplicate allocation via Clone trait
 
 你可以通过实现 `impl Copy for StructName` 显式开启隐式复制：
 
-**代码清单 4-5：`list4-5.zc`**
-
+**代码清单 4-2**
 ```zenc
- 1 | struct Point {
- 2 |     x: int;
- 3 |     y: int;
- 4 | }
- 5 |
- 6 | // Opt-in to implicit value duplication (Copy behavior)
- 7 | impl Copy for Point {}
- 8 |
- 9 | fn main() {
-10 |     let p1 = Point { x: 10, y: 20 };
-11 |     let p2 = p1; // Copied implicitly because Point implements Copy
-12 |
-13 |     // Both p1 and p2 remain valid!
-14 |     println "p1: ({p1.x}, {p1.y}), p2: ({p2.x}, {p2.y})";
-15 | }
+struct Point {
+    x: int;
+    y: int;
+}
+
+// Opt-in to implicit value duplication (Copy behavior)
+impl Copy for Point {}
+
+fn main() {
+    let p1 = Point { x: 10, y: 20 };
+    let p2 = p1; // Copied implicitly because Point implements Copy
+
+    // Both p1 and p2 remain valid!
+    println "p1: ({p1.x}, {p1.y}), p2: ({p2.x}, {p2.y})";
+}
 ```
 
 输出：
@@ -142,14 +140,4 @@ p1: (10, 20), p2: (10, 20)
 
 ---
 
-## 第 4 章小结
-
-在第 4 章中，你掌握了 Zen C 的内存管理范式：
-1. **自动作用域清理**：使用 `defer`（后进先出 LIFO 执行顺序），包括针对堆指针的 `defer free(p)`。
-2. **RAII 与析构函数**：使用 `impl Drop for Struct` 编写自定义销毁逻辑。
-3. **解除清理（`forget`）**：通过 `.forget()` 分离底层资源，以防止在所有权交接时运行析构函数。
-4. **资源语义**：默认移动赋值，以消除双重释放错误。
-5. **引用借用**：通过指针（`Struct*`）借用结构体，避免转移所有权。
-6. **显式克隆与选择 Copy**：`.clone()` 用于显式深拷贝，而 `impl Copy` 用于栈值类型。
-
-在 **第 5 章** 中，我们将学习如何使用 **结构体与方法语法** 来组织复杂数据！
+接下来，让我们看看指针如何让你在不移动值的情况下借用它！

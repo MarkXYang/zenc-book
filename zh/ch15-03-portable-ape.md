@@ -1,4 +1,4 @@
-# 15.3 真正可移植的可执行文件（APE）
+# 真正可移植的可执行文件（APE）
 
 如果你能在 Linux 上编译一个 Zen C 程序**一次**，然后将生成的二进制文件分发给使用 macOS、Windows、FreeBSD、OpenBSD 和 NetBSD 的同事——横跨 `x86_64` 和 `aarch64`（Apple Silicon / ARM64）两种架构——且无需任何虚拟机、容器或运行时依赖，这该有多好？
 
@@ -58,9 +58,9 @@ $ cosmocc --version
 
 一旦 `cosmocc` 进入你的 `PATH`，即可向 `zc build` 传递 `--cc cosmocc`（或者先用 `zc transpile` 转译，再直接调用 `cosmocc`）。
 
-示例 15-3 使用 POSIX `uname(2)`（Cosmopolitan 在所有六种操作系统上都实现了该函数，包括 Windows），并在编译期检查 `__COSMOPOLITAN__` 宏，以报告该二进制文件是如何构建的以及它当前运行在哪个操作系统/架构上：
+代码清单 15-3 使用 POSIX `uname(2)`（Cosmopolitan 在所有六种操作系统上都实现了该函数，包括 Windows），并在编译期检查 `__COSMOPOLITAN__` 宏，以报告该二进制文件是如何构建的以及它当前运行在哪个操作系统/架构上：
 
-**示例 15-3: `list15-3.zc` —— 同时兼容原生与 APE 构建的跨平台系统报告程序**
+**代码清单 15-3: 同时兼容原生与 APE 构建的跨平台系统报告程序**
 
 ```zenc
 // File: examples/ch15/ch15-03-portable-ape/main.zc

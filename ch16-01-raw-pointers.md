@@ -1,4 +1,4 @@
-# 16.1 Raw Pointers and Manual Memory (`T*`, `void*`)
+# Raw Pointers and Unsafe Operations
 
 In [Section 4.2](ch04-02-pointers.md), we introduced Zen C's pointer syntax: `&x` takes the memory address of `x` to produce a typed pointer `T*`, `*ptr` dereferences the pointer to read or write its target, and `ptr.field` automatically dereferences struct pointers without requiring C's `->` operator.
 

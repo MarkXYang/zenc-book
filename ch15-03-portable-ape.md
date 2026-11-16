@@ -1,4 +1,4 @@
-# 15.3 Actually Portable Executables (APE)
+# Actually Portable Executables (APE)
 
 What if you could compile a Zen C program **once** on Linux and hand the resulting binary to colleagues on macOS, Windows, FreeBSD, OpenBSD, and NetBSD — across both `x86_64` and `aarch64` (Apple Silicon / ARM64) — with zero virtual machines, containers, or runtime dependencies?
 
@@ -60,7 +60,7 @@ Once `cosmocc` is in your `PATH`, pass `--cc cosmocc` to `zc build` (or transpil
 
 Listing 15-3 uses POSIX `uname(2)` (which Cosmopolitan implements across all six operating systems, including Windows) and checks the `__COSMOPOLITAN__` macro at compile time to report how the binary was built and which OS/architecture it is running on:
 
-**Listing 15-3: `list15-3.zc` — A cross-platform system reporter compatible with both native and APE builds**
+**Listing 15-3: A cross-platform system reporter compatible with both native and APE builds**
 
 ```zenc
 // File: examples/ch15/ch15-03-portable-ape/main.zc

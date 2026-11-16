@@ -1,4 +1,4 @@
-# 20.5 Embedding Zen C in C Programs
+# Embedding Zen C in C Programs
 
 In [Chapter 12](ch12-00-using-c-libraries.md), we explored calling existing C libraries from Zen C.
 
@@ -63,7 +63,7 @@ Listing 20-5 shows a high-performance math module written in Zen C and the compa
 
 ### Part 1: The Zen C Module (`zenc_math.zc`)
 
-**Listing 20-5A**: `list20-5.zc` — Exported Zen C math library (`examples/ch20/ch20-05-embedding-zc/zenc_math.zc`)
+**Listing 20-5A**: Exported Zen C math library (`examples/ch20/ch20-05-embedding-zc/zenc_math.zc`)
 
 ```zenc
 // File: examples/ch20/ch20-05-embedding-zc/zenc_math.zc

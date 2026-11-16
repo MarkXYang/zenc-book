@@ -1,4 +1,4 @@
-# 17.2 共享状态并发：互斥锁与原子操作
+# 共享状态并发：互斥锁与原子操作
 
 在[17.1 节](ch17-01-threads.md)中，每个工作线程写入其自己独立的 `WorkerTask` 槽位，因此任意两个线程绝不会修改相同的内存地址。然而，在许多系统中——例如共享银行账本、连接池、遥测计数器或内存缓存——多个线程必须并发地读取和更新**共享状态**。
 
@@ -71,12 +71,12 @@ fn withdraw(ledger: SharedLedger*, amount: i64) -> bool {
 
 ## 4. 完整示例：结合 `Mutex`、`Once` 与原子操作的线程安全账本
 
-示例 17-2 创建了 4 个工作线程，每个线程向 `SharedLedger` 执行 2,500 次存入 `10` 单位的操作：
+代码清单 17-2 创建了 4 个工作线程，每个线程向 `SharedLedger` 执行 2,500 次存入 `10` 单位的操作：
 1. 每个工作线程进入时都会调用 `ledger.once.call(...)`，验证跨所有 4 个竞争线程，`1000` 单位的开户奖励**只被应用了一次**。
 2. 每次存款都在 `Mutex` 临界区内同时更新 `ledger.balance` 和 `ledger.tx_count`。
 3. 每次迭代还使用无锁的 `__atomic_fetch_add` 递增 `ledger.atomic_ops`。
 
-**示例 17-2**：使用 `Mutex`、`Once` 和硬件原子操作协调共享状态（`examples/ch17/ch17-02-mutex-sync/main.zc`）
+**代码清单 17-2**：使用 `Mutex`、`Once` 和硬件原子操作协调共享状态（`examples/ch17/ch17-02-mutex-sync/main.zc`）
 
 ```zenc
 // File: examples/ch17/ch17-02-mutex-sync/main.zc
@@ -156,7 +156,7 @@ fn main() {
 }
 ```
 
-使用 `zc run -q` 运行并验证示例 17-2：
+使用 `zc run -q` 运行并验证代码清单 17-2：
 
 ```text
 $ zc run -q examples/ch17/ch17-02-mutex-sync/main.zc

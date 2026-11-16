@@ -1,8 +1,8 @@
-# 17.4 Asynchronous Worker Pools and Task Dispatching
+# Worker Pools and Task Dispatching
 
 In earlier sections, we looked at raw thread spawning (`Thread::spawn`), lock-based synchronization (`Mutex`, `CondVar`), and point-to-point message passing. In real-world systems software—such as network servers, game engines, background build systems, and database query engines—spawning a brand-new OS thread for every single micro-task incurs high operating-system overhead.
 
-Instead, production systems use **asynchronous worker pools** (often called thread pools): a fixed group of persistent worker threads that run continuously in the background, consuming tasks from a shared concurrent task queue and publishing results back to collectors.
+Instead, production systems use **worker pools** (often called thread pools): a fixed group of persistent worker threads that run continuously in the background, consuming tasks from a shared concurrent task queue and publishing results back to collectors.
 
 In this section, we will build a reusable, bounded **`ThreadPool`** in Zen C and examine why Zen C favors explicit 1:1 OS worker pools over complex `async`/`await` state-machine runtimes.
 
@@ -173,7 +173,7 @@ fn worker_loop(queue: TaskQueue*, agg: ResultAggregator*) {
 
 Listing 17-4 combines our `TaskQueue`, `ThreadPool`, and `ResultAggregator` into a complete, runnable program that initializes a 4-worker pool, asynchronously dispatches 8 tasks, and safely waits for all tasks to finish.
 
-**Listing 17-4**: `list17-4.zc` — Asynchronous thread pool and task queue (`examples/ch17/ch17-04-worker-pools/main.zc`)
+**Listing 17-4**: Asynchronous thread pool and task queue (`examples/ch17/ch17-04-worker-pools/main.zc`)
 
 ```zenc
 // File: examples/ch17/ch17-04-worker-pools/main.zc
@@ -412,6 +412,6 @@ In this chapter, you explored Zen C's complete concurrency toolkit:
 - **1:1 OS Threads (`std/thread.zc`)**: Spawning native threads with `Thread::spawn(fn[=]() { ... })`, joining worker handles with `thread.join()`, and partitioning workloads for lock-free fork-join parallelism.
 - **Shared-State Synchronization (`std/sync.zc`)**: Protecting multi-field critical sections with `Mutex` and `RwLock`, running one-time setup across racing threads with `Once`, coordinating phases with `Barrier` and `Semaphore`, and executing lock-free atomic increments with `__atomic_fetch_add`.
 - **Message-Passing Channels**: Combining a fixed-capacity ring buffer with `Mutex` and dual `CondVar` variables (`not_empty` and `not_full`) to build a zero-allocation, backpressure-aware producer-consumer channel.
-- **Asynchronous Worker Pools**: Organizing persistent OS threads into a reusable `ThreadPool` with a bounded `TaskQueue`, preventing unbounded thread spawning and providing predictable memory usage.
+- **Worker Pools**: Organizing persistent OS threads into a reusable `ThreadPool` with a bounded `TaskQueue`, preventing unbounded thread spawning and providing predictable memory usage.
 
 Next, in **[Chapter 18: Polymorphism: Composition and Trait Objects](ch18-00-polymorphism.md)**, we will examine how Zen C achieves runtime polymorphism and dynamic dispatch through fat pointers and C11 virtual method tables (`VTable`).

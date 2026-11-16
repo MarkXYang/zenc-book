@@ -1,4 +1,4 @@
-# Automatic Cleanup and Drop
+# Deterministic Cleanup: `defer` and `Drop`
 
 Zen C provides automatic cleanup mechanisms that eliminate manual tracking of resource lifetimes while avoiding the cost of a garbage collector.
 
@@ -24,18 +24,17 @@ fn process_file() {
 
 Multiple `defer` statements inside the same scope are executed in **LIFO (Last-In, First-Out)** order:
 
-**Listing 4-1: `list4-1.zc`**
-
+**Listing 4-4**
 ```zenc
- 1 | fn main() {
- 2 |     println "Start";
- 3 |
- 4 |     defer println "Third (First deferred)";
- 5 |     defer println "Second (Second deferred)";
- 6 |     defer println "First (Last deferred)";
- 7 |
- 8 |     println "End";
- 9 | }
+fn main() {
+    println "Start";
+
+    defer println "Third (First deferred)";
+    defer println "Second (Second deferred)";
+    defer println "First (Last deferred)";
+
+    println "End";
+}
 ```
 
 Output:
@@ -77,35 +76,34 @@ Resource Acquisition Is Initialization (RAII) is a pattern where resources (heap
 
 In Zen C, custom structs implement the `Drop` trait to define automatic destruction logic:
 
-**Listing 4-2: `list4-2.zc`**
-
+**Listing 4-5**
 ```zenc
- 1 | struct CustomBuffer {
- 2 |     data: void*;
- 3 |     size: usize;
- 4 | }
- 5 |
- 6 | impl Drop for CustomBuffer {
- 7 |     fn drop(self) {
- 8 |         println "Dropping CustomBuffer (releasing {self.size} bytes)";
- 9 |         if self.data != 0 {
-10 |             free(self.data);
-11 |         }
-12 |     }
-13 | }
-14 |
-15 | fn create_and_use() {
-16 |     let buf = CustomBuffer {
-17 |         data: malloc(512),
-18 |         size: 512,
-19 |     };
-20 |
-21 |     // Use buf...
-22 | } // buf goes out of scope here: CustomBuffer.drop(buf) is called automatically
-23 |
-24 | fn main() {
-25 |     create_and_use();
-26 | }
+struct CustomBuffer {
+    data: void*;
+    size: usize;
+}
+
+impl Drop for CustomBuffer {
+    fn drop(self) {
+        println "Dropping CustomBuffer (releasing {self.size} bytes)";
+        if self.data != 0 {
+            free(self.data);
+        }
+    }
+}
+
+fn create_and_use() {
+    let buf = CustomBuffer {
+        data: malloc(512),
+        size: 512,
+    };
+
+    // Use buf...
+} // buf goes out of scope here: CustomBuffer.drop(buf) is called automatically
+
+fn main() {
+    create_and_use();
+}
 ```
 
 Output:
@@ -129,57 +127,56 @@ While RAII and `Drop` protect against memory leaks by automatically reclaiming r
 
 In Zen C, the standard convention is to implement a `forget(self)` method on the resource type. The `forget()` method zeroes out or nullifies internal pointers and resource handles:
 
-**Listing 4-3: `list4-3.zc`**
-
+**Listing 4-6**
 ```zenc
- 1 | struct CustomBuffer {
- 2 |     data: void*;
- 3 |     size: usize;
- 4 | }
- 5 |
- 6 | impl CustomBuffer {
- 7 |     // Detaches the underlying resource, disarming Drop
- 8 |     fn forget(self) {
- 9 |         self.data = NULL;
-10 |         self.size = 0;
-11 |     }
-12 | }
-13 |
-14 | impl Drop for CustomBuffer {
-15 |     fn drop(self) {
-16 |         if self.data != NULL {
-17 |             println "Drop: freeing {self.size} bytes";
-18 |             free(self.data);
-19 |         } else {
-20 |             println "Drop: buffer was forgotten, skipping deallocation";
-21 |         }
-22 |     }
-23 | }
-24 |
-25 | fn transfer_to_c_api(raw_ptr: void*, size: usize) {
-26 |     println "C API taking ownership of {size} bytes";
-27 |     // Simulated C API freeing the buffer
-28 |     free(raw_ptr);
-29 | }
-30 |
-31 | fn main() {
-32 |     println "=== Normal Drop ===";
-33 |     {
-34 |         let buf = CustomBuffer { data: malloc(64), size: 64 };
-35 |     } // buf dropped here -> frees 64 bytes
-36 |
-37 |     println "\n=== Disarming Drop with forget() ===";
-38 |     {
-39 |         let buf = CustomBuffer { data: malloc(128), size: 128 };
-40 |         let raw = buf.data;
-41 |         let size = buf.size;
-42 |
-43 |         // Disarm buf's destructor before passing to C API
-44 |         buf.forget();
-45 |
-46 |         transfer_to_c_api(raw, size);
-47 |     } // buf dropped here, but data is NULL so no double free!
-48 | }
+struct CustomBuffer {
+    data: void*;
+    size: usize;
+}
+
+impl CustomBuffer {
+    // Detaches the underlying resource, disarming Drop
+    fn forget(self) {
+        self.data = NULL;
+        self.size = 0;
+    }
+}
+
+impl Drop for CustomBuffer {
+    fn drop(self) {
+        if self.data != NULL {
+            println "Drop: freeing {self.size} bytes";
+            free(self.data);
+        } else {
+            println "Drop: buffer was forgotten, skipping deallocation";
+        }
+    }
+}
+
+fn transfer_to_c_api(raw_ptr: void*, size: usize) {
+    println "C API taking ownership of {size} bytes";
+    // Simulated C API freeing the buffer
+    free(raw_ptr);
+}
+
+fn main() {
+    println "=== Normal Drop ===";
+    {
+        let buf = CustomBuffer { data: malloc(64), size: 64 };
+    } // buf dropped here -> frees 64 bytes
+
+    println "\n=== Disarming Drop with forget() ===";
+    {
+        let buf = CustomBuffer { data: malloc(128), size: 128 };
+        let raw = buf.data;
+        let size = buf.size;
+
+        // Disarm buf's destructor before passing to C API
+        buf.forget();
+
+        transfer_to_c_api(raw, size);
+    } // buf dropped here, but data is NULL so no double free!
+}
 ```
 
 Output:
@@ -193,8 +190,18 @@ Drop: buffer was forgotten, skipping deallocation
 ```
 
 > [!TIP]
-> Standard library types like `Vec<T>`, `String`, `Option<T>`, and `Result<T, E>` all provide `.forget()` methods to support manual ownership transfers and zero-cost resource handoffs.
+> Standard library types like `Vec<T>`, `String`, `Option<T>`, and `Result<T>` all provide `.forget()` methods to support manual ownership transfers and zero-cost resource handoffs.
 
 ---
 
-Next, let's explore **Resource Semantics, Move by Default, and Borrowing**!
+## Summary of Chapter 4
+
+In Chapter 4, you learned Zen C's ownership and cleanup model:
+1. **Move Semantics**: Assigning or passing a resource moves it, which prevents double frees. `.clone()` makes an explicit deep copy, and `Copy` opts small value types into implicit copying.
+2. **Pointers as Borrows**: Passing `T*` (with `&x`) lends a value to a function without moving ownership.
+3. **Slices**: `Slice<T>` is a non-owning view into contiguous memory.
+4. **Scope Cleanup**: `defer` runs cleanup in LIFO order, including `defer free(p)` for heap pointers.
+5. **RAII & Destructors**: `impl Drop for Struct` runs teardown logic automatically at the end of scope.
+6. **Disarming Cleanup (`forget`)**: `.forget()` detaches a resource so its destructor does not run during an ownership handoff.
+
+In **Chapter 5**, we will learn how to organize complex data using **Structs and Method Syntax**!

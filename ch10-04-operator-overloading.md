@@ -12,8 +12,7 @@ When the compiler encounters an operator expression like `a + b`, `-a`, or `m[r,
 
 To overload binary `+`, `-`, `*`, `/`, or unary `-`, implement `add`, `sub`, `mul`, `div`, or `neg` on your struct:
 
-**Listing 10-12: `list10-12.zc`**
-
+**Listing 10-12**
 ```zenc
 @derive(Copy)
 struct Vec2 {
@@ -95,8 +94,7 @@ println "Updated position: {pos}"; // (12, 17)
 
 You can overload equality (`eq`, `neq`) and relational ordering (`lt`, `gt`, `le`, `ge`) to compare structs naturally:
 
-**Listing 10-13: `list10-13.zc`**
-
+**Listing 10-13**
 ```zenc
 @derive(Copy)
 struct Version {
@@ -158,8 +156,7 @@ Zen C supports overloading array subscript notation for both **single-dimensiona
 
 Let's implement a 3×3 matrix that supports natural 2D indexing `mat[row, col]` for both reading and writing:
 
-**Listing 10-14: `list10-14.zc`**
-
+**Listing 10-14**
 ```zenc
 struct Matrix3x3 {
     data: int[9];

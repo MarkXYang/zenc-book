@@ -1,4 +1,4 @@
-# 20.4 多语言互操作：C++、Objective-C 与 CUDA
+# 多语言互操作：C++、Objective-C 与 CUDA
 
 许多系统项目并非孤立存在。你可能需要将 Zen C 算法集成到现有的 **C++** 游戏引擎中，调用 Apple **Objective-C** Cocoa 框架，或者将繁重的数据处理卸载到 **NVIDIA CUDA** GPU 加速器上。
 
@@ -67,7 +67,7 @@ nvcc -O3 kernel.cu -o kernel_gpu
 
 代码清单 20-4 定义了一个 3D 向量几何结构体及其方法、空指针检查以及验证逻辑，这些代码可以在标准 Zen C、C++17 和 CUDA 模式下干净地编译和运行。
 
-**代码清单 20-4**：`list20-4.zc` —— 多语言互操作（`examples/ch20/ch20-04-cpp-objc-cuda/main.zc`）
+**代码清单 20-4**：多语言互操作（`examples/ch20/ch20-04-cpp-objc-cuda/main.zc`）
 
 ```zenc
 // File: examples/ch20/ch20-04-cpp-objc-cuda/main.zc

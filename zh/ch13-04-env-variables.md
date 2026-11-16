@@ -1,4 +1,4 @@
-# 13.4 使用环境变量
+# 使用环境变量
 
 命令行工具通常允许用户通过**环境变量**来配置持久化的偏好设置——例如颜色主题、详细程度级别或大小写敏感性——这样他们就不必在每次调用时都传入相同的标志。
 
@@ -145,7 +145,7 @@ fn run(config: Config) -> Result<int> {
 
 以下是更新后的 `examples/ch13/ch13-04-env-variables/zgrep.zc` 模块，包括第三个单独验证 `Env::set`、`Env::get` 和 `Env::unset` 的单元测试：
 
-**示例 13-4: `list13-4.zc` —— 支持 `IGNORE_CASE` 环境变量的 `zgrep.zc`**
+**代码清单 13-4: 支持 `IGNORE_CASE` 环境变量的 `zgrep.zc`**
 
 ```zenc
 // File: examples/ch13/ch13-04-env-variables/zgrep.zc

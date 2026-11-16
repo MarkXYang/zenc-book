@@ -1,4 +1,4 @@
-# 12.3 C Types, Strings, and Variadics
+# C Types, Strings, and Variadics
 
 Even though Zen C compiles directly to C11, writing portable FFI bindings requires attention to three details of the C ABI: **platform-dependent integer widths**, **`const`-qualified string pointers**, and **C variadic argument lists (`...`)**.
 

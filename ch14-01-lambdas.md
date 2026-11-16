@@ -1,4 +1,4 @@
-# 14.1 Lambdas and Closure Capture
+# Lambdas and Closure Capture
 
 A **lambda** (or **closure**) is an anonymous function you can bind to a variable or pass directly as an argument to another function. Unlike ordinary top-level `fn` declarations, a closure can **capture** variables from the lexical scope in which it is defined.
 
@@ -103,7 +103,7 @@ let result = apply_twice([=] x -> x + base, 10); // (10 + 4) + 4 = 18
 
 Here is a complete example (`examples/ch14/ch14-01-lambdas/main.zc`) demonstrating arrow and block lambdas, value snapshots (`[=]`), higher-order closure parameters (`fn(int) -> int`), and reference mutation (`[&]` and `fn[&]`):
 
-**Listing 14-1: `list14-1.zc` — Lambdas, closure capture modes, and higher-order functions**
+**Listing 14-1: Lambdas, closure capture modes, and higher-order functions**
 
 ```zenc
 // File: examples/ch14/ch14-01-lambdas/main.zc

@@ -1,4 +1,4 @@
-# 21.2 将单线程服务器改造为多线程服务器
+# 将单线程服务器改造为多线程服务器
 
 在[21.1 节](ch21-01-single-threaded.md)中，我们指出了单线程 Web 服务器的主要缺陷：如果一个请求很慢（例如缓慢的磁盘读取、数据库查询或慢速客户端连接），所有后续的传入请求都将在其后发生停顿。
 
@@ -65,7 +65,7 @@ fn worker_routine(q: StreamQueue*) {
 
 代码清单 21-2 使用包含 4 个工作线程的线程池实现了我们的多线程 Web 服务器，演示了慢速的 `/sleep` 请求不会阻塞并发响应。
 
-**代码清单 21-2**：`list21-2.zc` —— 带有工作线程池的多线程 Web 服务器（`examples/ch21/ch21-02-multithreaded/main.zc`）
+**代码清单 21-2**：带有工作线程池的多线程 Web 服务器（`examples/ch21/ch21-02-multithreaded/main.zc`）
 
 ```zenc
 // File: examples/ch21/ch21-02-multithreaded/main.zc

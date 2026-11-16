@@ -27,19 +27,18 @@ fn multiply(a: int, b: int) -> int {
 
 要在 `main.zc` 中使用 `math_utils.zc`，我们使用 `import` 语句：
 
-**代码清单 7-1：`list7-1.zc`**
-
+**代码清单 7-1**
 ```zenc
- 1 | // main.zc
- 2 | import "math_utils.zc";
- 3 |
- 4 | fn main() {
- 5 |     // Access symbols using the file's base name as the namespace
- 6 |     let sum = math_utils::add(10, 20);
- 7 |     let prod = math_utils::multiply(6, 7);
- 8 |
- 9 |     println "Sum: {sum}, Product: {prod}";
-10 | }
+// main.zc
+import "math_utils.zc";
+
+fn main() {
+    // Access symbols using the file's base name as the namespace
+    let sum = math_utils::add(10, 20);
+    let prod = math_utils::multiply(6, 7);
+
+    println "Sum: {sum}, Product: {prod}";
+}
 ```
 
 输出：
@@ -64,18 +63,17 @@ Sum: 30, Product: 42
 
 如果模块的文件名较长，或者多个模块具有相同的基本名称，可以使用 `as` 关键字指定自定义命名空间别名：
 
-**代码清单 7-2：`list7-2.zc`**
-
+**代码清单 7-2**
 ```zenc
- 1 | // main.zc
- 2 | import "math_utils.zc" as math;
- 3 |
- 4 | fn main() {
- 5 |     let sum = math::add(15, 27);
- 6 |     let area = PI * 10.0 * 10.0; // Manifest constant folded at compile time
- 7 |
- 8 |     println "Sum: {sum}, Area: {area}";
- 9 | }
+// main.zc
+import "math_utils.zc" as math;
+
+fn main() {
+    let sum = math::add(15, 27);
+    let area = PI * 10.0 * 10.0; // Manifest constant folded at compile time
+
+    println "Sum: {sum}, Area: {area}";
+}
 ```
 
 输出：
@@ -90,16 +88,15 @@ Sum: 42, Area: 314.159265
 
 要将模块中的所有符号直接导入当前作用域，而无需使用命名空间前缀进行限定，请使用 `as *`：
 
-**代码清单 7-3：`list7-3.zc`**
-
+**代码清单 7-3**
 ```zenc
- 1 | import "math_utils.zc" as *;
- 2 |
- 3 | fn main() {
- 4 |     // Directly call functions without math_utils:: prefix
- 5 |     let sum = add(10, 20);
- 6 |     println "Sum: {sum}";
- 7 | }
+import "math_utils.zc" as *;
+
+fn main() {
+    // Directly call functions without math_utils:: prefix
+    let sum = add(10, 20);
+    println "Sum: {sum}";
+}
 ```
 
 输出：
@@ -116,16 +113,15 @@ Sum: 30
 
 Zen C 允许你使用选择性导入语法从模块中精选出特定符号：
 
-**代码清单 7-4：`list7-4.zc`**
-
+**代码清单 7-4**
 ```zenc
- 1 | import { add, multiply } from "math_utils.zc";
- 2 |
- 3 | fn main() {
- 4 |     let sum = add(5, 12);
- 5 |     let prod = multiply(4, 3);
- 6 |     println "Result: {sum}, {prod}";
- 7 | }
+import { add, multiply } from "math_utils.zc";
+
+fn main() {
+    let sum = add(5, 12);
+    let prod = multiply(4, 3);
+    println "Result: {sum}, {prod}";
+}
 ```
 
 输出：
@@ -135,15 +131,14 @@ Result: 17, 12
 
 你还可以在选择性导入期间为单个符号指定别名：
 
-**代码清单 7-5：`list7-5.zc`**
-
+**代码清单 7-5**
 ```zenc
- 1 | import { add as sum_func, multiply as prod_func } from "math_utils.zc";
- 2 |
- 3 | fn main() {
- 4 |     let res = sum_func(100, 200);
- 5 |     println "Result: {res}";
- 6 | }
+import { add as sum_func, multiply as prod_func } from "math_utils.zc";
+
+fn main() {
+    let res = sum_func(100, 200);
+    println "Result: {res}";
+}
 ```
 
 输出：

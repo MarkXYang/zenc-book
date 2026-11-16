@@ -79,8 +79,7 @@ struct Result<T> {
 
 让我们编写一个验证和解析端口字符串的函数：
 
-**代码清单 9-2: `list9-2.zc`**
-
+**代码清单 9-2**
 ```zenc
 import "std/result.zc"
 

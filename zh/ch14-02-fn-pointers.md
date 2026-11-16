@@ -1,4 +1,4 @@
-# 14.2 原始函数指针（`fn*`）
+# 原始函数指针（`fn*`）
 
 在 [14.1 节](ch14-01-lambdas.md) 中，我们看到 Zen C 闭包（`fn(T) -> R`）带有一个环境指针（`void* ctx`），以便它们可以捕获局部变量。然而，在系统编程中，有两个常见场景需要一个**无状态的、单字长（single-word）机器码指针**，而不包含任何环境结构体：
 
@@ -105,7 +105,7 @@ fn cmp_ints_asc(a: const void*, b: const void*) -> c_int {
 
 以下是结合了 `fn*` 结构体分派表、返回 `fn*` 的函数、双重函数指针（`fn**`）以及 C 的 `qsort` 的完整程序（`examples/ch14/ch14-02-fn-pointers/main.zc`）：
 
-**示例 14-2: `list14-2.zc` —— 分派表、高阶 `fn*` 与 C `qsort` 互操作**
+**代码清单 14-2: 分派表、高阶 `fn*` 与 C `qsort` 互操作**
 
 ```zenc
 // File: examples/ch14/ch14-02-fn-pointers/main.zc

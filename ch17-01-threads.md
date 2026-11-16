@@ -1,4 +1,4 @@
-# 17.1 Using Threads to Run Code Simultaneously
+# Using Threads to Run Code Simultaneously
 
 In most operating systems, an executing program's code runs in a **process**, and the operating system manages multiple processes at once. Within a single process, you can also have independent parts that run simultaneously across multiple CPU cores. The operating system features that execute these independent parts are called **threads**.
 

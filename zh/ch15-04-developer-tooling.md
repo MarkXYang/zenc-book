@@ -1,4 +1,4 @@
-# 15.4 开发者工具：`zc-doc`、`zc-format`、REPL 与 LSP
+# 开发者工具：`zc-doc`、`zc-format`、REPL 与 LSP
 
 一个高效的系统级语言不仅需要一个编译器。Zen C 提供了一套集成的开发者工具套件，它们与编译器共享词法分析器、语法分析器和类型检查器：
 
@@ -51,9 +51,9 @@ $ zc check --json bad.zc
 | `zc-doc file.zc`（或 `--recursive-doc`） | 为 `file.zc` 生成文档，**并且**递归遍历导入的模块（默认行为）。 |
 | `zc-doc --no-recursive-doc file.zc` | **仅**为 `file.zc` 生成文档，跳过导入的标准库或第三方模块。 |
 
-让我们观察示例 15-4 中的带文档注释的 `TempLog` 模块，我们可以将其传递给 `zc-doc`、`zc-format` 和 `zc check` 处理：
+让我们观察代码清单 15-4 中的带文档注释的 `TempLog` 模块，我们可以将其传递给 `zc-doc`、`zc-format` 和 `zc check` 处理：
 
-**示例 15-4: `list15-4.zc` —— 带文档注释的温度记录模块**
+**代码清单 15-4: 带文档注释的温度记录模块**
 
 ```zenc
 // File: examples/ch15/ch15-04-developer-tooling/main.zc

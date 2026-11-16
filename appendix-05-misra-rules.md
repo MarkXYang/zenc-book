@@ -1,4 +1,4 @@
-# Appendix E: MISRA C Compliance Rules
+# Appendix E: MISRA C Compliance Rules Reference
 
 When targeting safety-critical embedded, automotive, aerospace, or industrial systems, passing `--misra` to `zc` enables MISRA C compliance checks and generates MISRA-friendly C11 code.
 

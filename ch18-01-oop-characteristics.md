@@ -1,4 +1,4 @@
-# 18.1 Object-Oriented Characteristics of Zen C
+# Object-Oriented Characteristics of Zen C
 
 Is Zen C an object-oriented programming language? The answer depends on which parts of the object-oriented tradition you value. In his original formulation and in the *Design Patterns* ("Gang of Four") tradition, object-oriented design centers on three core ideas:
 

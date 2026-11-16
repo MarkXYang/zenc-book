@@ -1,4 +1,4 @@
-# 13.3 重构以提高模块化与错误处理能力
+# 重构以提高模块化与错误处理能力
 
 在添加行搜索算法和环境变量支持之前，让我们将原型重构为整洁、模块化且可测试的架构。我们将进行四项具体的改进：
 
@@ -152,7 +152,7 @@ fn search(query: string, contents: string) -> Vec<String> {
 
 以下是完整的 `zgrep.zc` 库模块（`examples/ch13/ch13-03-refactoring/zgrep.zc`）和 `main.zc` 入口点（`examples/ch13/ch13-03-refactoring/main.zc`）。
 
-**示例 13-3: `zgrep.zc` 与 `main.zc`**
+**代码清单 13-3: `zgrep.zc` 与 `main.zc`**
 
 ```zenc
 // File: examples/ch13/ch13-03-refactoring/zgrep.zc

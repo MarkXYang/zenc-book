@@ -1,4 +1,4 @@
-# Appendix D: Useful Development Tools
+# Appendix D: Development Tools
 
 Zen C ships with an integrated CLI (`zc`), formatter (`zc-format`), language server (`zc-lsp`), and interactive REPL. This appendix summarizes the commands and flags you will use every day.
 

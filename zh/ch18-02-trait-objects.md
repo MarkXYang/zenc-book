@@ -1,4 +1,4 @@
-# 18.2 用于动态分发的 Trait 对象
+# 用于动态分发的 Trait 对象
 
 在[第 8 章](ch08-01-vectors.md)中，我们看到泛型 `Vec<T>` 存储单一具体类型的元素——例如 `Vec<int>` 或 `Vec<Button>`。在[第 6 章](ch06-00-enums.md)中，我们看到当编写库时拥有一组预先已知的固定、封闭变体列表时，可以将它们归纳到一个 `enum` 中并存储为 `Vec<MyEnum>`。
 
@@ -63,9 +63,9 @@ toolbar.push(w_lbl);
 
 ## 3. 完整示例：使用 `Vec<Widget>` 的异构 UI 工具栏
 
-示例 18-2 定义了 `Widget` trait，并在三个具有不同字段和大小的结构体（`Button`、`ProgressBar` 和 `StatusLabel`）上实现了该 trait。它将这三个组件都存入一个 `Vec<Widget>` 中，遍历该向量并通过动态分发（`w.advance_tick()`）推进每个组件的内部状态，最后计算工具栏的布局宽度。
+代码清单 18-2 定义了 `Widget` trait，并在三个具有不同字段和大小的结构体（`Button`、`ProgressBar` 和 `StatusLabel`）上实现了该 trait。它将这三个组件都存入一个 `Vec<Widget>` 中，遍历该向量并通过动态分发（`w.advance_tick()`）推进每个组件的内部状态，最后计算工具栏的布局宽度。
 
-**示例 18-2**：通过 `Vec<Widget>` 存储并修改异构结构体（`examples/ch18/ch18-02-trait-objects/main.zc`）
+**代码清单 18-2**：通过 `Vec<Widget>` 存储并修改异构结构体（`examples/ch18/ch18-02-trait-objects/main.zc`）
 
 ```zenc
 // File: examples/ch18/ch18-02-trait-objects/main.zc
@@ -169,7 +169,7 @@ fn main() {
 }
 ```
 
-使用 `zc run -q` 运行并验证示例 18-2：
+使用 `zc run -q` 运行并验证代码清单 18-2：
 
 ```text
 $ zc run -q examples/ch18/ch18-02-trait-objects/main.zc
@@ -178,3 +178,6 @@ Widget 1: [ProgressBar 75% (24px)] (min_width=24)
 Widget 2: [StatusLabel Build #2] (min_width=11)
 Toolbar total min_width: 47px
 ```
+
+> [!NOTE]
+> 每个 `render()` 返回的 `string` 都指向该方法所拥有的静态缓冲区（参见[第 10.2 节](ch10-02-traits.md)中的警告）。循环会立即打印每个结果，因此这是安全的。如果需要保存渲染出的文本，请使用 `String::from(w.render())` 复制一份。

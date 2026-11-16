@@ -55,8 +55,7 @@ impl <TraitName> for <StructName> {
 
 Let's implement the `Summary` trait on two distinct media types: `NewsArticle` and `Tweet`:
 
-**Listing 10-5: `list10-5.zc`**
-
+**Listing 10-5**
 ```zenc
 trait Summary {
     fn summarize(self) -> string;
@@ -110,6 +109,17 @@ New tweet:   @zenc_lang: Zero-cost abstractions that compile to clean C11!
 
 Calling a trait method directly on a concrete instance (`article.summarize()`) resolves statically at compile time to `NewsArticle__Summary__summarize(&article)`.
 
+> [!WARNING]
+> **Returned interpolated strings are temporary.** `return "@{self.username}: {self.content}";` builds the text in a static buffer that belongs to that line of code, and returns a `string` (`char*`) pointing into it. The next call to the same method overwrites the buffer:
+>
+> ```zenc
+> let a = tweet1.summarize();
+> let b = tweet2.summarize();
+> println "{a} | {b}";   // prints tweet2's summary twice
+> ```
+>
+> Using the result immediately, as in `println "{tweet.summarize()}"`, is safe. When you need to keep the text, return an owning `String` instead: change the signature to `-> String` and write `return String::from("@{self.username}: {self.content}");`. `String` frees its memory through `Drop`. You will learn more about `String` in [Chapter 8](ch08-02-strings.md).
+
 > [!NOTE]
 > **Compiler Guard Against Reversed `impl` Syntax**:
 > Developers coming from other languages sometimes accidentally write `impl Struct for Trait` instead of `impl Trait for Struct`. If you swap the order, `zc` catches the mistake immediately with a clear diagnostic:
@@ -126,8 +136,7 @@ Traits become especially powerful when you write functions that accept *any* typ
 
 In Zen C, you can use a trait name directly as a parameter type (`item: Summary`). When you pass a pointer to any struct that implements `Summary` (such as `&article` or `&tweet`), the compiler automatically packages it into a **trait object**:
 
-**Listing 10-6: `list10-6.zc`**
-
+**Listing 10-6**
 ```zenc
 trait Summary {
     fn summarize(self) -> string;
@@ -251,8 +260,7 @@ Whenever a concrete specialization like `Box<int>` or `Box<f64>` is instantiated
 
 Zen C gives you two distinct ways to write polymorphic functions, each suited to a different systems engineering need:
 
-**Listing 10-7: `list10-7.zc`**
-
+**Listing 10-7**
 ```zenc
 struct Circle {
     radius: f64;

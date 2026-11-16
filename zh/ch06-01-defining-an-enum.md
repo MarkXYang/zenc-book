@@ -156,49 +156,48 @@ $$\text{Total Size} = \text{sizeof(Tag)} + \text{sizeof(Largest Payload)} + \tex
 
 ## 枚举上的方法（`impl EnumName`）
 
-就像 [5.2 节](ch05-02-method-syntax.md) 中的结构体一样，枚举也可以使用 `impl` 块附加方法！
+就像[方法语法](ch05-03-method-syntax.md)一节中的结构体一样，枚举也可以使用 `impl` 块附加方法！
 
 在枚举方法内部：
 - 接收者是 `self`（或 `const self`）。
 - 因为 `self` 是指向枚举实例的指针（`Status* self`），所以你可以解引用 `*self` 以对当前激活的变体进行模式匹配：
 
-**代码清单 6-1：`list6-1.zc`**
-
+**代码清单 6-1**
 ```zenc
- 1 | enum Status {
- 2 |     Idle,
- 3 |     Running,
- 4 |     Finished,
- 5 |     Error(int),
- 6 | }
- 7 |
- 8 | impl Status {
- 9 |     // Read-only inspection method
-10 |     fn is_terminal(const self) -> bool {
-11 |         match *self {
-12 |             Status::Finished => { return true; },
-13 |             Status::Error(_) => { return true; },
-14 |             _ => { return false; },
-15 |         }
-16 |     }
-17 |
-18 |     // Extraction method with fallback
-19 |     fn error_or_default(const self, default_code: int) -> int {
-20 |         match *self {
-21 |             Status::Error(code) => { return code; },
-22 |             _ => { return default_code; },
-23 |         }
-24 |     }
-25 | }
-26 |
-27 | fn main() {
-28 |     let s1 = Status::Running;
-29 |     let s2 = Status::Error(500);
-30 |
-31 |     println "Is s1 terminal? {s1.is_terminal()}";
-32 |     println "Is s2 terminal? {s2.is_terminal()}";
-33 |     println "s2 error code: {s2.error_or_default(0)}";
-34 | }
+enum Status {
+    Idle,
+    Running,
+    Finished,
+    Error(int),
+}
+
+impl Status {
+    // Read-only inspection method
+    fn is_terminal(const self) -> bool {
+        match *self {
+            Status::Finished => { return true; },
+            Status::Error(_) => { return true; },
+            _ => { return false; },
+        }
+    }
+
+    // Extraction method with fallback
+    fn error_or_default(const self, default_code: int) -> int {
+        match *self {
+            Status::Error(code) => { return code; },
+            _ => { return default_code; },
+        }
+    }
+}
+
+fn main() {
+    let s1 = Status::Running;
+    let s2 = Status::Error(500);
+
+    println "Is s1 terminal? {s1.is_terminal()}";
+    println "Is s2 terminal? {s2.is_terminal()}";
+    println "s2 error code: {s2.error_or_default(0)}";
+}
 ```
 
 输出：

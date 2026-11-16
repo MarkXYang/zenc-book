@@ -1,4 +1,4 @@
-# 13.5 将错误信息写入标准错误
+# 将错误信息写入标准错误
 
 目前，我们的 `main.zc` 将所有输出——包括来自 `poem.txt` 的匹配行以及参数或文件无效时的错误消息——都使用 `println` 打印到了终端。
 
@@ -47,7 +47,7 @@ Problem parsing arguments: not enough arguments (usage: zgrep <query> <file_path
 
 让我们更新 `main.zc`，以便在返回退出码 `1` 之前使用 `eprintln` 打印参数解析错误和文件 I/O 错误：
 
-**示例 13-5: `list13-5.zc` —— 将诊断信息写入 `stderr` 的最终 `main.zc`**
+**代码清单 13-5: 将诊断信息写入 `stderr` 的最终 `main.zc`**
 
 ```zenc
 // File: examples/ch13/ch13-05-stderr/main.zc

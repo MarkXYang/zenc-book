@@ -1,4 +1,4 @@
-# 18.2 Trait Objects for Dynamic Dispatch
+# Trait Objects for Dynamic Dispatch
 
 In [Chapter 8](ch08-01-vectors.md), we saw that a generic `Vec<T>` stores elements of a single concrete type—such as `Vec<int>` or `Vec<Button>`. And in [Chapter 6](ch06-00-enums.md), we saw that when you have a fixed, closed list of variantsknown when writing your library, you can group them into an `enum` and store `Vec<MyEnum>`.
 
@@ -178,3 +178,6 @@ Widget 1: [ProgressBar 75% (24px)] (min_width=24)
 Widget 2: [StatusLabel Build #2] (min_width=11)
 Toolbar total min_width: 47px
 ```
+
+> [!NOTE]
+> Each `render()` returns a `string` that points into a static buffer owned by that method (see the warning in [Chapter 10.2](ch10-02-traits.md)). The loop prints each result immediately, so this is safe. If you need to store rendered text, copy it with `String::from(w.render())`.

@@ -1,4 +1,4 @@
-# 16.1 裸指针与手动内存管理（`T*`、`void*`）
+# 裸指针与不安全操作
 
 在[4.2 节](ch04-02-pointers.md)中，我们介绍了 Zen C 的指针语法：`&x` 获取 `x` 的内存地址以生成类型化指针 `T*`，`*ptr` 解引用指针以读取或写入其目标，而 `ptr.field` 会自动解引用结构体指针，无需使用 C 语言的 `->` 运算符。
 
@@ -91,9 +91,9 @@ let byte_delta: usize = fourth_addr - first_addr; // 3 * sizeof(int) == 12 bytes
 
 ## 4. 完整示例：堆缓冲区、指针遍历与字节校验和
 
-示例 16-1 综合了类型化堆分配（`alloc_n`、`realloc_n`、`alloc`、`dealloc`）、原地指针交换（`swap`）、带比例缩放的指针运算（`base + i`）、`void*` 字节检查以及结构体复制（`mem_copy`）。
+代码清单 16-1 综合了类型化堆分配（`alloc_n`、`realloc_n`、`alloc`、`dealloc`）、原地指针交换（`swap`）、带比例缩放的指针运算（`base + i`）、`void*` 字节检查以及结构体复制（`mem_copy`）。
 
-**示例 16-1**：使用裸指针与 `std/mem.zc`（`examples/ch16/ch16-01-raw-pointers/main.zc`）
+**代码清单 16-1**：使用裸指针与 `std/mem.zc`（`examples/ch16/ch16-01-raw-pointers/main.zc`）
 
 ```zenc
 // File: examples/ch16/ch16-01-raw-pointers/main.zc
@@ -176,7 +176,7 @@ fn main() {
 }
 ```
 
-使用 `zc run -q` 运行并验证示例 16-1：
+使用 `zc run -q` 运行并验证代码清单 16-1：
 
 ```text
 $ zc run -q examples/ch16/ch16-01-raw-pointers/main.zc

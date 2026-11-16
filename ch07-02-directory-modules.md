@@ -30,15 +30,14 @@ fn connect(host: string, port: int) {
 
 From `main.zc`, you can import the entire `network` folder directly:
 
-**Listing 7-6: `list7-6.zc`**
-
+**Listing 7-6**
 ```zenc
- 1 | // main.zc
- 2 | import "./network";
- 3 |
- 4 | fn main() {
- 5 |     connect("127.0.0.1", DEFAULT_PORT);
- 6 | }
+// main.zc
+import "./network";
+
+fn main() {
+    connect("127.0.0.1", DEFAULT_PORT);
+}
 ```
 
 Output:
@@ -48,15 +47,14 @@ Connecting to 127.0.0.1:8080...
 
 Or import the directory module with an explicit namespace:
 
-**Listing 7-7: `list7-7.zc`**
-
+**Listing 7-7**
 ```zenc
- 1 | // main.zc
- 2 | import "network/mod.zc" as net;
- 3 |
- 4 | fn main() {
- 5 |     net::connect("127.0.0.1", net::DEFAULT_PORT);
- 6 | }
+// main.zc
+import "network/mod.zc" as net;
+
+fn main() {
+    net::connect("127.0.0.1", net::DEFAULT_PORT);
+}
 ```
 
 Output:

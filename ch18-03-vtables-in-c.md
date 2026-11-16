@@ -1,4 +1,4 @@
-# 18.3 Vtables Under the Hood in C11
+# Vtables Under the Hood in C11
 
 How does Zen C achieve dynamic dispatch in pure C11 without any C++ runtime library (`libstdc++`) or hidden per-object `vptr` headers?
 

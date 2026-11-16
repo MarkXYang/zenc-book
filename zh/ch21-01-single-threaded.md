@@ -1,4 +1,4 @@
-# 21.1 构建单线程 Web 服务器
+# 构建单线程 Web 服务器
 
 在引入线程池与并发之前，我们首先从构建一个可工作的**单线程 HTTP/1.1 服务器**开始。
 
@@ -102,7 +102,7 @@ fn handle_connection(stream: TcpStream) {
 
 代码清单 21-1 实现了单线程服务器循环，并包含一个验证 `200 OK` 与 `404 NOT FOUND` 响应的自测试客户端测试套件。
 
-**代码清单 21-1**：`list21-1.zc` —— 单线程 HTTP 服务器（`examples/ch21/ch21-01-single-threaded/main.zc`）
+**代码清单 21-1**：单线程 HTTP 服务器（`examples/ch21/ch21-01-single-threaded/main.zc`）
 
 ```zenc
 // File: examples/ch21/ch21-01-single-threaded/main.zc
