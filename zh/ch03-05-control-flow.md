@@ -1,6 +1,6 @@
 # 控制流
 
-根据条件、模式匹配或重复执行来控制程序执行流程是编程的根本基石。Zen C 提供了现代条件表达式、强大的 `match` 模式匹配、引用绑定、丰富的范围与枚举循环、带标签的循环控制以及提前返回保护子句。
+根据条件、模式匹配或重复执行来控制程序执行流程是编程的根本基石。Zen C 提供了现代条件表达式、实用的 `match` 基础、丰富的范围与枚举循环、带标签的循环控制以及提前返回保护子句。
 
 ---
 
@@ -75,62 +75,27 @@ match val {
 10 to 14
 ```
 
-### 2. 解构枚举
+### 2. 枚举匹配概览
 
-`match` 可以直接解构带标签联合体枚举：
+`match` 同样适用于枚举变体：
 
-**代码清单 3-12**
 ```zenc
-enum Shape {
-    Circle(f64),
-    Rect(f64, f64),
-    Point,
+enum Status {
+    Ready,
+    Busy,
+    Error,
 }
 
-fn main() {
-    let shape = Shape::Circle(5.0);
-
-    match shape {
-        Shape::Circle(r)  => { println "Circle radius: {r}"; },
-        Shape::Rect(w, h) => { println "Rectangle area: {w * h}"; },
-        Shape::Point      => { println "Point"; },
+fn describe(s: Status) {
+    match s {
+        Status::Ready => { println "Ready"; },
+        Status::Busy => { println "Busy"; },
+        Status::Error => { println "Error"; },
     }
 }
 ```
 
-输出：
-```text
-Circle radius: 5.000000
-```
-
----
-
-## 引用绑定 (`ref`)
-
-在对只支持移动语义（Move-only）的类型（例如 `Option`、`Result` 或非 Copy 结构体）进行模式匹配时，提取字段默认会移动所有权。在模式内部可以使用 `ref` 关键字通过引用来检查值，而不会消耗它：
-
-**代码清单 3-13**
-```zenc
-import "std/option.zc";
-
-fn main() {
-    let opt = Option<int>::Some(42);
-
-    match opt {
-        Option::Some(ref n) => {
-            // 'n' is a pointer/reference to the value inside 'opt'
-            // 'opt' is NOT moved or destroyed here
-            println "Inspected value: {*n}";
-        },
-        Option::None => {},
-    }
-}
-```
-
-输出：
-```text
-Inspected value: 42
-```
+关于枚举载荷解构模式和 `ref` 引用绑定的完整内容，请见[第 6 章](ch06-03-patterns.md)。
 
 ---
 
@@ -178,7 +143,7 @@ for _ in 0..5 {
 
 直接遍历固定大小数组或标准集合的元素：
 
-**代码清单 3-14**
+**代码清单 3-12**
 ```zenc
 let arr: int[5] = [10, 20, 30, 40, 50];
 
@@ -200,7 +165,7 @@ Element: 50
 
 同时获取当前索引和元素值：
 
-**代码清单 3-15**
+**代码清单 3-13**
 ```zenc
 let arr: int[3] = [100, 200, 300];
 
@@ -221,7 +186,7 @@ arr[2] = 300
 
 Zen C 拥有唯一的条件循环 `while`。如果需要在测试条件之前至少执行一次循环体（即 C 语言中的 `do … while`），可以无条件循环并在底部使用 `break`：
 
-**代码清单 3-16**
+**代码清单 3-14**
 ```zenc
 // Standard while loop
 let count = 3;
@@ -274,7 +239,7 @@ outer: loop {
 
 一种常见的编程模式是在函数顶部检查非法输入并立即退出，从而使函数体的其余部分可以放心地假定输入有效。在 Zen C 中，你可以使用普通的 `if` 编写这些保护子句，并在需要时用 `!` 取反条件：
 
-**代码清单 3-17**
+**代码清单 3-15**
 ```zenc
 fn process_ptr(ptr: void*) {
     if ptr == NULL {
@@ -319,6 +284,6 @@ State is valid.
 - **数据类型**：标量类型（`i8`..`i128`、`u8`..`u128`、`usize`、`f32`、`f64`、`bool`、`char`、`rune`、`string`）、C 互操作类型、任意位宽整数（`iN`/`uN`）、数值字面量特性以及固定大小数组（`T[N]`）。
 - **函数**：命名参数、`const` 参数以及默认参数。
 - **注释、打印与插值**：`//` 与 `///` 注释、`print`/`println`/`eprint`/`eprintln`、`{}` 插值、原始字符串与多行字符串，以及输入提示。
-- **控制流**：条件语句、`match` 模式匹配、`ref` 绑定、范围循环、枚举迭代、带标签的循环以及提前返回保护子句。
+- **控制流**：条件语句、`match` 基础、范围循环、枚举迭代、带标签的循环以及提前返回保护子句。
 
 在**第 4 章**中，我们将了解 Zen C 如何处理所有权、指针与资源清理。

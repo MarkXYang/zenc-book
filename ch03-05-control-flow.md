@@ -1,6 +1,6 @@
 # Control Flow
 
-The ability to control execution flow based on conditions, pattern matching, or repetition is fundamental to programming. Zen C provides modern conditional expressions, powerful `match` pattern matching, reference binding, rich range and enumerated loops, labeled loop control, and early-return guard clauses.
+The ability to control execution flow based on conditions, pattern matching, or repetition is fundamental to programming. Zen C provides modern conditional expressions, practical `match` basics, rich range and enumerated loops, labeled loop control, and early-return guard clauses.
 
 ---
 
@@ -75,62 +75,27 @@ Output:
 10 to 14
 ```
 
-### 2. Destructuring Enums
+### 2. Enum Matching at a Glance
 
-`match` can destructure tagged union enums directly:
+`match` also works on enum variants:
 
-**Listing 3-12**
 ```zenc
-enum Shape {
-    Circle(f64),
-    Rect(f64, f64),
-    Point,
+enum Status {
+    Ready,
+    Busy,
+    Error,
 }
 
-fn main() {
-    let shape = Shape::Circle(5.0);
-
-    match shape {
-        Shape::Circle(r)  => { println "Circle radius: {r}"; },
-        Shape::Rect(w, h) => { println "Rectangle area: {w * h}"; },
-        Shape::Point      => { println "Point"; },
+fn describe(s: Status) {
+    match s {
+        Status::Ready => { println "Ready"; },
+        Status::Busy => { println "Busy"; },
+        Status::Error => { println "Error"; },
     }
 }
 ```
 
-Output:
-```text
-Circle radius: 5.000000
-```
-
----
-
-## Reference Binding (`ref`)
-
-When pattern matching move-only types (such as `Option`, `Result`, or non-Copy structs), extracting a field by default moves ownership. Use the `ref` keyword inside patterns to inspect a value by reference without consuming it:
-
-**Listing 3-13**
-```zenc
-import "std/option.zc";
-
-fn main() {
-    let opt = Option<int>::Some(42);
-
-    match opt {
-        Option::Some(ref n) => {
-            // 'n' is a pointer/reference to the value inside 'opt'
-            // 'opt' is NOT moved or destroyed here
-            println "Inspected value: {*n}";
-        },
-        Option::None => {},
-    }
-}
-```
-
-Output:
-```text
-Inspected value: 42
-```
+You will learn enum payload destructuring patterns and `ref` binding in depth in [Chapter 6](ch06-03-patterns.md).
 
 ---
 
@@ -178,7 +143,7 @@ for _ in 0..5 {
 
 Iterate directly over elements of fixed-size arrays or standard collections:
 
-**Listing 3-14**
+**Listing 3-12**
 ```zenc
 let arr: int[5] = [10, 20, 30, 40, 50];
 
@@ -200,7 +165,7 @@ Element: 50
 
 Access both the current index and element value simultaneously:
 
-**Listing 3-15**
+**Listing 3-13**
 ```zenc
 let arr: int[3] = [100, 200, 300];
 
@@ -221,7 +186,7 @@ arr[2] = 300
 
 Zen C has a single conditional loop, `while`. When the body must run at least once before the condition is tested (what C calls `do … while`), loop unconditionally and `break` at the bottom:
 
-**Listing 3-16**
+**Listing 3-14**
 ```zenc
 // Standard while loop
 let count = 3;
@@ -274,7 +239,7 @@ outer: loop {
 
 A common pattern is to check for bad input at the top of a function and leave immediately, so the rest of the body can assume the input is valid. In Zen C you write these guard clauses with a plain `if`, negating the condition with `!` when needed:
 
-**Listing 3-17**
+**Listing 3-15**
 ```zenc
 fn process_ptr(ptr: void*) {
     if ptr == NULL {
@@ -319,6 +284,6 @@ In Chapter 3, you learned Zen C's core language concepts:
 - **Data Types**: Scalar types (`i8`..`i128`, `u8`..`u128`, `usize`, `f32`, `f64`, `bool`, `char`, `rune`, `string`), C interop types, arbitrary bit-width integers (`iN`/`uN`), numeric literal features, and fixed-size arrays (`T[N]`).
 - **Functions**: Named arguments, `const` arguments, and default parameters.
 - **Comments, Printing and Interpolation**: `//` and `///` comments, `print`/`println`/`eprint`/`eprintln`, `{}` interpolation, raw and multiline strings, and input prompts.
-- **Control Flow**: Conditionals, `match` pattern matching, `ref` binding, range loops, enumerated iteration, labeled loops, and early-return guard clauses.
+- **Control Flow**: Conditionals, `match` basics, range loops, enumerated iteration, labeled loops, and early-return guard clauses.
 
 In **Chapter 4**, we will look at how Zen C handles ownership, pointers, and cleanup.

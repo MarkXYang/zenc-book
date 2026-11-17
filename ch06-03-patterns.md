@@ -28,7 +28,40 @@ fn handle_packet(p: Packet*) {
 
 ---
 
-## Destructuring in `let` Bindings and `match` Arms
+## Struct and Tuple Destructuring
+
+Destructuring is not limited to `match` arms. You can also destructure directly in `let` bindings.
+
+```zenc
+struct Point {
+    x: int;
+    y: int;
+}
+
+fn pair() -> (int, int) {
+    return (10, 20);
+}
+
+fn main() {
+    let p = Point { x: 3, y: 4 };
+
+    // Shorthand struct destructuring
+    let Point { x, y } = p;
+    println "{x}, {y}";
+
+    // Renamed struct destructuring
+    let Point { x: x1, y: y1 } = p;
+    println "{x1}, {y1}";
+
+    // Tuple destructuring
+    let (a, b) = pair();
+    println "{a}, {b}";
+}
+```
+
+---
+
+## Destructuring in `match` Arms
 
 You can also destructure `struct` values directly inside `let` statements or inside `match` arms to bind each field to a local variable:
 
@@ -48,7 +81,7 @@ enum Packet {
 
 fn describe_packet(pkt: Packet*) -> string {
     match *pkt {
-        Packet::Ping() => return "ping",
+        Packet::Ping() => { return "ping"; },
         Packet::Data(ref text) => {
             println "Inspecting borrowed payload: {*text}";
             return "data";
@@ -80,16 +113,64 @@ fn main() {
 }
 ```
 
-<span class="caption">Listing 6-9: Reference binding (`ref`) and struct destructuring across `match` and `let`</span>
+<span class="caption">Listing 6-7: Reference binding (`ref`) and struct destructuring across `match` and `let`</span>
+
+---
+
+## Ignoring Values with Wildcards
+
+Use `_` when you do not care about part of a matched value:
+
+```zenc
+enum Event {
+    Resize(int, int),
+    Quit,
+}
+
+fn handle(e: Event) {
+    match e {
+        Event::Resize(w, _h) => {
+            println "Width changed: {w}";
+        },
+        Event::Quit => {
+            println "Quit";
+        },
+    }
+}
+```
+
+> [!NOTE]
+> In the current compiler, avoid repeating plain `_` more than once in the same payload pattern (for example `Resize(_, _)`), because it can generate duplicate C variable names. Prefer distinct ignored names such as `_w` and `_h`.
+
+---
+
+## Match Guards: Current State
+
+Zen C's parser accepts `if` guards after a pattern:
+
+```zenc
+match n {
+    0 => { println "zero"; },
+    x if x % 2 == 0 => { println "even"; },
+    _ => { println "odd"; },
+}
+```
+
+> [!WARNING]
+> At the moment, guard conditions are parsed but not enforced during code generation. If you need reliable guard behavior today, keep the `match` arm broad and put an explicit `if` inside the arm body.
+
+---
 
 ## Exhaustiveness and Wildcards
 
-When matching on an `enum`, cover every variant explicitly or add a catch-all `_ => { ... }` arm. Explicit variant arms are generally preferred because the compiler will alert you if you add a new enum variant later and forget to handle it.
+When matching on an `enum`, cover every variant explicitly or add a catch-all `_ => { ... }` arm. Explicit variant arms are generally preferred because they make intent clear and keep behavior stable as enums evolve.
+
+Current compiler behavior: non-exhaustive enum matches produce a warning diagnostic. Treat that warning as a correctness issue and fix it immediately.
 
 ---
 
 ## Summary
 
-In this section, you learned how to use reference binding (`ref`) to safely inspect payloads without triggering resource moves, and how to destructure data types across `match` arms and `let` statements.
+In this section, you learned how to use reference binding (`ref`) to safely inspect payloads without triggering resource moves, how to destructure structs and tuples in both `let` and `match`, and how to use wildcards intentionally.
 
 Next, in [Chapter 7](ch07-00-modules.md), we'll learn how to organize growing codebases into modules!

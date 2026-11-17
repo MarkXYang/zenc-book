@@ -24,21 +24,9 @@ trait Clone {
 
 ### 1. `Drop` — Deterministic Scope Destructors (RAII)
 
-As we learned in [Chapter 4](ch04-04-cleanup.md), implementing `Drop` for a struct registers a destructor that the compiler invokes automatically whenever an owned instance goes out of scope:
+`Drop` is the trait-level hook for deterministic cleanup. A type that implements `Drop` (or contains fields that do) is treated as a resource-owning type and follows move-by-default semantics to prevent double-destruction.
 
-```zenc
-struct TempFile {
-    path: string;
-}
-
-impl Drop for TempFile {
-    fn drop(self) {
-        println "[Drop] Removing temporary file: {self.path}";
-    }
-}
-```
-
-Any struct that implements `Drop` (or contains a field that implements `Drop`) is treated as a **Resource Type** with **move-by-default** semantics so its destructor can never be called twice on the same allocation.
+We covered destructor behavior and `.forget()` in detail in [Chapter 4](ch04-04-cleanup.md), and early-return cleanup behavior in [Chapter 9](ch09-03-defer-cleanup.md).
 
 ### 2. `Copy` — Opt-In Value Duplication
 
@@ -197,24 +185,9 @@ Selected theme color: rgb(255, 128, 0)
 
 ---
 
-## 4. Smart Derives with `@derive(...)`
+## 4. Derive Recap (`@derive(...)`)
 
-Writing manual `Copy`, `Clone`, `eq`, `to_string`, and JSON serialization implementations for every data struct can be tedious. Zen C provides the **`@derive(...)`** attribute to generate these implementations automatically at compile time.
-
-### Supported Built-In Derives
-
-| Derive Attribute | Generated Implementation | Description |
-| :--- | :--- | :--- |
-| **`@derive(Copy)`** | `impl Copy for T {}` | Marks the type as implicitly copyable by value (disables move invalidation). |
-| **`@derive(Clone)`** | `fn clone(self) -> T` | Generates a `.clone()` method returning a copy of the struct. |
-| **`@derive(Eq)`** | `fn eq(self, other: T*) -> bool` | Generates field-by-field structural equality, enabling `a == b` and `a != b`. |
-| **`@derive(Debug)`** | `fn to_string(self) -> char*` | Generates a default `to_string` formatter for string interpolation `"{val}"`. |
-| **`@derive(ToJson)`** | `fn to_json(self) -> JsonValue` | Automatically serializes struct fields into a `std/json.zc` `JsonValue` object. |
-| **`@derive(FromJson)`** | `fn from_json(j: JsonValue*) -> Result<T>` | Automatically deserializes a `JsonValue*` into `Result<T>`. |
-
-### Combining `@derive(Copy, Clone, Eq, Debug)`
-
-You can combine multiple derive traits in a single `@derive(...)` attribute above a `struct` or `enum`:
+`@derive(...)` removes repetitive trait boilerplate. Typical combinations include `Copy`, `Clone`, `Eq`, and `Debug`:
 
 **Listing 10-10**
 ```zenc
@@ -226,67 +199,16 @@ struct Point {
 
 fn main() {
     let p1 = Point { x: 10, y: 20 };
-    let p2 = p1;         // Implicit copy via @derive(Copy)
-    let p3 = p1.clone(); // Explicit clone via @derive(Clone)
-    let p4 = Point { x: 99, y: 99 };
+    let p2 = p1;
+    let p3 = p1.clone();
 
-    // Structural equality via @derive(Eq):
     println "p1 == p2: {p1 == p2}";
     println "p1 == p3: {p1 == p3}";
-    println "p1 == p4: {p1 == p4}";
-
-    // String formatting via @derive(Debug):
     println "Debug output: {p1}";
 }
 ```
 
-Output:
-```text
-p1 == p2: true
-p1 == p3: true
-p1 == p4: false
-Debug output: Point { ... }
-```
-
-### Automatic JSON Serialization with `@derive(ToJson, FromJson)`
-
-When building web services, CLI tools, or configuration loaders with `std/json.zc`, `@derive(ToJson, FromJson)` eliminates manual JSON field mapping:
-
-**Listing 10-11**
-```zenc
-import "std/json.zc"
-
-@derive(ToJson, FromJson)
-struct ServerConfig {
-    host: char*;
-    port: int;
-    tls: bool;
-}
-
-fn main() {
-    let cfg = ServerConfig {
-        host: "127.0.0.1",
-        port: 8080,
-        tls: true,
-    };
-
-    // Serialize struct -> JSON string:
-    let json_val = cfg.to_json();
-    let json_str = json_val.to_string();
-    println "Serialized JSON: {json_str}";
-
-    // Deserialize JSON string -> struct:
-    let parsed = JsonValue::parse(json_str).unwrap();
-    let restored = ServerConfig::from_json(parsed).unwrap();
-    println "Restored: host={restored.host}, port={restored.port}, tls={restored.tls}";
-}
-```
-
-Output:
-```text
-Serialized JSON: {"tls":true,"port":8080,"host":"127.0.0.1"}
-Restored: host=127.0.0.1, port=8080, tls=true
-```
+For the full derive catalog (`ToJson`, `FromJson`, and attribute interactions such as `@packed`, `@align`, `@inline`, and `@constructor`), see [Chapter 19.2](ch19-02-attributes-derives.md).
 
 ---
 
@@ -295,6 +217,6 @@ Restored: host=127.0.0.1, port=8080, tls=true
 - **`Drop`, `Copy`, and `Clone`**: Govern deterministic RAII destruction, implicit bitwise copying, and explicit deep cloning.
 - **`Iterator<T>` and `Iterable<T>`**: Enable custom structs to work seamlessly inside `for item in collection` loops.
 - **`to_string(self) -> char*`**: Hooks custom structs directly into Zen C's `{expr}` string interpolation.
-- **`@derive(...)`**: Automatically generates `Copy`, `Clone`, `Eq`, `Debug`, `ToJson`, and `FromJson` implementations at compile time.
+- **`@derive(...)`**: Eliminates repetitive trait boilerplate; Chapter 19.2 covers the full derive and attribute toolbox.
 
 Next, let's see how to make custom types even more expressive with **Operator Overloading**!

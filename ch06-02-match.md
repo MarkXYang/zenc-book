@@ -2,7 +2,7 @@
 
 Zen C provides an exceptionally powerful control flow construct called **`match`**. It allows you to compare a value against a series of patterns and execute code based on which pattern matches.
 
-Patterns can be simple values, literals, ranges, wildcards, or the variants of an `enum`. The true superpower of `match` comes when paired with enums: it safely and cleanly **destructures** variant payloads while enforcing **compile-time exhaustiveness**.
+Patterns can be simple values, literals, ranges, wildcards, or the variants of an `enum`. This chapter focuses on `match` control-flow mechanics; the deeper destructuring and `ref` binding patterns are covered in [Chapter 6.3](ch06-03-patterns.md).
 
 ---
 
@@ -62,7 +62,7 @@ Notice:
 
 Matches in Zen C are **exhaustive**: every possible value or enum variant must be handled.
 
-If you omit a variant from a `match` expression without providing a default wildcard fallback arm, the compiler will reject the code:
+If you omit a variant from a `match` expression without providing a default wildcard fallback arm, the compiler reports a non-exhaustive `match` warning:
 
 ```zenc
 fn handle_shape(s: Shape) {
@@ -74,7 +74,7 @@ fn handle_shape(s: Shape) {
 }
 ```
 
-This strictness prevents insidious bugs where a new enum variant is added to a system, but some parts of the codebase forget to handle it.
+Treat this warning as a correctness issue: either handle every variant explicitly or add a deliberate fallback arm.
 
 ---
 
@@ -198,92 +198,9 @@ Server Error
 
 ---
 
-## Reference Binding (`ref`)
+## About `ref` and Advanced Patterns
 
-In [Chapter 4](ch04-01-move-semantics.md), we learned that types that manage external resources (like heap memory, sockets, or structs implementing `Drop`) adhere to **Move Semantics**.
-
-When you pattern match on an enum carrying a resource-owning type:
-- Matching by value (`Some(x)`) moves the payload out of the enum, consuming it.
-- To inspect or mutate the payload **without moving ownership**, use the **`ref`** keyword!
-
-### 1. Inspecting Values Without Moving
-
-Using `ref` binds a pointer to the inner value instead of moving it:
-
-**Listing 6-5**
-```zenc
-enum TaskResult {
-    Success(string),
-    Failure(int),
-}
-
-fn inspect_result(res: TaskResult) {
-    match res {
-        TaskResult::Success(ref msg) => {
-            // 'msg' is string* (a borrowed pointer to the string inside res)
-            // 'res' is NOT moved or consumed!
-            println "Task completed: {*msg}";
-        },
-        TaskResult::Failure(code) => {
-            println "Failed: {code}";
-        },
-    }
-
-    // 'res' is still valid here because we borrowed via 'ref'!
-}
-
-fn main() {
-    let r1 = TaskResult::Success("File uploaded");
-    let r2 = TaskResult::Failure(404);
-    inspect_result(r1);
-    inspect_result(r2);
-}
-```
-
-Output:
-```text
-Task completed: File uploaded
-Failed: 404
-```
-
-### 2. In-Place Mutation via `ref`
-
-You can also use `ref` to modify the value stored directly inside an enum variable in place:
-
-**Listing 6-6**
-```zenc
-enum Counter {
-    Value(int),
-    Reset,
-}
-
-fn main() {
-    let c = Counter::Value(10);
-
-    // Matching on an lvalue variable with 'ref' borrows a direct pointer to the payload
-    match c {
-        Counter::Value(ref val) => {
-            // 'val' is int* pointing into 'c'
-            *val = *val + 1; // Mutates directly in place!
-        },
-        Counter::Reset => {
-            c = Counter::Value(1);
-        },
-    }
-
-    match c {
-        Counter::Value(v) => {
-            println "New count: {v}"; // 11
-        },
-        Counter::Reset => {},
-    }
-}
-```
-
-Output:
-```text
-New count: 11
-```
+This chapter keeps `match` focused on arm selection, exhaustiveness, literals, ranges, and practical dispatch. For payload borrowing (`ref`), struct/tuple destructuring, and wildcard precision, continue to [Chapter 6.3](ch06-03-patterns.md).
 
 ---
 
@@ -291,7 +208,7 @@ New count: 11
 
 While `match` is indispensable for enums, it also works seamlessly on primitive integer, character, and range values:
 
-**Listing 6-7**
+**Listing 6-5**
 ```zenc
 fn classify_http_code(code: int) -> string {
     match code {
@@ -323,7 +240,7 @@ Client Error
 
 Let's bring all these concepts together in a complete event-driven networking dispatcher:
 
-**Listing 6-8**
+**Listing 6-6**
 ```zenc
 enum Packet {
     Ping,
@@ -399,7 +316,7 @@ In this chapter, you learned:
 - How **`match`** provides safe, exhaustive pattern matching with no risk of accidental fallthrough.
 - How to destructure variant payloads directly into local variables.
 - How to use the catch-all wildcard (`_`) and combine multiple patterns (`||`, `or`, `,`).
-- How to use the **`ref`** keyword to inspect or mutate enum payloads in place without taking ownership.
+- Where to continue for advanced payload borrowing and destructuring patterns ([Chapter 6.3](ch06-03-patterns.md)).
 - How `Option<T>` and `Result<T, E>` serve as standard enum patterns replacing `NULL` and error codes.
 
 In [Chapter 7](ch07-00-modules.md), we'll explore **Modules and Multi-File Projects**, organizing code into modules, and utilizing the standard library!

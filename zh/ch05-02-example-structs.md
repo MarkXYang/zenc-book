@@ -51,4 +51,40 @@ fn main() {
 
 注意这清晰了许多：`area` 现在接受一个借用引用 `Rectangle*`，表明这两个维度属于同一个几何形状。
 
+---
+
+## 3. 扩展这个模型
+
+一旦把维度归并到一个类型里，继续添加相关行为就会非常直接。例如，我们可以在不改动所有调用点的前提下，增加周长计算和矩形比较：
+
+```zenc
+struct Rectangle {
+    width: u32;
+    height: u32;
+}
+
+fn area(rect: Rectangle*) -> u32 {
+    return rect.width * rect.height;
+}
+
+fn perimeter(rect: Rectangle*) -> u32 {
+    return 2 * (rect.width + rect.height);
+}
+
+fn can_hold(outer: Rectangle*, inner: Rectangle*) -> bool {
+    return outer.width > inner.width && outer.height > inner.height;
+}
+
+fn main() {
+    let screen = Rectangle { width: 1920, height: 1080 };
+    let widget = Rectangle { width: 640, height: 300 };
+
+    println "screen area: {area(&screen)}";
+    println "screen perimeter: {perimeter(&screen)}";
+    println "screen can hold widget: {can_hold(&screen, &widget)}";
+}
+```
+
+这正是结构体的价值所在：把相关但分散的值收敛成一个连贯的类型，便于传递、校验和持续演进。
+
 在下一节中，我们将把 `area` 转变为直接附加到 `Rectangle` 类型上的**方法**！

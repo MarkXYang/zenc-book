@@ -56,7 +56,9 @@ let user1 = User {
 
 ### 完整字段初始化规则
 
-默认情况下，Zen C 要求必须在结构体字面量中提供该结构体定义的所有**全部字段**。如果遗漏了任何字段，编译器将拒绝初始化并给出有用的诊断信息：
+在常规模式下，Zen C 允许在结构体字面量中省略字段，并将其自动零初始化。在 MISRA 模式（`--misra`）下，必须显式初始化所有字段。
+
+例如，下面这个初始化省略了两个字段：
 
 ```zenc
 let incomplete = User {
@@ -66,7 +68,9 @@ let incomplete = User {
 };
 ```
 
-**编译器错误：**
+常规构建（不使用 `--misra`）的行为：被省略字段会自动零初始化。
+
+MISRA 模式（`zc build --misra`）的行为：
 ```text
 error: Missing field 'sign_in_count' in initializer for struct 'User'
   --> src/main.zc:12:18
@@ -76,7 +80,7 @@ error: Missing field 'sign_in_count' in initializer for struct 'User'
    = help: All struct fields must be initialized
 ```
 
-这种严格性消除了 C 语言中未初始化结构体字段包含垃圾内存值的常见隐患。
+即便如此，显式完整初始化依然是一个好习惯，尤其是在长期维护的数据模型和安全关键代码中。
 
 ### 使用 `Struct{}` 进行零初始化
 

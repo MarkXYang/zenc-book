@@ -56,7 +56,9 @@ let user1 = User {
 
 ### Complete Field Initialization Rule
 
-By default, Zen C requires that **all fields** defined on the struct are provided in the struct literal. If any field is omitted, the compiler will reject the initialization with a helpful diagnostic:
+In regular mode, Zen C permits omitted fields in a struct literal and zero-initializes them. In MISRA mode (`--misra`), all fields must be explicitly initialized.
+
+For example, this initializer omits two fields:
 
 ```zenc
 let incomplete = User {
@@ -66,7 +68,9 @@ let incomplete = User {
 };
 ```
 
-**Compiler Error:**
+Regular build behavior (no `--misra`): omitted fields are zero-initialized.
+
+MISRA mode behavior (`zc build --misra`):
 ```text
 error: Missing field 'sign_in_count' in initializer for struct 'User'
   --> src/main.zc:12:18
@@ -76,7 +80,7 @@ error: Missing field 'sign_in_count' in initializer for struct 'User'
    = help: All struct fields must be initialized
 ```
 
-This strictness eliminates the common C pitfall where uninitialized struct fields hold garbage memory values.
+Using explicit full initialization is still a good habit, especially for long-lived data models and safety-critical code.
 
 ### Zero-Initialization with `Struct{}`
 

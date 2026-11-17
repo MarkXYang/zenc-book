@@ -24,21 +24,9 @@ trait Clone {
 
 ### 1. `Drop` —— 确定性作用域析构器（RAII）
 
-正如我们在[第 4 章](ch04-04-cleanup.md)中学到的，为结构体实现 `Drop` 会注册一个析构器，每当拥有所有权的实例离开作用域时，编译器都会自动调用该析构器：
+`Drop` 是确定性清理的 trait 入口。实现了 `Drop`（或包含 `Drop` 字段）的类型会被当作资源拥有类型处理，并采用默认移动语义，以避免重复析构。
 
-```zenc
-struct TempFile {
-    path: string;
-}
-
-impl Drop for TempFile {
-    fn drop(self) {
-        println "[Drop] Removing temporary file: {self.path}";
-    }
-}
-```
-
-任何实现 `Drop`（或包含实现 `Drop` 的字段）的结构体都被视为具有**默认移动**（move-by-default）语义的**资源类型**，因此其析构器绝不会在同一分配上被调用两次。
+析构行为和 `.forget()` 的细节已在[第 4 章](ch04-04-cleanup.md)展开，提前返回路径上的清理行为已在[第 9 章](ch09-03-defer-cleanup.md)展开。
 
 ### 2. `Copy` —— 选择性值复制
 
@@ -197,24 +185,9 @@ Selected theme color: rgb(255, 128, 0)
 
 ---
 
-## 4. 使用 `@derive(...)` 实现智能 Derive
+## 4. Derive 回顾（`@derive(...)`）
 
-为每个数据结构体手动编写 `Copy`、`Clone`、`eq`、`to_string` 以及 JSON 序列化实现可能非常繁琐。Zen C 提供了 **`@derive(...)`** 属性，以便在编译期自动生成这些实现。
-
-### 支持的内置 Derive
-
-| Derive 属性 | 生成的实现 | 说明 |
-| :--- | :--- | :--- |
-| **`@derive(Copy)`** | `impl Copy for T {}` | 将类型标记为可通过值隐式复制（禁用移动失效）。 |
-| **`@derive(Clone)`** | `fn clone(self) -> T` | 生成返回结构体副本的 `.clone()` 方法。 |
-| **`@derive(Eq)`** | `fn eq(self, other: T*) -> bool` | 生成逐字段结构相等性检查，启用 `a == b` 和 `a != b`。 |
-| **`@derive(Debug)`** | `fn to_string(self) -> char*` | 生成用于字符串插值 `"{val}"` 的默认 `to_string` 格式化器。 |
-| **`@derive(ToJson)`** | `fn to_json(self) -> JsonValue` | 自动将结构体字段序列化为 `std/json.zc` 的 `JsonValue` 对象。 |
-| **`@derive(FromJson)`** | `fn from_json(j: JsonValue*) -> Result<T>` | 自动将 `JsonValue*` 反序列化为 `Result<T>`。 |
-
-### 组合 `@derive(Copy, Clone, Eq, Debug)`
-
-你可以在 `struct` 或 `enum` 上方的单个 `@derive(...)` 属性中组合多个 derive trait：
+`@derive(...)` 可以减少大量重复 trait 样板。常见组合包括 `Copy`、`Clone`、`Eq` 和 `Debug`：
 
 **代码清单 10-10**
 ```zenc
@@ -226,67 +199,16 @@ struct Point {
 
 fn main() {
     let p1 = Point { x: 10, y: 20 };
-    let p2 = p1;         // Implicit copy via @derive(Copy)
-    let p3 = p1.clone(); // Explicit clone via @derive(Clone)
-    let p4 = Point { x: 99, y: 99 };
+    let p2 = p1;
+    let p3 = p1.clone();
 
-    // Structural equality via @derive(Eq):
     println "p1 == p2: {p1 == p2}";
     println "p1 == p3: {p1 == p3}";
-    println "p1 == p4: {p1 == p4}";
-
-    // String formatting via @derive(Debug):
     println "Debug output: {p1}";
 }
 ```
 
-输出：
-```text
-p1 == p2: true
-p1 == p3: true
-p1 == p4: false
-Debug output: Point { ... }
-```
-
-### 使用 `@derive(ToJson, FromJson)` 自动进行 JSON 序列化
-
-当使用 `std/json.zc` 构建 Web 服务、CLI 工具或配置加载器时，`@derive(ToJson, FromJson)` 消除了手动进行 JSON 字段映射的工作：
-
-**代码清单 10-11**
-```zenc
-import "std/json.zc"
-
-@derive(ToJson, FromJson)
-struct ServerConfig {
-    host: char*;
-    port: int;
-    tls: bool;
-}
-
-fn main() {
-    let cfg = ServerConfig {
-        host: "127.0.0.1",
-        port: 8080,
-        tls: true,
-    };
-
-    // Serialize struct -> JSON string:
-    let json_val = cfg.to_json();
-    let json_str = json_val.to_string();
-    println "Serialized JSON: {json_str}";
-
-    // Deserialize JSON string -> struct:
-    let parsed = JsonValue::parse(json_str).unwrap();
-    let restored = ServerConfig::from_json(parsed).unwrap();
-    println "Restored: host={restored.host}, port={restored.port}, tls={restored.tls}";
-}
-```
-
-输出：
-```text
-Serialized JSON: {"tls":true,"port":8080,"host":"127.0.0.1"}
-Restored: host=127.0.0.1, port=8080, tls=true
-```
+关于完整 derive 列表（`ToJson`、`FromJson`）以及与 `@packed`、`@align`、`@inline`、`@constructor` 等属性的组合，请见[第 19.2 节](ch19-02-attributes-derives.md)。
 
 ---
 
@@ -295,6 +217,6 @@ Restored: host=127.0.0.1, port=8080, tls=true
 - **`Drop`、`Copy` 与 `Clone`**：控制确定性 RAII 析构、隐式按位复制和显式深拷贝。
 - **`Iterator<T>` 与 `Iterable<T>`**：使自定义结构体能够在 `for item in collection` 循环中无缝工作。
 - **`to_string(self) -> char*`**：将自定义结构体直接挂钩到 Zen C 的 `{expr}` 字符串插值中。
-- **`@derive(...)`**：在编译期自动生成 `Copy`、`Clone`、`Eq`、`Debug`、`ToJson` 和 `FromJson` 实现。
+- **`@derive(...)`**：减少重复 trait 样板；完整的 derive 与属性工具箱见第 19.2 节。
 
 接下来，让我们看看如何使用**运算符重载**使自定义类型更加富有表现力！

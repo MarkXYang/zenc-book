@@ -28,7 +28,40 @@ fn handle_packet(p: Packet*) {
 
 ---
 
-## 在 `let` 绑定与 `match` 分支中解构
+## 结构体与元组解构
+
+解构不仅能用于 `match` 分支，也可以直接用于 `let` 绑定。
+
+```zenc
+struct Point {
+    x: int;
+    y: int;
+}
+
+fn pair() -> (int, int) {
+    return (10, 20);
+}
+
+fn main() {
+    let p = Point { x: 3, y: 4 };
+
+    // 简写结构体解构
+    let Point { x, y } = p;
+    println "{x}, {y}";
+
+    // 重命名结构体解构
+    let Point { x: x1, y: y1 } = p;
+    println "{x1}, {y1}";
+
+    // 元组解构
+    let (a, b) = pair();
+    println "{a}, {b}";
+}
+```
+
+---
+
+## 在 `match` 分支中解构
 
 你还可以在 `let` 语句中或在 `match` 分支内直接解构 `struct` 值，将每个字段绑定到局部变量：
 
@@ -48,7 +81,7 @@ enum Packet {
 
 fn describe_packet(pkt: Packet*) -> string {
     match *pkt {
-        Packet::Ping() => return "ping",
+        Packet::Ping() => { return "ping"; },
         Packet::Data(ref text) => {
             println "Inspecting borrowed payload: {*text}";
             return "data";
@@ -80,16 +113,64 @@ fn main() {
 }
 ```
 
-<span class="caption">代码清单 6-9：跨 `match` 和 `let` 的引用绑定（`ref`）与结构体解构</span>
+<span class="caption">代码清单 6-7：跨 `match` 和 `let` 的引用绑定（`ref`）与结构体解构</span>
+
+---
+
+## 使用通配符忽略值
+
+当你不关心匹配值的某些部分时，可以使用 `_`：
+
+```zenc
+enum Event {
+    Resize(int, int),
+    Quit,
+}
+
+fn handle(e: Event) {
+    match e {
+        Event::Resize(w, _h) => {
+            println "Width changed: {w}";
+        },
+        Event::Quit => {
+            println "Quit";
+        },
+    }
+}
+```
+
+> [!NOTE]
+> 在当前编译器中，同一个载荷模式里请避免重复使用纯 `_`（例如 `Resize(_, _)`），因为它可能生成重复的 C 变量名。建议使用 `_w`、`_h` 这类不同的忽略名。
+
+---
+
+## Match 守卫（Guard）的当前状态
+
+Zen C 语法层面允许在模式后面写 `if` 守卫：
+
+```zenc
+match n {
+    0 => { println "zero"; },
+    x if x % 2 == 0 => { println "even"; },
+    _ => { println "odd"; },
+}
+```
+
+> [!WARNING]
+> 目前守卫条件会被解析，但在代码生成阶段不会被真正执行。如果你现在需要可靠的守卫语义，请先写宽匹配分支，再在分支体里使用显式 `if`。
+
+---
 
 ## 穷尽性与通配符
 
-在对 `enum` 进行匹配时，请显式覆盖每一个变体，或者添加一个兜底捕获的 `_ => { ... }` 分支。通常更推荐使用显式变体分支，因为如果日后添加了新的枚举变体而忘记处理，编译器会向你发出警告。
+在对 `enum` 进行匹配时，请显式覆盖每一个变体，或者添加一个兜底捕获的 `_ => { ... }` 分支。通常更推荐使用显式变体分支，这样意图更清晰，也更便于后续维护。
+
+当前编译器行为：非穷尽 `match` 会给出 warning 诊断。实践中应把这个 warning 视作正确性问题并立即修复。
 
 ---
 
 ## 小结
 
-在本节中，你学习了如何使用引用绑定（`ref`）在不触发资源移动的情况下安全地检查载荷，以及如何在 `match` 分支和 `let` 语句中解构数据类型。
+在本节中，你学习了如何使用引用绑定（`ref`）在不触发资源移动的情况下安全地检查载荷，如何在 `let` 与 `match` 中解构结构体和元组，以及如何有意识地使用通配符。
 
 接下来，在 [第 7 章](ch07-00-modules.md) 中，我们将学习如何将不断扩大的代码库组织成模块！

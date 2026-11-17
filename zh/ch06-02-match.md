@@ -2,7 +2,7 @@
 
 Zen C 提供了一个极其强大的控制流结构——**`match`**。它允许你将一个值与一系列模式进行比对，并根据匹配到的模式执行相应的代码。
 
-模式可以是简单值、字面量、范围、通配符，也可以是 `enum` 的各个变体。`match` 最强大的地方在于与枚举搭配使用：它既能安全、清晰地**解构**变体载荷，又能强制保证**编译期穷尽性**。
+模式可以是简单值、字面量、范围、通配符，也可以是 `enum` 的各个变体。本章聚焦 `match` 的控制流机制；更深入的解构与 `ref` 绑定模式放在[第 6.3 节](ch06-03-patterns.md)。
 
 ---
 
@@ -60,9 +60,9 @@ Point has zero area
 
 ## 穷尽性匹配
 
-Zen C 中的 match 是**穷尽的（exhaustive）**：必须处理所有可能的值或枚举变体。
+在设计上，match 应该覆盖所有可能的值或枚举变体。
 
-如果你在 `match` 表达式中遗漏了某个变体，且未提供默认的通配符回退分支，编译器将拒绝编译代码：
+如果你在 `match` 表达式中遗漏了某个变体，且未提供默认的通配符回退分支，当前编译器会给出非穷尽 `match` 的 warning：
 
 ```zenc
 fn handle_shape(s: Shape) {
@@ -74,7 +74,7 @@ fn handle_shape(s: Shape) {
 }
 ```
 
-这种严格性防止了潜在的隐患：在系统中添加新的枚举变体时，代码库的某些部分可能会忘记对其进行处理。
+建议把该 warning 视为正确性问题并立即修复：要么显式覆盖全部变体，要么有意识地添加兜底分支。
 
 ---
 
@@ -198,92 +198,9 @@ Server Error
 
 ---
 
-## 引用绑定（`ref`）
+## 关于 `ref` 与高级模式
 
-在 [第 4 章](ch04-01-move-semantics.md) 中，我们了解到管理外部资源（如堆内存、套接字或实现 `Drop` 的结构体）的类型遵循**移动语义**。
-
-当你对携带资源类型的枚举进行模式匹配时：
-- 按值匹配（`Some(x)`）会将载荷从枚举中移出并消耗掉。
-- 要在**不转移所有权**的情况下检查或修改载荷，请使用 **`ref`** 关键字！
-
-### 1. 在不发生移动的情况下检查值
-
-使用 `ref` 会绑定一个指向内部值的指针，而不是将其移出：
-
-**代码清单 6-5**
-```zenc
-enum TaskResult {
-    Success(string),
-    Failure(int),
-}
-
-fn inspect_result(res: TaskResult) {
-    match res {
-        TaskResult::Success(ref msg) => {
-            // 'msg' is string* (a borrowed pointer to the string inside res)
-            // 'res' is NOT moved or consumed!
-            println "Task completed: {*msg}";
-        },
-        TaskResult::Failure(code) => {
-            println "Failed: {code}";
-        },
-    }
-
-    // 'res' is still valid here because we borrowed via 'ref'!
-}
-
-fn main() {
-    let r1 = TaskResult::Success("File uploaded");
-    let r2 = TaskResult::Failure(404);
-    inspect_result(r1);
-    inspect_result(r2);
-}
-```
-
-输出：
-```text
-Task completed: File uploaded
-Failed: 404
-```
-
-### 2. 通过 `ref` 就地修改
-
-你还可以使用 `ref` 就地修改直接存储在枚举变量内部的值：
-
-**代码清单 6-6**
-```zenc
-enum Counter {
-    Value(int),
-    Reset,
-}
-
-fn main() {
-    let c = Counter::Value(10);
-
-    // Matching on an lvalue variable with 'ref' borrows a direct pointer to the payload
-    match c {
-        Counter::Value(ref val) => {
-            // 'val' is int* pointing into 'c'
-            *val = *val + 1; // Mutates directly in place!
-        },
-        Counter::Reset => {
-            c = Counter::Value(1);
-        },
-    }
-
-    match c {
-        Counter::Value(v) => {
-            println "New count: {v}"; // 11
-        },
-        Counter::Reset => {},
-    }
-}
-```
-
-输出：
-```text
-New count: 11
-```
+本节将 `match` 聚焦在分支选择、穷尽性、字面量/范围匹配和实际分发逻辑。关于载荷借用（`ref`）、结构体/元组解构与更精细的通配符用法，请继续阅读[第 6.3 节](ch06-03-patterns.md)。
 
 ---
 
@@ -291,7 +208,7 @@ New count: 11
 
 虽然 `match` 对枚举而言不可或缺，但它也能无缝用于原始整数、字符和范围值：
 
-**代码清单 6-7**
+**代码清单 6-5**
 ```zenc
 fn classify_http_code(code: int) -> string {
     match code {
@@ -323,7 +240,7 @@ Client Error
 
 让我们在一个完整的事件驱动网络分发器中融合所有这些概念：
 
-**代码清单 6-8**
+**代码清单 6-6**
 ```zenc
 enum Packet {
     Ping,
@@ -399,7 +316,7 @@ fn main() {
 - **`match`** 如何提供安全、穷尽的模式匹配，且完全没有意外直通的风险。
 - 如何将变体载荷直接解构到局部变量中。
 - 如何使用通配符（`_`）以及组合多重模式（`||`、`or`、`,`）。
-- 如何使用 **`ref`** 关键字在不获取所有权的情况下就地检查或修改枚举载荷。
+- 在哪里继续学习高级载荷借用与解构模式（[第 6.3 节](ch06-03-patterns.md)）。
 - `Option<T>` 和 `Result<T, E>` 如何作为标准枚举模式替代 `NULL` 和错误码。
 
 在 [第 7 章](ch07-00-modules.md) 中，我们将探索**模块与多文件项目**、将代码组织进模块，以及使用标准库！

@@ -51,4 +51,40 @@ fn main() {
 
 Notice how much clearer this is: `area` now accepts a borrowed reference `Rectangle*`, signaling that both dimensions belong to a single geometric shape.
 
+---
+
+## 3. Extending the Model
+
+Once the dimensions are grouped into one type, adding related behavior becomes straightforward. For example, we can add perimeter calculation and rectangle comparison without changing every call site:
+
+```zenc
+struct Rectangle {
+    width: u32;
+    height: u32;
+}
+
+fn area(rect: Rectangle*) -> u32 {
+    return rect.width * rect.height;
+}
+
+fn perimeter(rect: Rectangle*) -> u32 {
+    return 2 * (rect.width + rect.height);
+}
+
+fn can_hold(outer: Rectangle*, inner: Rectangle*) -> bool {
+    return outer.width > inner.width && outer.height > inner.height;
+}
+
+fn main() {
+    let screen = Rectangle { width: 1920, height: 1080 };
+    let widget = Rectangle { width: 640, height: 300 };
+
+    println "screen area: {area(&screen)}";
+    println "screen perimeter: {perimeter(&screen)}";
+    println "screen can hold widget: {can_hold(&screen, &widget)}";
+}
+```
+
+This is exactly why structs matter: they turn related loose values into one coherent type that you can pass, validate, and evolve safely.
+
 In the next section, we'll turn `area` into a **method** attached directly to the `Rectangle` type!
