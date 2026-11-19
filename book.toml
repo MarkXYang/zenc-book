@@ -9,5 +9,5 @@ git-repository-url = "https://github.com/zenc-lang/zenc"
 default-theme = "navy"
 preferred-dark-theme = "navy"
 additional-css = ["theme/line-numbers.css", "theme/playground.css", "theme/lang-switcher.css"]
-additional-js = ["theme/precomputed-outputs.js", "theme/playground.js", "theme/lang-switcher.js"]
+additional-js = ["theme/zenc-highlight.js", "theme/precomputed-outputs.js", "theme/playground.js", "theme/lang-switcher.js"]
 
