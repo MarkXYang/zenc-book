@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: zenc-book-playground
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: ZENC_PLAYGROUND_HOST
+        value: 0.0.0.0
+      - key: ZENC_PLAYGROUND_PORT
+        value: 8787

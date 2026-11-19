@@ -78,6 +78,27 @@ html.rust .zenc-output-status-err {
     color: #c62828;
 }
 
+.zenc-output-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.zenc-output-cfg {
+    background: transparent;
+    border: 1px solid var(--theme-popup-border, #3b4252);
+    border-radius: 3px;
+    color: var(--fg, #d8dee9);
+    cursor: pointer;
+    font-size: 0.72rem;
+    padding: 1px 6px;
+    opacity: 0.8;
+}
+
+.zenc-output-cfg:hover {
+    opacity: 1;
+}
+
 .zenc-output-close {
     background: transparent;
     border: none;
